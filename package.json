@@ -24,6 +24,9 @@
   "engines": {
     "node": "*"
   },
+  "scripts": {
+    "install": "./node_modules/grunt/bin/grunt volo:add"
+  },
   "preferGlobal": true,
   "dependencies": {
     "grunt": ">=0.3.15",

@@ -6,7 +6,11 @@ Datepicker widget built using Backbone.
 
 ## Building file:
 
-    grunt
+Run the local `grunt` binary.
+
+    ./node_modules/grunt/bin/grunt
+
+If you have grunt installed globally via the `npm install -g` switch, simply run `grunt`.
 
 This will generate the `dist/wave-datepicker.js` file that can be included on the page via `<script>` node or AMD.
 
