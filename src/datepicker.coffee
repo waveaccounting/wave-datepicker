@@ -2,10 +2,10 @@
   # Define AMD module if AMD support exists.
   if typeof define is 'function' and define.amd
     define ['jquery', 'underscore', 'backbone'], ($, _, Backbone) ->
-      root.amdWebGlobal = factory($, _, Backbone)
+      root.Datepicker = factory($, _, Backbone)
   # Otherwise attach module to root.
   else
-    root.amdWebGlobal = factory(root.$, root._, root.Backbone)
+    root.Datepicker = factory(root.$, root._, root.Backbone)
 
 )(this, ($, _, Backbone) ->
 
