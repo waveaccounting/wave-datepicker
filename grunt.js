@@ -1,7 +1,7 @@
 /*global module:false*/
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib');
-
+  grunt.loadNpmTasks('grunt-jasmine-task');
   grunt.loadNpmTasks('grunt-volo');
 
   // Project configuration.
@@ -22,18 +22,21 @@ module.exports = function(grunt) {
           bare: true
         },
         files: {
-          'dist/wave-datepicker.js': 'src/wave-datepicker.coffee'
+          'src/wave-datepicker.js': 'src/wave-datepicker.coffee',
+          'spec/wave-datepicker.spec.js': 'spec/wave-datepicker.spec.coffee'
         }
       }
     },
     watch: {
-      files: {
-        files: 'src/wave-datepicker.coffee',
-        tasks: 'coffee'
-      }
+        files: ['src/*', 'assets/less/*'],
+        tasks: 'coffee less'
+    },
+    jasmine: {
+      all: ['spec/specrunner.html']
     }
   });
 
   // Default task.
   grunt.registerTask('default', 'coffee less');
+  grunt.registerTask('test', 'jasmine');
 };
