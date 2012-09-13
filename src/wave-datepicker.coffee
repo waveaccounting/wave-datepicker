@@ -105,7 +105,7 @@
 
     formatDate: (date) -> WDP.DateUtils.format(date, @dateFormat)
 
-    parseDate: (str) -> WDP.DateUtils.parse(str, @dateFormat)
+    parseDate: (str) -> WDP.DateUtils.parse(str, @dateFormat).toDate()
 
     # Places the datepicker below the input box
     place: =>
