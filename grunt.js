@@ -28,7 +28,7 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-        files: ['src/*', 'assets/less/*'],
+        files: ['src/*', 'assets/less/*', 'spec/*'],
         tasks: 'coffee less'
     },
     jasmine: {
