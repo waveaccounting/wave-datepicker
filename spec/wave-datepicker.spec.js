@@ -41,7 +41,7 @@ describe('Wave Datepicker', function() {
       expect(date.getMonth()).toEqual(7);
       return expect(date.getDate()).toEqual(1);
     });
-    return it('should set today as the default is value not set on <input>', function() {
+    it('should set today as the default is value not set on <input>', function() {
       var date, today;
       this.$input.datepicker();
       date = this.$input.data('datepicker').date;
@@ -50,6 +50,16 @@ describe('Wave Datepicker', function() {
       expect(date.getFullYear()).toEqual(today.getFullYear());
       expect(date.getMonth()).toEqual(today.getMonth());
       return expect(date.getDate()).toEqual(today.getDate());
+    });
+    return describe('Shortcuts', function() {
+      return it('should by default provide the Today shortcut', function() {
+        var today, widget;
+        this.$input.datepicker();
+        widget = this.$input.data('datepicker');
+        expect(widget.$datepicker).toContain('.wdp-shortcut');
+        today = widget.$datepicker.find('.wdp-shortcut');
+        return expect($.trim(today.text())).toEqual('Today');
+      });
     });
   });
 });

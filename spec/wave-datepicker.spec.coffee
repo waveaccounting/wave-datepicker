@@ -53,3 +53,11 @@ describe 'Wave Datepicker', ->
       expect(date.getFullYear()).toEqual(today.getFullYear())
       expect(date.getMonth()).toEqual(today.getMonth())
       expect(date.getDate()).toEqual(today.getDate())
+
+    describe 'Shortcuts', ->
+      it 'should by default provide the Today shortcut', ->
+        @$input.datepicker()
+        widget = @$input.data('datepicker')
+        expect(widget.$datepicker).toContain('.wdp-shortcut')
+        today = widget.$datepicker.find('.wdp-shortcut')
+        expect($.trim(today.text())).toEqual('Today')

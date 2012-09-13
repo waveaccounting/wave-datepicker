@@ -16,10 +16,11 @@
   WDP.template = '
     <div class="wdp dropdown-menu">
       <div class="row-fluid">
-        <div class="span5" wdp-shortcuts>
+        <div class="span5">
+          <ul class="wdp-shortcuts"></ul>
         </div>
-        <div class="span7 wdp-calendar">
-          <table class="table-condensed">
+        <div class="span7">
+          <table class="table-condensed wdp-calendar">
             <thead>
               <tr>
                   <th class="wdp-prev js-wdp-prev span1">
@@ -56,59 +57,106 @@
   class WDP.WaveDatepicker
     _defaultFormat: 'YYYY-MM-DD'
 
+    # Shortcut key shows as links on left side of picker.
+    #
+    # The value is an object representing offsets from today's date.
+    #
+    # Offsets are processed using the `add` function from
+    # [moment.js](http://momentjs.com/docs/#/manipulating/add/).
+    _defaultShortcuts:
+      'Today':
+        days: 0
+
     constructor: (@options) ->
       @el = @options.el
       @$el = $(@el)
 
       @dateFormat = @options.format or @_defaultFormat
-
-      @updateDate()
+    # Reads the value of the `<input>` field and set it as the date.
+      if (dateStr = @$el.val())
+        @date = @_parseDate dateStr
 
       # If date could not be set from @$el.val() then set to today.
       @date or= new Date()
 
-      @initPicker()
-      @initElements()
-      @initEvents()
+      # e.g. 'today' -> sets calendar value to today's date
+      @shortcuts = options.shortcuts or @_defaultShortcuts
 
-    initElements: ->
+      @_initPicker()
+      @_initElements()
+      @_initShortcuts()
+      @_initEvents()
+
+    render: ->
+      calendarHTML = ''
+      @$tbody.html calendarHTML
+      @_updateDateInUI()
+
+      return this
+
+    show: =>
+      @$datepicker.addClass 'show'
+      @height = @$el.outerHeight()
+      @_place()
+      @$window.on 'resize', @_place
+
+    hide: =>
+      @$datepicker.removeClass 'show'
+      @$window.off 'resize', @_place
+
+    _initElements: ->
       if @options.className
         @$el.addClass(@options.className)
 
       # Set initial date value
-      @$el.val @formatDate(@date)
+      @$el.val @_formatDate(@date)
 
       # Set up elements cache
       @$shortcuts = @$datepicker.find '.wdp-shortcuts'
       @$calendar = @$datepicker.find '.wdp-calendar'
       @$tbody = @$calendar.find 'tbody'
+      @$monthAndYear = @$calendar.find '.wdp-month-and-year'
       @$window = $ window
 
     # Renders the widget and append to the `<body>`
-    initPicker: ->
+    _initPicker: ->
       @$datepicker = $ WDP.template
       @$datepicker.appendTo document.body
 
-    initEvents: ->
-      @$datepicker.on 'click', @onClick
-      @$datepicker.on 'mousedown', @cancelEvent
+    _initShortcuts: ->
+      shortcuts = []
+
+      for name, offset of @shortcuts
+        shortcuts.push "<li><a data-shortcut=\"#{name}\" class=\"wdp-shortcut js-wdp-shortcut\" href=\"javascript:void(0)\">
+          #{name}</a></li>"
+      @$shortcuts.html shortcuts.join ''
+
+    _initEvents: ->
+      # Show and hide picker
       @$el.on('focus', @show).on('blur', @hide)
+      @$el.on 'datechange', @_updateDateInUI
 
-    # Reads the value of the `<input>` field and set it as the date.
-    updateDate: ->
-      if (dateStr = @$el.val())
-        @date = @parseDate dateStr
+      @$datepicker.on 'click', @_onClick
+      @$datepicker.on 'mousedown', @_cancelEvent
+      @$datepicker.on 'click', '.js-wdp-shortcut', @_onShortcutClick
 
-    render: ->
-      calendarHTML= 
-      @$tbody.html calendarHTML
+    # Updates the picker with the current date.
+    _updateDateInUI: =>
+      monthAndYear = moment(@date).format('MMMM YYYY')
+      @$el.val @_formatDate(@date)
+      @$monthAndYear.text monthAndYear
 
-    formatDate: (date) -> WDP.DateUtils.format(date, @dateFormat)
+    # Sets the Date object for this widget and update `<input>` field.
+    _setDate: (date) ->
+      @date = date
+      @$el.trigger 'datechange', date
 
-    parseDate: (str) -> WDP.DateUtils.parse(str, @dateFormat).toDate()
+    _formatDate: (date) -> WDP.DateUtils.format(date, @dateFormat)
+
+    _parseDate: (str) -> WDP.DateUtils.parse(str, @dateFormat).toDate()
 
     # Places the datepicker below the input box
-    place: =>
+    _place: =>
       zIndex = parseInt(
         @$el.parents().filter(-> $(this).css('z-index') isnt 'auto').first().css('z-index')
         , 10) + 10
@@ -121,34 +169,37 @@
         zIndex: zIndex
       )
 
-    show: =>
-      @$datepicker.addClass 'show'
-      @height = @$el.outerHeight()
-      @place()
-      @$window.on 'resize', @place
+    _onClick: (e) =>
 
-    hide: =>
-      @$datepicker.removeClass 'show'
-      @$window.off 'resize', @place
-
-    onClick: (e) =>
-
-    cancelEvent: (e) =>
+    _cancelEvent: (e) =>
       e.stopPropagation()
       e.preventDefault()
 
-    bindWindowResize: ->
+    _onShortcutClick: (e) =>
+      name = $(e.target).data('shortcut')
+      offset = @shortcuts[name]
+      wrapper = moment(new Date())
+
+      # Go through each offset and set on date.
+      for k, v of offset
+        wrapper.add(k, v)
+
+      @_setDate wrapper.toDate()
 
 
   # Add jQuery widget
-  $.fn.datepicker = (options = {}) ->
+  $.fn.datepicker = (options = {}, args...) ->
     @each ->
       $this = $ this
       widget = $this.data('datepicker')
       $.extend options, {el: this}
 
       unless widget
-        $this.data 'datepicker', (widget = new WDP.WaveDatepicker(options))
+        $this.data 'datepicker', (widget = new WDP.WaveDatepicker(options).render())
+
+      # Prevent methods beginning with _ to be called because they are private
+      if typeof options is 'string' and options[0] isnt '_' and options isnt 'render'
+        widget[options].apply widget, args
 
 
   return WDP
