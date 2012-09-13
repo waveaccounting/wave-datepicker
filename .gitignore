@@ -1,5 +1,5 @@
 *.sw[a-z0-9]
 node_modules/
-vendor/*.js
+vendor/
 src/*.js
 test/*.js

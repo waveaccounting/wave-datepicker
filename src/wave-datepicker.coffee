@@ -14,19 +14,20 @@
   # Default template
   # .dropdown-menu is hidden by default
   WDP.template = '
-    <div class="wave-datepicker dropdown-menu">
+    <div class="wdp dropdown-menu">
       <div class="row-fluid">
-        <div class="span5" wave-datepicker-shortcuts>
+        <div class="span5" wdp-shortcuts>
         </div>
-        <div class="span7 wave-datepicker-calendar">
+        <div class="span7 wdp-calendar">
           <table class="table-condensed">
             <thead>
               <tr>
-                  <th class="prev">
+                  <th class="wdp-prev js-wdp-prev span1">
                     <i class="icon-arrow-left"/>
                   </th>
-                  <th colspan="5" class="switch"></th>
-                  <th class="next">
+                  <th colspan="5" class="wdp-month-and-year span10">
+                  </th>
+                  <th class="wdp-next js-wdp-next span1">
                     <i class="icon-arrow-right"/>
                   </th>
               </tr>
@@ -59,27 +60,33 @@
       @el = @options.el
       @$el = $(@el)
 
-      @date = @options.date or new Date()
       @dateFormat = @options.format or @_defaultFormat
 
-      @initElement()
+      @updateDate()
+
+      # If date could not be set from @$el.val() then set to today.
+      @date or= new Date()
+
       @initPicker()
+      @initElements()
       @initEvents()
 
-    initElement: ->
+    initElements: ->
       if @options.className
         @$el.addClass(@options.className)
 
+      # Set initial date value
       @$el.val @formatDate(@date)
 
-    # Renders the widget and sets elements cache.
+      # Set up elements cache
+      @$shortcuts = @$datepicker.find '.wdp-shortcuts'
+      @$calendar = @$datepicker.find '.wdp-calendar'
+      @$tbody = @$calendar.find 'tbody'
+      @$window = $ window
+
+    # Renders the widget and append to the `<body>`
     initPicker: ->
       @$datepicker = $ WDP.template
-      @$shortcuts = @$datepicker.find '.wave-datepicker-shortcuts'
-      @$calendar = @$datepicker.find '.wave-datepicker-calendar'
-      @$tbody = @$calender.find 'tbody'
-
-      # Put at the end of <body>
       @$datepicker.appendTo document.body
 
     initEvents: ->
@@ -87,16 +94,21 @@
       @$datepicker.on 'mousedown', @cancelEvent
       @$el.on('focus', @show).on('blur', @hide)
 
+    # Reads the value of the `<input>` field and set it as the date.
+    updateDate: ->
+      if (dateStr = @$el.val())
+        @date = @parseDate dateStr
+
     render: ->
       calendarHTML= 
       @$tbody.html calendarHTML
 
     formatDate: (date) -> WDP.DateUtils.format(date, @dateFormat)
 
-    parseDate: (str) -> WDP.DateUtils.parse(date, @dateFormat)
+    parseDate: (str) -> WDP.DateUtils.parse(str, @dateFormat)
 
     # Places the datepicker below the input box
-    place: ->
+    place: =>
       zIndex = parseInt(
         @$el.parents().filter(-> $(this).css('z-index') isnt 'auto').first().css('z-index')
         , 10) + 10
@@ -113,15 +125,19 @@
       @$datepicker.addClass 'show'
       @height = @$el.outerHeight()
       @place()
+      @$window.on 'resize', @place
 
     hide: =>
       @$datepicker.removeClass 'show'
+      @$window.off 'resize', @place
 
     onClick: (e) =>
 
     cancelEvent: (e) =>
       e.stopPropagation()
       e.preventDefault()
+
+    bindWindowResize: ->
 
 
   # Add jQuery widget
