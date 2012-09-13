@@ -1,4 +1,6 @@
-Datepicker widget built using Backbone.
+Datepicker widget for jQuery that uses Bootstrap styles.
+
+Supports shortcuts on the left-side of the picker.
 
 ## Installing dependencies:
 
