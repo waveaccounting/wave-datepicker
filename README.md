@@ -14,7 +14,7 @@ If you have grunt installed globally via the `npm install -g` switch, simply run
 
 This will generate the `dist/wave-datepicker.js` file that can be included on the page via `<script>` node or AMD.
 
-## Usage (CoffeeScript):
+## Usage:
 
-    # Given an existing <input id="MyInput"/> element.
-    datepicker = new DatePicker(el: $('#MyInput'))
+    // Given an existing <input id="MyInput"/> element.
+    $('#MyInput').datepicker();
