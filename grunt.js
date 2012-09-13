@@ -6,18 +6,28 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    less: {
+      compile: {
+        options: {
+          paths: ['assets/css']
+        },
+        files: {
+          'dist/wave-datepicker.css': 'assets/less/wave-datepicker.less'
+        }
+      }
+    },
     coffee: {
       compile: {
         options: {
           bare: true
         },
         files: {
-          'dist/bootstrap-datepicker.js': 'src/datepicker.coffee'
+          'dist/wave-datepicker.js': 'src/wave-datepicker.coffee'
         }
       }
     }
   });
 
   // Default task.
-  grunt.registerTask('default', 'coffee');
+  grunt.registerTask('default', 'coffee less');
 };
