@@ -14,10 +14,14 @@
     <div class="container">
       <input id="Date" class="input-medium"/>
     </div>
+    <script src="vendor/moment.js"></script>
     <script src="vendor/jquery.js"></script>
     <script src="vendor/underscore.js"></script>
-    <script src="dist/bootstrap-datepicker.js"></script>
+    <script src="dist/wave-datepicker.js"></script>
     <script>
+      $(function() {
+        $('input').datepicker();
+      });
     </script>
   </body>
 </html>

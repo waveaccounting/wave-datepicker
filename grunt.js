@@ -25,6 +25,12 @@ module.exports = function(grunt) {
           'dist/wave-datepicker.js': 'src/wave-datepicker.coffee'
         }
       }
+    },
+    watch: {
+      files: {
+        files: 'src/wave-datepicker.coffee',
+        tasks: 'coffee'
+      }
     }
   });
 
