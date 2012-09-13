@@ -67,12 +67,16 @@
       'Today':
         days: 0
 
+    # State our picker is currently in.
+    # Month and year affect the calendar.
+    _state: null
+
     constructor: (@options) ->
       @el = @options.el
       @$el = $(@el)
 
       @dateFormat = @options.format or @_defaultFormat
-    # Reads the value of the `<input>` field and set it as the date.
+      # Reads the value of the `<input>` field and set it as the date.
       if (dateStr = @$el.val())
         @date = @_parseDate dateStr
 
@@ -82,16 +86,15 @@
       # e.g. 'today' -> sets calendar value to today's date
       @shortcuts = options.shortcuts or @_defaultShortcuts
 
+      @_initState()
       @_initPicker()
       @_initElements()
       @_initShortcuts()
       @_initEvents()
 
     render: ->
-      calendarHTML = ''
-      @$tbody.html calendarHTML
       @_updateDateInUI()
-
+      @_fill()
       return this
 
     show: =>
@@ -117,6 +120,11 @@
       @$tbody = @$calendar.find 'tbody'
       @$monthAndYear = @$calendar.find '.wdp-month-and-year'
       @$window = $ window
+
+    _initState: ->
+      @_state = {}
+      @_state.month = @date.getMonth()
+      @_state.year = @date.getFullYear()
 
     # Renders the widget and append to the `<body>`
     _initPicker: ->
@@ -169,11 +177,62 @@
         zIndex: zIndex
       )
 
+    # Fills in calendar based on month and year we're currently viewing.
+    _fill: ->
+      calendarArray = @_getCalendarArray()
+      html = []
+
+      for i, d of calendarArray
+        if i % 7 is 0
+          html.push (if i is '0' then '' else '</tr>') + '<tr class="wdp-calendar-row">'
+
+        html.push "<td>#{d}</td>"
+
+      html.push '</tr>'
+
+      @$tbody.html html.join('')
+
+    _getCalendarArray: ->
+      # Set to the year and month from state, and the day is the first of the month.
+      date = new Date(@_state.year, @_state.month, 1)
+      wrapped = moment date
+      daysInMonth = wrapped.daysInMonth()
+
+      startOfMonth = wrapped.clone().startOf('month')
+      endOfMonth = wrapped.clone().endOf('month')
+
+      # 0 == Sun, 1 == Mon, ..., 6 == Sat
+      firstDateDay = startOfMonth.day() - 1
+      lastDateDay = endOfMonth.day()
+
+      # 1-D array with necessary days to draw calendar with.
+      fullCalendarArray = []
+
+      # If start date is not Sun then padd beginning of calendar.
+      if firstDateDay isnt 0
+        prevMonth = startOfMonth.clone()
+
+        for i in [0..firstDateDay]
+          fullCalendarArray[firstDateDay - i] = prevMonth.add('days', -1).date()
+
+      # Fill in dates for this month.
+      for i in [1..daysInMonth]
+        fullCalendarArray[i + firstDateDay] = i
+
+      # If end date is not Sat then padd the end of calendar.
+      if lastDateDay isnt 6
+        nextMonth = endOfMonth.clone()
+        n = endOfMonth.date() + firstDateDay
+
+        for i in [lastDateDay+1..6]
+          fullCalendarArray[n + i - 5] = nextMonth.add('days', 1).date()
+
+      return fullCalendarArray
+
+    # Click event from datepicker.
     _onClick: (e) =>
 
-    _cancelEvent: (e) =>
-      e.stopPropagation()
-      e.preventDefault()
+    _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
     _onShortcutClick: (e) =>
       name = $(e.target).data('shortcut')
