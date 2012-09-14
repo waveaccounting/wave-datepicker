@@ -3,7 +3,19 @@ describe 'Wave Datepicker', ->
     # The input box to test on.
     @$input = $('<input id="Date">').appendTo(document.body)
 
+    @stubWaveDatepicker = ->
+      @_WaveDatepicker =
+        render: sinon.stub()
+        destroy: sinon.stub()
+      @_WaveDatepicker.render.returns @_WaveDatepicker
+      @_WaveDatepickerStub = sinon.stub WDP, 'WaveDatepicker'
+      @_WaveDatepickerStub.returns @_WaveDatepicker
+
+    @restoreWaveDatepicker = ->
+      @_WaveDatepickerStub.restore()
+
   afterEach ->
+    @$input.datepicker('destroy')
     @$input.remove()
 
   describe '$.fn.datepicker', ->
@@ -11,31 +23,31 @@ describe 'Wave Datepicker', ->
       expect(@$input.datepicker).toEqual(jasmine.any(Function))
 
     it 'should instantiate the WaveDatepicker call', ->
-      _WaveDatepicker = sinon.stub WDP, 'WaveDatepicker'
+      @stubWaveDatepicker()
 
       @$input.datepicker()
 
-      expect(_WaveDatepicker).toHaveBeenCalledOnce()
+      expect(@_WaveDatepickerStub).toHaveBeenCalledOnce()
 
-      _WaveDatepicker.restore()
+      @restoreWaveDatepicker()
 
     it 'should not instantiate datepicker twice on same element', ->
-      _WaveDatepicker = sinon.stub WDP, 'WaveDatepicker'
+      @stubWaveDatepicker()
 
       # Called twice
       @$input.datepicker()
       @$input.datepicker()
 
       # But only instantiated twice
-      expect(_WaveDatepicker).toHaveBeenCalledOnce()
+      expect(@_WaveDatepickerStub).toHaveBeenCalledOnce()
 
-      _WaveDatepicker.restore()
+      @restoreWaveDatepicker()
 
     it 'should set the datepicker widget as data on the <input>', ->
-      _WaveDatepicker = sinon.stub WDP, 'WaveDatepicker'
+      @stubWaveDatepicker()
       @$input.datepicker()
-      expect(@$input.data('datepicker')).toEqual(jasmine.any(_WaveDatepicker))
-      _WaveDatepicker.restore()
+      expect(@$input.data('datepicker')).toEqual(@_WaveDatepicker)
+      @restoreWaveDatepicker()
 
     it 'should use the value attribute to set default date', ->
       @$input.val('2012-08-01').datepicker()

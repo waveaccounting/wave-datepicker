@@ -256,6 +256,9 @@
         @_state.month += 1
       @render()
 
+    destroy: =>
+      @$datepicker.remove()
+
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
     _onShortcutClick: (e) =>
