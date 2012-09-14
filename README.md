@@ -25,7 +25,7 @@ This will generate the `dist/wave-datepicker.js` file that can be included on th
 
 Run the `test` task:
 
-    grunt test
+    ./node_modules/grunt/bin/grunt test
 
 
 ## Usage:
@@ -45,7 +45,9 @@ Methods are called via the `.datepicker(method, args...)` function.
 
 Updates the widget's selected date to the `Date` object.
 
-Example:
+### Examples:
+
+**Basic usage:**
 
     $('#MyInput').datepicker('setDate', new Date());
 
@@ -71,6 +73,10 @@ Example:
         }
       }
     });
+
+The offset key can be anything supported in the [add function of moment.js](http://momentjs.com/docs/#/manipulating/add/).
+
+e.g. `years`, `months`, `days`
 
 
 **Destroying widget:**
