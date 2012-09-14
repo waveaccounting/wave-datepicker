@@ -145,6 +145,7 @@
       @$el.on 'datechange', @render
 
       @$datepicker.on 'mousedown', @_cancelEvent
+      @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
       @$datepicker.on 'click', '.js-wdp-prev', @prev
       @$datepicker.on 'click', '.js-wdp-next', @next
       @$datepicker.on 'click', '.js-wdp-shortcut', @_onShortcutClick
@@ -213,11 +214,16 @@
           html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
           paddingStart++
 
+      # For formatting purposes in the following loop.
+      currMonth = new Date(@_state.year, @_state.month, 1)
+
       # Fill in dates for this month.
       for i in [1..daysInMonth]
+        currMonth.setDate(i)
+        formatted = @_formatDate currMonth
         if (index++) % 7 is 0
           html.push '</tr><tr class="wdp-calendar-row">'
-        html.push "<td data-monthdate=\"#{@_state.month + 1}-#{i}\">#{i}</td>"
+        html.push "<td class=\"js-wdp-calendar-cell\" data-date=\"#{formatted}\">#{i}</td>"
 
       # If end date is not Sat then padd the end of calendar.
       if lastDateDay isnt 6
@@ -266,9 +272,13 @@
 
     _updateSelection: ->
       # Update selection
-      monthDate = moment(@date).format('M-D')
+      dateStr = @_formatDate @date
       @$tbody.find('.wdp-selected').removeClass('wdp-selected')
-      @$tbody.find("td[data-monthdate=#{monthDate}]").addClass('wdp-selected')
+      @$tbody.find("td[data-date=#{dateStr}]").addClass('wdp-selected')
+
+    _selectDate: (e) =>
+      date = @_parseDate $(e.target).data('date')
+      @setDate date
 
 
   # Add jQuery widget

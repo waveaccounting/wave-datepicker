@@ -40,6 +40,9 @@
   -moz-border-radius: 4px;
   border-radius: 4px;
 }
+.wdp-calendar-row td:hover {
+  background-color: #dddddd;
+}
 .wdp-calendar-othermonth {
   color: #999999;
 }
