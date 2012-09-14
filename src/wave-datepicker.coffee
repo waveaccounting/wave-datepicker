@@ -23,13 +23,13 @@
           <table class="table-condensed wdp-calendar">
             <thead>
               <tr>
-                  <th class="wdp-prev js-wdp-prev span1">
-                    <i class="icon-arrow-left"/>
+                  <th class="wdp-prev span1">
+                    <button class="btn btn-small js-wdp-prev"><i class="icon-arrow-left"/></button>
                   </th>
                   <th colspan="5" class="wdp-month-and-year span10">
                   </th>
-                  <th class="wdp-next js-wdp-next span1">
-                    <i class="icon-arrow-right"/>
+                  <th class="wdp-next span1">
+                    <button class="btn btn-small js-wdp-next"><i class="icon-arrow-right"/></button>
                   </th>
               </tr>
             </thead>
@@ -92,8 +92,8 @@
       @_initShortcuts()
       @_initEvents()
 
-    render: ->
-      @_updateDateInUI()
+    render: =>
+      @_updateMonthAndYear()
       @_fill()
       return this
 
@@ -142,20 +142,19 @@
     _initEvents: ->
       # Show and hide picker
       @$el.on('focus', @show).on('blur', @hide)
-      @$el.on 'datechange', @_updateDateInUI
+      @$el.on 'datechange', @render
 
-      @$datepicker.on 'click', @_onClick
       @$datepicker.on 'mousedown', @_cancelEvent
       @$datepicker.on 'click', '.js-wdp-shortcut', @_onShortcutClick
+      @$datepicker.on 'click', '.js-wdp-prev', @prev
+      @$datepicker.on 'click', '.js-wdp-next', @next
 
     # Updates the picker with the current date.
-    _updateDateInUI: =>
-      monthAndYear = moment(@date).format('MMMM YYYY')
-      @$el.val @_formatDate(@date)
+    _updateMonthAndYear: =>
+      date = new Date(@_state.year, @_state.month, 1)
+      monthAndYear = moment(date).format('MMMM YYYY')
+      @$el.val @_formatDate(date)
       @$monthAndYear.text monthAndYear
-      @_state.year = @date.getFullYear()
-      @_state.month = @date.getMonth()
-      @_fill()
 
     # Sets the Date object for this widget and update `<input>` field.
     setDate: (date) ->
@@ -197,7 +196,8 @@
 
       # 0 == Sun, 1 == Mon, ..., 6 == Sat
       firstDateDay = startOfMonth.day() - 1
-      lastDateDay = endOfMonth.day()
+      lastDateDay = endOfMonth.day() - 1
+      paddingStart = 0
 
       # If start date is not Sun then padd beginning of calendar.
       if firstDateDay isnt 0
@@ -209,6 +209,7 @@
           d = prevMonth.add('days', -1).date()
           # + 1 because element at index zero is the <tr>
           html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
+          paddingStart++
 
       # Fill in dates for this month.
       for i in [1..daysInMonth]
@@ -219,9 +220,8 @@
       # If end date is not Sat then padd the end of calendar.
       if lastDateDay isnt 6
         nextMonth = endOfMonth.clone()
-        n = endOfMonth.date() + firstDateDay
-
-        for i in [lastDateDay+1..6]
+        n = paddingStart + daysInMonth
+        while (n++) % 7 isnt 0
           d = nextMonth.add('days', 1).date()
           if (index++) % 7 is 0
             html.push '</tr><tr class="wdp-calendar-row">'
@@ -231,8 +231,23 @@
 
       @$tbody.html html.join ''
 
-    # Click event from datepicker.
-    _onClick: (e) =>
+    # Navigate to prev month.
+    prev: =>
+      if @_state.month is 1
+        @_state.month = 12
+        @_state.year -= 1
+      else
+        @_state.month -= 1
+      @render()
+
+    # Navigate to next month.
+    next: =>
+      if @_state.month is 12
+        @_state.month = 1
+        @_state.year += 1
+      else
+        @_state.month += 1
+      @render()
 
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
