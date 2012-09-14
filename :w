@@ -2,11 +2,6 @@
 @import '../../float/lib/less/variables.less';
 @import '../../float/lib/less/mixins.less';
 
-.activeGradient {
-    background-color: @linkColor;
-    .buttonBackground(@linkColor, darken(@linkColor, 10%));
-}
-
 .wdp {
     width: 350px;
     max-width: 425px;
@@ -17,17 +12,6 @@
     margin-left: 0;
     margin-bottom: 0;
     list-style-type: none;
-    li > a {
-        &:hover, &:focus {
-            color: @black;
-            background-image: none;
-            background-color: @grayLightest;
-        }
-        &.wdp-shortcut-active {
-            color: @white;
-            .activeGradient();
-        }
-    }
 }
 .wdp-calendar {
     width: 100%;
@@ -54,7 +38,7 @@
         color: @grayLight;
     }
     .wdp-selected {
-        .activeGradient();
+        background-color: @linkColor;
         color: @white;
     }
 }

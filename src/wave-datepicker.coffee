@@ -16,20 +16,20 @@
   WDP.template = '
     <div class="wdp dropdown-menu">
       <div class="row-fluid">
-        <div class="span5">
+        <div class="span4">
           <ul class="wdp-shortcuts"></ul>
         </div>
-        <div class="span7">
+        <div class="span8">
           <table class="table-condensed wdp-calendar">
             <thead>
               <tr>
-                  <th class="wdp-prev span1">
-                    <button class="btn btn-small js-wdp-prev"><i class="icon-arrow-left"/></button>
+                  <th class="wdp-prev">
+                    <a href="javascript:void(0)" class="js-wdp-prev"><i class="icon-arrow-left"/></a>
                   </th>
-                  <th colspan="5" class="wdp-month-and-year span10">
+                  <th colspan="5" class="wdp-month-and-year">
                   </th>
-                  <th class="wdp-next span1">
-                    <button class="btn btn-small js-wdp-next"><i class="icon-arrow-right"/></button>
+                  <th class="wdp-next">
+                    <a href="javascript:void(0)" class="js-wdp-next"><i class="icon-arrow-right"/></a>
                   </th>
               </tr>
             </thead>
@@ -225,15 +225,14 @@
           html.push '</tr><tr class="wdp-calendar-row">'
         html.push "<td class=\"js-wdp-calendar-cell\" data-date=\"#{formatted}\">#{i}</td>"
 
-      # If end date is not Sat then padd the end of calendar.
-      if lastDateDay isnt 6
-        nextMonth = endOfMonth.clone()
-        n = paddingStart + daysInMonth
-        while (n++) % 7 isnt 0
-          d = nextMonth.add('days', 1).date()
-          if (index++) % 7 is 0
-            html.push '</tr><tr class="wdp-calendar-row">'
-          html.push "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
+      # Fill out the rest of the calendar (six rows).
+      nextMonth = endOfMonth.clone()
+      n = paddingStart + daysInMonth
+      while index < 42  # 7 * 6 = 42
+        d = nextMonth.add('days', 1).date()
+        if (index++) % 7 is 0
+          html.push '</tr><tr class="wdp-calendar-row">'
+        html.push "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
 
       html.push '</tr>'
 
@@ -260,7 +259,8 @@
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
     _onShortcutClick: (e) =>
-      name = $(e.target).data('shortcut')
+      $shortcut = $(e.target)
+      name = $shortcut.data('shortcut')
       offset = @shortcuts[name]
       wrapper = moment(new Date())
 
@@ -268,7 +268,13 @@
       for k, v of offset
         wrapper.add(k, v)
 
+      @_clearActiveShortcutClass()
+      $shortcut.addClass 'wdp-shortcut-active'
+
       @setDate wrapper.toDate()
+
+    _clearActiveShortcutClass: ->
+      @$shortcuts.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active')
 
     _updateSelection: ->
       # Update selection
@@ -277,6 +283,7 @@
       @$tbody.find("td[data-date=#{dateStr}]").addClass('wdp-selected')
 
     _selectDate: (e) =>
+      @_clearActiveShortcutClass()
       date = @_parseDate $(e.target).data('date')
       @setDate date
 
