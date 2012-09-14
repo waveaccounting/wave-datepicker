@@ -16,20 +16,20 @@
   WDP.template = '
     <div class="wdp dropdown-menu">
       <div class="row-fluid">
-        <div class="span5">
+        <div class="span4">
           <ul class="wdp-shortcuts"></ul>
         </div>
-        <div class="span7">
+        <div class="span8">
           <table class="table-condensed wdp-calendar">
             <thead>
               <tr>
-                  <th class="wdp-prev span1">
-                    <button class="btn btn-small js-wdp-prev"><i class="icon-arrow-left"/></button>
+                  <th class="wdp-prev">
+                    <a href="javascript:void(0)" class="js-wdp-prev"><i class="icon-arrow-left"/></a>
                   </th>
-                  <th colspan="5" class="wdp-month-and-year span10">
+                  <th colspan="5" class="wdp-month-and-year">
                   </th>
-                  <th class="wdp-next span1">
-                    <button class="btn btn-small js-wdp-next"><i class="icon-arrow-right"/></button>
+                  <th class="wdp-next">
+                    <a href="javascript:void(0)" class="js-wdp-next"><i class="icon-arrow-right"/></a>
                   </th>
               </tr>
             </thead>
@@ -271,10 +271,14 @@
       @next
       @_selectDate e
 
+    destroy: =>
+      @$datepicker.remove()
+
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
     _onShortcutClick: (e) =>
-      name = $(e.target).data('shortcut')
+      $shortcut = $(e.target)
+      name = $shortcut.data('shortcut')
       offset = @shortcuts[name]
       wrapper = moment(new Date())
 
@@ -282,7 +286,13 @@
       for k, v of offset
         wrapper.add(k, v)
 
+      @_clearActiveShortcutClass()
+      $shortcut.addClass 'wdp-shortcut-active'
+
       @setDate wrapper.toDate()
+
+    _clearActiveShortcutClass: ->
+      @$shortcuts.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active')
 
     _updateSelection: ->
       # Update selection
@@ -291,6 +301,7 @@
       @$tbody.find("td[data-date=#{dateStr}]").addClass('wdp-selected')
 
     _selectDate: (e) =>
+      @_clearActiveShortcutClass()
       date = @_parseDate $(e.target).data('date')
       @setDate date
 

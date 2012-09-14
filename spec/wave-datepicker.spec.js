@@ -1,9 +1,22 @@
 
 describe('Wave Datepicker', function() {
   beforeEach(function() {
-    return this.$input = $('<input id="Date">').appendTo(document.body);
+    this.$input = $('<input id="Date">').appendTo(document.body);
+    this.stubWaveDatepicker = function() {
+      this._WaveDatepicker = {
+        render: sinon.stub(),
+        destroy: sinon.stub()
+      };
+      this._WaveDatepicker.render.returns(this._WaveDatepicker);
+      this._WaveDatepickerStub = sinon.stub(WDP, 'WaveDatepicker');
+      return this._WaveDatepickerStub.returns(this._WaveDatepicker);
+    };
+    return this.restoreWaveDatepicker = function() {
+      return this._WaveDatepickerStub.restore();
+    };
   });
   afterEach(function() {
+    this.$input.datepicker('destroy');
     return this.$input.remove();
   });
   return describe('$.fn.datepicker', function() {
@@ -11,26 +24,23 @@ describe('Wave Datepicker', function() {
       return expect(this.$input.datepicker).toEqual(jasmine.any(Function));
     });
     it('should instantiate the WaveDatepicker call', function() {
-      var _WaveDatepicker;
-      _WaveDatepicker = sinon.stub(WDP, 'WaveDatepicker');
+      this.stubWaveDatepicker();
       this.$input.datepicker();
-      expect(_WaveDatepicker).toHaveBeenCalledOnce();
-      return _WaveDatepicker.restore();
+      expect(this._WaveDatepickerStub).toHaveBeenCalledOnce();
+      return this.restoreWaveDatepicker();
     });
     it('should not instantiate datepicker twice on same element', function() {
-      var _WaveDatepicker;
-      _WaveDatepicker = sinon.stub(WDP, 'WaveDatepicker');
+      this.stubWaveDatepicker();
       this.$input.datepicker();
       this.$input.datepicker();
-      expect(_WaveDatepicker).toHaveBeenCalledOnce();
-      return _WaveDatepicker.restore();
+      expect(this._WaveDatepickerStub).toHaveBeenCalledOnce();
+      return this.restoreWaveDatepicker();
     });
     it('should set the datepicker widget as data on the <input>', function() {
-      var _WaveDatepicker;
-      _WaveDatepicker = sinon.stub(WDP, 'WaveDatepicker');
+      this.stubWaveDatepicker();
       this.$input.datepicker();
-      expect(this.$input.data('datepicker')).toEqual(jasmine.any(_WaveDatepicker));
-      return _WaveDatepicker.restore();
+      expect(this.$input.data('datepicker')).toEqual(this._WaveDatepicker);
+      return this.restoreWaveDatepicker();
     });
     it('should use the value attribute to set default date', function() {
       var date;
