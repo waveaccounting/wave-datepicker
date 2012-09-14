@@ -95,6 +95,7 @@
     render: =>
       @_updateMonthAndYear()
       @_fill()
+      @_updateSelection()
       return this
 
     show: =>
@@ -216,7 +217,7 @@
       for i in [1..daysInMonth]
         if (index++) % 7 is 0
           html.push '</tr><tr class="wdp-calendar-row">'
-        html.push "<td>#{i}</td>"
+        html.push "<td data-monthdate=\"#{@_state.month + 1}-#{i}\">#{i}</td>"
 
       # If end date is not Sat then padd the end of calendar.
       if lastDateDay isnt 6
@@ -262,6 +263,12 @@
         wrapper.add(k, v)
 
       @setDate wrapper.toDate()
+
+    _updateSelection: ->
+      # Update selection
+      monthDate = moment(@date).format('M-D')
+      @$tbody.find('.wdp-selected').removeClass('wdp-selected')
+      @$tbody.find("td[data-monthdate=#{monthDate}]").addClass('wdp-selected')
 
 
   # Add jQuery widget

@@ -43,3 +43,7 @@
 .wdp-calendar-othermonth {
   color: #999999;
 }
+.wdp-selected {
+  background-color: #53a6ce;
+  color: #ffffff;
+}
