@@ -228,16 +228,15 @@
           html.push '</tr><tr class="wdp-calendar-row">'
         html.push "<td class=\"js-wdp-calendar-cell\" data-date=\"#{formatted}\">#{i}</td>"
 
-      # If end date is not Sat then padd the end of calendar.
-      if lastDateDay isnt 6
-        nextMonth = endOfMonth.clone()
-        n = paddingStart + daysInMonth
-        while (n++) % 7 isnt 0
-          d = nextMonth.add('days', 1).date()
-          formattedNextMonth = @_formatDate new Date(@_state.year, @_state.month + 1, d)
-          if (index++) % 7 is 0
-            html.push '</tr><tr class="wdp-calendar-row">'
-          html.push "<td class=\"wdp-calendar-othermonth js-wdp-next-select\" data-date=\"#{formattedNextMonth}\">#{d}</td>"
+      # Fill out the rest of the calendar (six rows).
+      nextMonth = endOfMonth.clone()
+      n = paddingStart + daysInMonth
+      while index < 42  # 7 * 6 = 42
+        d = nextMonth.add('days', 1).date()
+        formattedNextMonth = @_formatDate new Date(@_state.year, @_state.month + 1, d)
+        if (index++) % 7 is 0
+          html.push '</tr><tr class="wdp-calendar-row">'
+        html.push "<td class=\"wdp-calendar-othermonth js-wdp-next-select\" data-date=\"#{formattedNextMonth}\">#{d}</td>"
 
       html.push '</tr>'
 
