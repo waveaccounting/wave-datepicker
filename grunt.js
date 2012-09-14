@@ -12,7 +12,7 @@ module.exports = function(grunt) {
           paths: ['assets/css']
         },
         files: {
-          'dist/wave-datepicker.css': 'assets/less/wave-datepicker.less'
+          'dist/wave-datepicker.css': 'less/wave-datepicker.less'
         }
       }
     },
@@ -28,7 +28,7 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-        files: ['src/*', 'assets/less/*', 'spec/*'],
+        files: ['src/*', 'less/*', 'spec/*'],
         tasks: 'coffee less'
     },
     jasmine: {
