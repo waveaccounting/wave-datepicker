@@ -8,6 +8,11 @@ Supports shortcuts on the left-side of the picker.
 **Installing dependencies:**
 
     npm install
+    
+**JavaScript Dependencies:**
+
+* [jQuery](http://jquery.com/) (1.7+)
+* [moment.js](http://momentjs.com/)
 
 
 **Building file:**
