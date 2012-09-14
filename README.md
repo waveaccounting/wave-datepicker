@@ -9,10 +9,11 @@ Supports shortcuts on the left-side of the picker.
 
     npm install
     
-**JavaScript Dependencies:**
+**Dependencies:**
 
 * [jQuery](http://jquery.com/) (1.7+)
 * [moment.js](http://momentjs.com/)
+* [Bootstrap CSS](http://twitter.github.com/bootstrap/)
 
 
 **Building file:**
