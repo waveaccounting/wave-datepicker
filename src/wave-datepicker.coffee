@@ -123,8 +123,7 @@
 
     _initState: ->
       @_state = {}
-      @_state.month = @date.getMonth()
-      @_state.year = @date.getFullYear()
+      @setDate @date
 
     # Renders the widget and append to the `<body>`
     _initPicker: ->
@@ -145,21 +144,23 @@
       @$el.on 'datechange', @render
 
       @$datepicker.on 'mousedown', @_cancelEvent
-      @$datepicker.on 'click', '.js-wdp-shortcut', @_onShortcutClick
       @$datepicker.on 'click', '.js-wdp-prev', @prev
       @$datepicker.on 'click', '.js-wdp-next', @next
+      @$datepicker.on 'click', '.js-wdp-shortcut', @_onShortcutClick
 
     # Updates the picker with the current date.
     _updateMonthAndYear: =>
       date = new Date(@_state.year, @_state.month, 1)
       monthAndYear = moment(date).format('MMMM YYYY')
-      @$el.val @_formatDate(date)
       @$monthAndYear.text monthAndYear
 
     # Sets the Date object for this widget and update `<input>` field.
-    setDate: (date) ->
+    setDate: (date) =>
       @date = date
-      @$el.trigger 'datechange', date
+      @_state.month = @date.getMonth()
+      @_state.year = @date.getFullYear()
+      @$el.val @_formatDate(date)
+      @$el.trigger 'datechange', @date
 
     _formatDate: (date) -> WDP.DateUtils.format(date, @dateFormat)
 
