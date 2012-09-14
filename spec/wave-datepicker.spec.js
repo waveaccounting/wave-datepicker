@@ -61,7 +61,7 @@ describe('Wave Datepicker', function() {
       expect(date.getMonth()).toEqual(today.getMonth());
       return expect(date.getDate()).toEqual(today.getDate());
     });
-    return describe('Shortcuts', function() {
+    describe('Shortcuts', function() {
       return it('should by default provide the Today shortcut', function() {
         var today, widget;
         this.$input.datepicker();
@@ -69,6 +69,19 @@ describe('Wave Datepicker', function() {
         expect(widget.$datepicker).toContain('.wdp-shortcut');
         today = widget.$datepicker.find('.wdp-shortcut');
         return expect($.trim(today.text())).toEqual('Today');
+      });
+    });
+    return describe('render', function() {
+      return it('should draw the calendar with current month and fill start/end with prev/next month', function() {
+        var $cells, array, expected;
+        this.$input.val('2012-08-01').datepicker();
+        $cells = this.$input.data('datepicker').$calendar.find('td');
+        expected = [29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8];
+        array = [];
+        $cells.each(function() {
+          return array.push(parseInt($.trim($(this).text()), 10));
+        });
+        return expect(array).toEqual(expected);
       });
     });
   });

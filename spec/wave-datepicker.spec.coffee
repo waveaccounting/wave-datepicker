@@ -73,3 +73,13 @@ describe 'Wave Datepicker', ->
         expect(widget.$datepicker).toContain('.wdp-shortcut')
         today = widget.$datepicker.find('.wdp-shortcut')
         expect($.trim(today.text())).toEqual('Today')
+
+    describe 'render', ->
+      it 'should draw the calendar with current month and fill start/end with prev/next month', ->
+        @$input.val('2012-08-01').datepicker()
+        $cells = @$input.data('datepicker').$calendar.find('td')
+        expected = [29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
+          20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8]
+        array = []
+        $cells.each -> array.push parseInt($.trim($(this).text()), 10)
+        expect(array).toEqual(expected)
