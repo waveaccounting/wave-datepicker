@@ -153,9 +153,12 @@
       monthAndYear = moment(@date).format('MMMM YYYY')
       @$el.val @_formatDate(@date)
       @$monthAndYear.text monthAndYear
+      @_state.year = @date.getFullYear()
+      @_state.month = @date.getMonth()
+      @_fill()
 
     # Sets the Date object for this widget and update `<input>` field.
-    _setDate: (date) ->
+    setDate: (date) ->
       @date = date
       @$el.trigger 'datechange', date
 
@@ -179,11 +182,6 @@
 
     # Fills in calendar based on month and year we're currently viewing.
     _fill: ->
-      html = @_getCalendarHTML()
-
-      @$tbody.html html
-
-    _getCalendarHTML: ->
       # Set to the year and month from state, and the day is the first of the month.
       date = new Date(@_state.year, @_state.month, 1)
 
@@ -209,7 +207,8 @@
           if (index++) is 0
             html.push '<tr class="wdp-calendar-row">'
           d = prevMonth.add('days', -1).date()
-          html.push "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
+          # + 1 because element at index zero is the <tr>
+          html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
 
       # Fill in dates for this month.
       for i in [1..daysInMonth]
@@ -230,7 +229,7 @@
 
       html.push '</tr>'
 
-      return html.join ''
+      @$tbody.html html.join ''
 
     # Click event from datepicker.
     _onClick: (e) =>
@@ -246,7 +245,7 @@
       for k, v of offset
         wrapper.add(k, v)
 
-      @_setDate wrapper.toDate()
+      @setDate wrapper.toDate()
 
 
   # Add jQuery widget
