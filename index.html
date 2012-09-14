@@ -19,7 +19,25 @@
     <script src="src/wave-datepicker.js"></script>
     <script>
       $(function() {
-        $('input').datepicker();
+        $('input').datepicker({
+          shortcuts: {
+            'Today': {
+              days: 0
+            },
+            'In 15 days': {
+              days: 15
+            },
+            'In 30 days': {
+              days: 30
+            },
+            'In 60 days': {
+              days: 60
+            },
+            'In 90 days': {
+              days: 90
+            }
+          }
+        });
       });
     </script>
   </body>
