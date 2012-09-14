@@ -273,6 +273,11 @@
     destroy: =>
       @$datepicker.remove()
 
+    # Navigate to the next month and select the date clicked
+    nextSelect: (e) =>
+      @next
+      @_selectDate e
+
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
     _onShortcutClick: (e) =>
