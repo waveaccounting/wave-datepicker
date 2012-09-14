@@ -9,10 +9,10 @@ module.exports = function(grunt) {
     less: {
       compile: {
         options: {
-          paths: ['assets/css']
+          paths: ['less']
         },
         files: {
-          'dist/wave-datepicker.css': 'less/wave-datepicker.less'
+          'dist/wave-datepicker.css': 'less/build.less'
         }
       }
     },
@@ -22,7 +22,7 @@ module.exports = function(grunt) {
           bare: true
         },
         files: {
-          'src/wave-datepicker.js': 'src/wave-datepicker.coffee',
+          'dist/wave-datepicker.js': 'src/wave-datepicker.coffee',
           'spec/wave-datepicker.spec.js': 'spec/wave-datepicker.spec.coffee'
         }
       }

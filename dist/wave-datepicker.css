@@ -47,7 +47,7 @@
   background-color: #003456 \9;
 }
 .wdp {
-  width: 350px;
+  min-width: 350px;
   max-width: 425px;
   height: 210px;
   max-height: 250px;
