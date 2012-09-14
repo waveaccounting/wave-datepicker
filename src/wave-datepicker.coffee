@@ -309,6 +309,12 @@
 
   # Add jQuery widget
   $.fn.datepicker = (options = {}, args...) ->
+    # Calling a method on widget.
+    # Prevent methods beginning with _ to be called because they are private
+    if typeof options is 'string' and options[0] isnt '_' and options isnt 'render'
+      widget = $(this).data('datepicker')
+      return widget?[options].apply widget, args
+
     @each ->
       $this = $ this
       widget = $this.data('datepicker')
@@ -316,10 +322,6 @@
 
       unless widget
         $this.data 'datepicker', (widget = new WDP.WaveDatepicker(options).render())
-
-      # Prevent methods beginning with _ to be called because they are private
-      if typeof options is 'string' and options[0] isnt '_' and options isnt 'render'
-        widget[options].apply widget, args
 
 
   return WDP

@@ -336,23 +336,24 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
   })();
   $.fn.datepicker = function() {
-    var args, options;
+    var args, options, widget;
     options = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     if (options == null) {
       options = {};
     }
+    if (typeof options === 'string' && options[0] !== '_' && options !== 'render') {
+      widget = $(this).data('datepicker');
+      return widget != null ? widget[options].apply(widget, args) : void 0;
+    }
     return this.each(function() {
-      var $this, widget;
+      var $this;
       $this = $(this);
       widget = $this.data('datepicker');
       $.extend(options, {
         el: this
       });
       if (!widget) {
-        $this.data('datepicker', (widget = new WDP.WaveDatepicker(options).render()));
-      }
-      if (typeof options === 'string' && options[0] !== '_' && options !== 'render') {
-        return widget[options].apply(widget, args);
+        return $this.data('datepicker', (widget = new WDP.WaveDatepicker(options).render()));
       }
     });
   };
