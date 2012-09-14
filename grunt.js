@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         tasks: 'coffee less'
     },
     jasmine: {
-      all: ['spec/specrunner.html']
+      all: ['specrunner_headless.html']
     }
   });
 
