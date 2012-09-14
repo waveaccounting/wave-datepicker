@@ -72,7 +72,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
       this._cancelEvent = __bind(this._cancelEvent, this);
 
-      this.nextSelect = __bind(this.nextSelect, this);
+      this._place = __bind(this._place, this);
+
+      this._updateMonthAndYear = __bind(this._updateMonthAndYear, this);
 
       this.destroy = __bind(this.destroy, this);
 
@@ -84,11 +86,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
       this.prev = __bind(this.prev, this);
 
-      this._place = __bind(this._place, this);
-
       this.setDate = __bind(this.setDate, this);
-
-      this._updateMonthAndYear = __bind(this._updateMonthAndYear, this);
 
       this.hide = __bind(this.hide, this);
 
@@ -128,6 +126,52 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype.hide = function() {
       this.$datepicker.removeClass('show');
       return this.$window.off('resize', this._place);
+    };
+
+    WaveDatepicker.prototype.setDate = function(date) {
+      this.date = date;
+      this._state.month = this.date.getMonth();
+      this._state.year = this.date.getFullYear();
+      this.$el.val(this._formatDate(date));
+      return this.$el.trigger('datechange', this.date);
+    };
+
+    WaveDatepicker.prototype.getDate = function() {
+      return this.date;
+    };
+
+    WaveDatepicker.prototype.prev = function() {
+      if (this._state.month === 1) {
+        this._state.month = 12;
+        this._state.year -= 1;
+      } else {
+        this._state.month -= 1;
+      }
+      return this.render();
+    };
+
+    WaveDatepicker.prototype.prevSelect = function(e) {
+      this.prev;
+      return this._selectDate(e);
+    };
+
+    WaveDatepicker.prototype.next = function() {
+      if (this._state.month === 12) {
+        this._state.month = 1;
+        this._state.year += 1;
+      } else {
+        this._state.month += 1;
+      }
+      return this.render();
+    };
+
+    WaveDatepicker.prototype.nextSelect = function(e) {
+      this.next;
+      return this._selectDate(e);
+    };
+
+    WaveDatepicker.prototype.destroy = function() {
+      return this.$datepicker.remove();
     };
 
     WaveDatepicker.prototype._initElements = function() {
@@ -180,14 +224,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       date = new Date(this._state.year, this._state.month, 1);
       monthAndYear = moment(date).format('MMMM YYYY');
       return this.$monthAndYear.text(monthAndYear);
-    };
-
-    WaveDatepicker.prototype.setDate = function(date) {
-      this.date = date;
-      this._state.month = this.date.getMonth();
-      this._state.year = this.date.getFullYear();
-      this.$el.val(this._formatDate(date));
-      return this.$el.trigger('datechange', this.date);
     };
 
     WaveDatepicker.prototype._formatDate = function(date) {
@@ -256,45 +292,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       }
       html.push('</tr>');
       return this.$tbody.html(html.join(''));
-    };
-
-    WaveDatepicker.prototype.prev = function() {
-      if (this._state.month === 1) {
-        this._state.month = 12;
-        this._state.year -= 1;
-      } else {
-        this._state.month -= 1;
-      }
-      return this.render();
-    };
-
-    WaveDatepicker.prototype.prevSelect = function(e) {
-      this.prev;
-      return this._selectDate(e);
-    };
-
-    WaveDatepicker.prototype.next = function() {
-      if (this._state.month === 12) {
-        this._state.month = 1;
-        this._state.year += 1;
-      } else {
-        this._state.month += 1;
-      }
-      return this.render();
-    };
-
-    WaveDatepicker.prototype.nextSelect = function(e) {
-      this.next;
-      return this._selectDate(e);
-    };
-
-    WaveDatepicker.prototype.destroy = function() {
-      return this.$datepicker.remove();
-    };
-
-    WaveDatepicker.prototype.nextSelect = function(e) {
-      this.next;
-      return this._selectDate(e);
     };
 
     WaveDatepicker.prototype._cancelEvent = function(e) {

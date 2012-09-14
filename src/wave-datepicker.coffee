@@ -108,6 +108,47 @@
       @$datepicker.removeClass 'show'
       @$window.off 'resize', @_place
 
+    # Sets the Date object for this widget and update `<input>` field.
+    setDate: (date) =>
+      @date = date
+      @_state.month = @date.getMonth()
+      @_state.year = @date.getFullYear()
+      @$el.val @_formatDate(date)
+      @$el.trigger 'datechange', @date
+
+    getDate: -> @date
+
+    # Navigate to prev month.
+    prev: =>
+      if @_state.month is 1
+        @_state.month = 12
+        @_state.year -= 1
+      else
+        @_state.month -= 1
+      @render()
+
+    # Navigate to the previous month and select the date clicked
+    prevSelect: (e) =>
+      @prev
+      @_selectDate e
+
+    # Navigate to next month.
+    next: =>
+      if @_state.month is 12
+        @_state.month = 1
+        @_state.year += 1
+      else
+        @_state.month += 1
+      @render()
+
+    # Navigate to the next month and select the date clicked
+    nextSelect: (e) =>
+      @next
+      @_selectDate e
+
+    destroy: =>
+      @$datepicker.remove()
+
     _initElements: ->
       if @options.className
         @$el.addClass(@options.className)
@@ -157,14 +198,6 @@
       date = new Date(@_state.year, @_state.month, 1)
       monthAndYear = moment(date).format('MMMM YYYY')
       @$monthAndYear.text monthAndYear
-
-    # Sets the Date object for this widget and update `<input>` field.
-    setDate: (date) =>
-      @date = date
-      @_state.month = @date.getMonth()
-      @_state.year = @date.getFullYear()
-      @$el.val @_formatDate(date)
-      @$el.trigger 'datechange', @date
 
     _formatDate: (date) -> WDP.DateUtils.format(date, @dateFormat)
 
@@ -241,42 +274,6 @@
       html.push '</tr>'
 
       @$tbody.html html.join ''
-
-    # Navigate to prev month.
-    prev: =>
-      if @_state.month is 1
-        @_state.month = 12
-        @_state.year -= 1
-      else
-        @_state.month -= 1
-      @render()
-
-    # Navigate to the previous month and select the date clicked
-    prevSelect: (e) =>
-      @prev
-      @_selectDate e
-
-    # Navigate to next month.
-    next: =>
-      if @_state.month is 12
-        @_state.month = 1
-        @_state.year += 1
-      else
-        @_state.month += 1
-      @render()
-
-    # Navigate to the next month and select the date clicked
-    nextSelect: (e) =>
-      @next
-      @_selectDate e
-
-    destroy: =>
-      @$datepicker.remove()
-
-    # Navigate to the next month and select the date clicked
-    nextSelect: (e) =>
-      @next
-      @_selectDate e
 
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
