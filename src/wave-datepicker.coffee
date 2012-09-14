@@ -147,7 +147,9 @@
       @$datepicker.on 'mousedown', @_cancelEvent
       @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
       @$datepicker.on 'click', '.js-wdp-prev', @prev
+      @$datepicker.on 'click', '.js-wdp-prev-select', @prevSelect
       @$datepicker.on 'click', '.js-wdp-next', @next
+      @$datepicker.on 'click', '.js-wdp-next-select', @nextSelect
       @$datepicker.on 'click', '.js-wdp-shortcut', @_onShortcutClick
 
     # Updates the picker with the current date.
@@ -210,8 +212,9 @@
           if (index++) is 0
             html.push '<tr class="wdp-calendar-row">'
           d = prevMonth.add('days', -1).date()
+          formattedPrevMonth = @_formatDate new Date(@_state.year, @_state.month - 1, d)
           # + 1 because element at index zero is the <tr>
-          html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
+          html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth js-wdp-prev-select\" data-date=\"#{formattedPrevMonth}\">#{d}</td>"
           paddingStart++
 
       # For formatting purposes in the following loop.
@@ -231,9 +234,10 @@
         n = paddingStart + daysInMonth
         while (n++) % 7 isnt 0
           d = nextMonth.add('days', 1).date()
+          formattedNextMonth = @_formatDate new Date(@_state.year, @_state.month + 1, d)
           if (index++) % 7 is 0
             html.push '</tr><tr class="wdp-calendar-row">'
-          html.push "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
+          html.push "<td class=\"wdp-calendar-othermonth js-wdp-next-select\" data-date=\"#{formattedNextMonth}\">#{d}</td>"
 
       html.push '</tr>'
 
@@ -248,6 +252,11 @@
         @_state.month -= 1
       @render()
 
+    # Navigate to the previous month and select the date clicked
+    prevSelect: (e) =>
+      @prev
+      @_selectDate e
+
     # Navigate to next month.
     next: =>
       if @_state.month is 12
@@ -256,6 +265,11 @@
       else
         @_state.month += 1
       @render()
+
+    # Navigate to the next month and select the date clicked
+    nextSelect: (e) =>
+      @next
+      @_selectDate e
 
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
