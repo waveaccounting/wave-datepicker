@@ -1,3 +1,7 @@
+// Imports from float submodule.
+@import '../../float/lib/less/variables.less';
+@import '../../float/lib/less/mixins.less';
+
 .wdp {
     width: 400px;
     max-width: 500px;
@@ -9,4 +13,9 @@
 }
 .wdp-calendar-row td {
     text-align: center;
+    cursor: pointer;
+    .border-radius();
+}
+.wdp-calendar-othermonth {
+    color: @grayLight;
 }

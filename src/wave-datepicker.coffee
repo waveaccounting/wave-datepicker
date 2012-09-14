@@ -179,22 +179,18 @@
 
     # Fills in calendar based on month and year we're currently viewing.
     _fill: ->
-      calendarArray = @_getCalendarArray()
-      html = []
+      html = @_getCalendarHTML()
 
-      for i, d of calendarArray
-        if i % 7 is 0
-          html.push (if i is '0' then '' else '</tr>') + '<tr class="wdp-calendar-row">'
+      @$tbody.html html
 
-        html.push "<td>#{d}</td>"
-
-      html.push '</tr>'
-
-      @$tbody.html html.join('')
-
-    _getCalendarArray: ->
+    _getCalendarHTML: ->
       # Set to the year and month from state, and the day is the first of the month.
       date = new Date(@_state.year, @_state.month, 1)
+
+      index = 0  # Current index for the calendar cells.
+
+      html = []  # array for holding HTML of the calendar
+
       wrapped = moment date
       daysInMonth = wrapped.daysInMonth()
 
@@ -205,19 +201,21 @@
       firstDateDay = startOfMonth.day() - 1
       lastDateDay = endOfMonth.day()
 
-      # 1-D array with necessary days to draw calendar with.
-      fullCalendarArray = []
-
       # If start date is not Sun then padd beginning of calendar.
       if firstDateDay isnt 0
         prevMonth = startOfMonth.clone()
 
         for i in [0..firstDateDay]
-          fullCalendarArray[firstDateDay - i] = prevMonth.add('days', -1).date()
+          if (index++) is 0
+            html.push '<tr class="wdp-calendar-row">'
+          d = prevMonth.add('days', -1).date()
+          html.push "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
 
       # Fill in dates for this month.
       for i in [1..daysInMonth]
-        fullCalendarArray[i + firstDateDay] = i
+        if (index++) % 7 is 0
+          html.push '</tr><tr class="wdp-calendar-row">'
+        html.push "<td>#{i}</td>"
 
       # If end date is not Sat then padd the end of calendar.
       if lastDateDay isnt 6
@@ -225,9 +223,14 @@
         n = endOfMonth.date() + firstDateDay
 
         for i in [lastDateDay+1..6]
-          fullCalendarArray[n + i - 5] = nextMonth.add('days', 1).date()
+          d = nextMonth.add('days', 1).date()
+          if (index++) % 7 is 0
+            html.push '</tr><tr class="wdp-calendar-row">'
+          html.push "<td class=\"wdp-calendar-othermonth\">#{d}</td>"
 
-      return fullCalendarArray
+      html.push '</tr>'
+
+      return html.join ''
 
     # Click event from datepicker.
     _onClick: (e) =>

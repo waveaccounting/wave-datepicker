@@ -1,0 +1,3 @@
+[submodule "float"]
+	path = float
+	url = git@github.com:waveaccounting/float.git

@@ -1,3 +1,27 @@
+/*@zindexPopover:         1010;*/
+/*@zindexTooltip:         1020;*/
+/*@zindexModalBackdrop:   1040;*/
+/*@zindexModal:           1050;*/
+.cf {
+  *zoom: 1;
+}
+.cf:before,
+.cf:after {
+  display: table;
+  content: "";
+}
+.cf:after {
+  clear: both;
+}
+.clear {
+  clear: both;
+}
+.wrap {
+  padding: 20px;
+}
+.wrap-wide {
+  padding: 40px;
+}
 .wdp {
   width: 400px;
   max-width: 500px;
@@ -9,4 +33,11 @@
 }
 .wdp-calendar-row td {
   text-align: center;
+  cursor: pointer;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+.wdp-calendar-othermonth {
+  color: #999;
 }
