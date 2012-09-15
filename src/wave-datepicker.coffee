@@ -16,10 +16,10 @@
   WDP.template = '
     <div class="wdp dropdown-menu">
       <div class="row-fluid">
-        <div class="span4">
+        <div class="span5">
           <ul class="wdp-shortcuts"></ul>
         </div>
-        <div class="span8">
+        <div class="span7">
           <table class="table-condensed wdp-calendar">
             <thead>
               <tr>
@@ -171,6 +171,10 @@
     _initPicker: ->
       @$datepicker = $ WDP.template
       @$datepicker.appendTo document.body
+
+      weekdays = moment.weekdaysMin.join '</th><th>'
+
+      @$datepicker.find('thead').append "<tr class=\"wdp-weekdays\"><th>#{weekdays}</th></tr>"
 
     _initShortcuts: ->
       shortcuts = []

@@ -15,10 +15,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
   WDP.template = '\
     <div class="wdp dropdown-menu">\
       <div class="row-fluid">\
-        <div class="span4">\
+        <div class="span5">\
           <ul class="wdp-shortcuts"></ul>\
         </div>\
-        <div class="span8">\
+        <div class="span7">\
           <table class="table-condensed wdp-calendar">\
             <thead>\
               <tr>\
@@ -192,8 +192,11 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype._initPicker = function() {
+      var weekdays;
       this.$datepicker = $(WDP.template);
-      return this.$datepicker.appendTo(document.body);
+      this.$datepicker.appendTo(document.body);
+      weekdays = moment.weekdaysMin.join('</th><th>');
+      return this.$datepicker.find('thead').append("<tr class=\"wdp-weekdays\"><th>" + weekdays + "</th></tr>");
     };
 
     WaveDatepicker.prototype._initShortcuts = function() {
