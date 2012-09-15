@@ -171,7 +171,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype.destroy = function() {
-      return this.$datepicker.remove();
+      this.$datepicker.remove();
+      return this.$el.removeData('datepicker');
     };
 
     WaveDatepicker.prototype._initElements = function() {

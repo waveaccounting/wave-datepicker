@@ -148,6 +148,7 @@
 
     destroy: =>
       @$datepicker.remove()
+      @$el.removeData('datepicker')
 
     _initElements: ->
       if @options.className
