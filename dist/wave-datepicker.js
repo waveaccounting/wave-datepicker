@@ -77,13 +77,13 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
       this._updateFromInput = __bind(this._updateFromInput, this);
 
+      this._nextSelect = __bind(this._nextSelect, this);
+
+      this._prevSelect = __bind(this._prevSelect, this);
+
       this.destroy = __bind(this.destroy, this);
 
-      this.nextSelect = __bind(this.nextSelect, this);
-
       this.next = __bind(this.next, this);
-
-      this.prevSelect = __bind(this.prevSelect, this);
 
       this.prev = __bind(this.prev, this);
 
@@ -148,11 +148,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return this.render();
     };
 
-    WaveDatepicker.prototype.prevSelect = function(e) {
-      this.prev;
-      return this._selectDate(e);
-    };
-
     WaveDatepicker.prototype.next = function() {
       if (this._state.month === 12) {
         this._state.month = 1;
@@ -163,14 +158,19 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return this.render();
     };
 
-    WaveDatepicker.prototype.nextSelect = function(e) {
-      this.next;
-      return this._selectDate(e);
-    };
-
     WaveDatepicker.prototype.destroy = function() {
       this.$datepicker.remove();
       return this.$el.removeData('datepicker');
+    };
+
+    WaveDatepicker.prototype._prevSelect = function(e) {
+      this.prev;
+      return this._selectDate(e);
+    };
+
+    WaveDatepicker.prototype._nextSelect = function(e) {
+      this.next;
+      return this._selectDate(e);
     };
 
     WaveDatepicker.prototype._initElements = function() {
@@ -205,15 +205,16 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype._initEvents = function() {
-      this.$el.on('focus', this.show).on('blur', this.hide);
+      this.$el.on('focus', this.show);
+      this.$el.on('blur', this.hide);
       this.$el.on('change', this._updateFromInput);
       this.$el.on('datechange', this.render);
       this.$datepicker.on('mousedown', this._cancelEvent);
       this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
-      this.$datepicker.on('click', '.js-wdp-prev-select', this.prevSelect);
+      this.$datepicker.on('click', '.js-wdp-prev-select', this._prevSelect);
       this.$datepicker.on('click', '.js-wdp-next', this.next);
-      this.$datepicker.on('click', '.js-wdp-next-select', this.nextSelect);
+      this.$datepicker.on('click', '.js-wdp-next-select', this._nextSelect);
       return this.$datepicker.on('click', '.js-wdp-shortcut', this._onShortcutClick);
     };
 

@@ -124,11 +124,6 @@
         @_state.month -= 1
       @render()
 
-    # Navigate to the previous month and select the date clicked
-    prevSelect: (e) =>
-      @prev
-      @_selectDate e
-
     # Navigate to next month.
     next: =>
       if @_state.month is 12
@@ -138,14 +133,19 @@
         @_state.month += 1
       @render()
 
-    # Navigate to the next month and select the date clicked
-    nextSelect: (e) =>
-      @next
-      @_selectDate e
-
     destroy: =>
       @$datepicker.remove()
       @$el.removeData('datepicker')
+
+    # Navigate to the previous month and select the date clicked
+    _prevSelect: (e) =>
+      @prev
+      @_selectDate e
+
+    # Navigate to the next month and select the date clicked
+    _nextSelect: (e) =>
+      @next
+      @_selectDate e
 
     _initElements: ->
       if @options.className
@@ -180,16 +180,17 @@
 
     _initEvents: ->
       # Show and hide picker
-      @$el.on('focus', @show).on('blur', @hide)
+      @$el.on('focus', @show)
+      @$el.on('blur', @hide)
       @$el.on 'change', @_updateFromInput
       @$el.on 'datechange', @render
 
       @$datepicker.on 'mousedown', @_cancelEvent
       @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
       @$datepicker.on 'click', '.js-wdp-prev', @prev
-      @$datepicker.on 'click', '.js-wdp-prev-select', @prevSelect
+      @$datepicker.on 'click', '.js-wdp-prev-select', @_prevSelect
       @$datepicker.on 'click', '.js-wdp-next', @next
-      @$datepicker.on 'click', '.js-wdp-next-select', @nextSelect
+      @$datepicker.on 'click', '.js-wdp-next-select', @_nextSelect
       @$datepicker.on 'click', '.js-wdp-shortcut', @_onShortcutClick
 
     _updateFromInput: =>

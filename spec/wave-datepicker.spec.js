@@ -197,8 +197,8 @@ describe('Wave Datepicker', function() {
             _cancelEvent: sinon.spy(),
             prev: sinon.spy(),
             next: sinon.spy(),
-            prevSelect: sinon.spy(),
-            nextSelect: sinon.spy(),
+            _prevSelect: sinon.spy(),
+            _nextSelect: sinon.spy(),
             _onShortcutClick: sinon.spy(),
             _selectDate: sinon.spy(),
             render: sinon.spy(),
@@ -216,8 +216,8 @@ describe('Wave Datepicker', function() {
           WDP.WaveDatepicker.prototype._initEvents.call(this.context);
           expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev', this.context.prev);
           expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next', this.context.next);
-          expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev-select', this.context.prevSelect);
-          return expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next-select', this.context.nextSelect);
+          expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev-select', this.context._prevSelect);
+          return expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next-select', this.context._nextSelect);
         });
         it('should bind datechange event to render method', function() {
           WDP.WaveDatepicker.prototype._initEvents.call(this.context);
@@ -233,7 +233,7 @@ describe('Wave Datepicker', function() {
           return expect(this.context.$el.on).toHaveBeenCalledWith('blur', this.context.hide);
         });
       });
-      return describe('setDate', function() {
+      describe('setDate', function() {
         return it('should update the date, state, and <inpput> of the widget', function() {
           var context, date;
           context = {
@@ -258,6 +258,110 @@ describe('Wave Datepicker', function() {
           expect(context._state.month).toEqual('MONTH');
           expect(context._state.year).toEqual('YEAR');
           return expect(context.$el.trigger).toHaveBeenCalledWith('datechange', date);
+        });
+      });
+      describe('next', function() {
+        it('should increment month then call render method', function() {
+          var context;
+          context = {
+            _state: {
+              month: 7
+            },
+            render: sinon.spy()
+          };
+          WDP.WaveDatepicker.prototype.next.call(context);
+          expect(context._state.month).toBe(8);
+          return expect(context.render).toHaveBeenCalledOnce();
+        });
+        return it('should go to next year if month is 12', function() {
+          var context;
+          context = {
+            _state: {
+              month: 12,
+              year: 2012
+            },
+            render: sinon.spy()
+          };
+          WDP.WaveDatepicker.prototype.next.call(context);
+          expect(context._state.month).toBe(1);
+          return expect(context._state.year).toBe(2013);
+        });
+      });
+      describe('prev', function() {
+        it('should decrement month then call render method', function() {
+          var context;
+          context = {
+            _state: {
+              month: 7
+            },
+            render: sinon.spy()
+          };
+          WDP.WaveDatepicker.prototype.prev.call(context);
+          expect(context._state.month).toBe(6);
+          return expect(context.render).toHaveBeenCalledOnce();
+        });
+        return it('should go to prev year if month is 1', function() {
+          var context;
+          context = {
+            _state: {
+              month: 1,
+              year: 2012
+            },
+            render: sinon.spy()
+          };
+          WDP.WaveDatepicker.prototype.prev.call(context);
+          expect(context._state.month).toBe(12);
+          return expect(context._state.year).toBe(2011);
+        });
+      });
+      describe('getDate', function() {
+        return it('should return widget date', function() {
+          var context, date;
+          context = {
+            date: 'DATE'
+          };
+          date = WDP.WaveDatepicker.prototype.getDate.call(context);
+          return expect(date).toBe(context.date);
+        });
+      });
+      describe('show', function() {
+        return it('should place datepicker and show it', function() {
+          var context, date;
+          context = {
+            $datepicker: {
+              addClass: sinon.spy()
+            },
+            $el: {
+              outerHeight: sinon.stub()
+            },
+            _place: sinon.spy(),
+            $window: {
+              on: sinon.spy()
+            }
+          };
+          context.$el.outerHeight.returns('HEIGHT');
+          date = WDP.WaveDatepicker.prototype.show.call(context);
+          expect(context.$datepicker.addClass).toHaveBeenCalledWith('show');
+          expect(context.height).toBe('HEIGHT');
+          expect(context._place).toHaveBeenCalledOnce();
+          return expect(context.$window.on).toHaveBeenCalledWith('resize', context._place);
+        });
+      });
+      return describe('hide', function() {
+        return it('should hide datepicker and unbind place callback from window resize', function() {
+          var context, date;
+          context = {
+            $datepicker: {
+              removeClass: sinon.spy()
+            },
+            _place: 'PLACE',
+            $window: {
+              off: sinon.spy()
+            }
+          };
+          date = WDP.WaveDatepicker.prototype.hide.call(context);
+          expect(context.$datepicker.removeClass).toHaveBeenCalledWith('show');
+          return expect(context.$window.off).toHaveBeenCalledWith('resize', context._place);
         });
       });
     });
