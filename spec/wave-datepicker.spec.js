@@ -62,13 +62,34 @@ describe('Wave Datepicker', function() {
       return expect(date.getDate()).toEqual(today.getDate());
     });
     describe('Shortcuts', function() {
-      return it('should by default provide the Today shortcut', function() {
+      it('should by default provide the Today shortcut', function() {
         var today, widget;
         this.$input.datepicker();
         widget = this.$input.data('datepicker');
         expect(widget.$datepicker).toContain('.wdp-shortcut');
         today = widget.$datepicker.find('.wdp-shortcut');
         return expect($.trim(today.text())).toEqual('Today');
+      });
+      return describe('When a shortcut is clicked', function() {
+        return it('should add the corresponding offset to the widget date', function() {
+          var expected, today, widget;
+          this.$input.datepicker({
+            'shortcuts': {
+              'Foo': {
+                days: 5,
+                months: 1,
+                years: -1
+              }
+            }
+          });
+          today = new Date();
+          expected = new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate() + 5);
+          widget = this.$input.data('datepicker');
+          widget.$datepicker.find('.wdp-shortcut').click();
+          expect(widget.date.getFullYear()).toEqual(expected.getFullYear());
+          expect(widget.date.getMonth()).toEqual(expected.getMonth());
+          return expect(widget.date.getDate()).toEqual(expected.getDate());
+        });
       });
     });
     describe('On input change', function() {

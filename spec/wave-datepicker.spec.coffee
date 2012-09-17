@@ -77,6 +77,23 @@ describe 'Wave Datepicker', ->
         today = widget.$datepicker.find('.wdp-shortcut')
         expect($.trim(today.text())).toEqual('Today')
 
+      describe 'When a shortcut is clicked', ->
+        it 'should add the corresponding offset to the widget date', ->
+          @$input.datepicker(
+            'shortcuts': {
+              'Foo': {days: 5, months: 1, years: -1}
+            })
+          today = new Date()
+          # Date and month can overflow, which JavaScript will handle for us.
+          expected = new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate() + 5)
+          widget = @$input.data('datepicker')
+
+          widget.$datepicker.find('.wdp-shortcut').click()
+
+          expect(widget.date.getFullYear()).toEqual(expected.getFullYear())
+          expect(widget.date.getMonth()).toEqual(expected.getMonth())
+          expect(widget.date.getDate()).toEqual(expected.getDate())
+
 
     describe 'On input change', ->
       it 'should update the date of the the widget', ->
