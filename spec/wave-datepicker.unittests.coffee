@@ -163,3 +163,123 @@ describe 'Wave Datepicker unit tests', ->
 
       expect(context.$datepicker.removeClass).toHaveBeenCalledWith('show')
       expect(context.$window.off).toHaveBeenCalledWith('resize', context._place)
+
+
+  describe '_onInputKeydown', ->
+    beforeEach ->
+      @context =
+        shortcuts:
+          highlightNext: sinon.spy()
+          highlightPrev: sinon.spy()
+          selectHighlighted: sinon.spy()
+        _cancelEvent: sinon.spy()
+        date: new  Date(2012, 7, 1, 0, 0, 0, 0)
+        setDate: sinon.spy()
+
+      @e = {}
+
+    describe 'When DOWN or J pressed', ->
+      it 'should cancel event', ->
+        @e.keyCode = WDP.Keys.DOWN
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        @e.keyCode = WDP.Keys.J
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        expect(@context._cancelEvent).toHaveBeenCalledTwice()
+
+      it 'should increment date by seven days', ->
+        @e.keyCode = WDP.Keys.DOWN
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        date = @context.setDate.args[0][0]
+        diff = date.getTime() - @context.date.getTime()
+        expect(diff).toEqual(7 * 24 * 60 * 60 * 1000)
+
+        @e.keyCode = WDP.Keys.J
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        date = @context.setDate.args[0][0]
+        diff = date.getTime() - @context.date.getTime()
+        expect(diff).toEqual(7 * 24 * 60 * 60 * 1000)
+
+      describe 'When Shift is pressed', ->
+        it 'should call highlightNext on Shortcuts', ->
+          @e.shiftKey = true
+          @e.keyCode = WDP.Keys.DOWN
+          WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+          @e.keyCode = WDP.Keys.J
+          WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+          expect(@context.shortcuts.highlightNext).toHaveBeenCalledTwice()
+
+
+    describe 'When UP or J pressed', ->
+      it 'should cancel event', ->
+        @e.keyCode = WDP.Keys.UP
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        @e.keyCode = WDP.Keys.K
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        expect(@context._cancelEvent).toHaveBeenCalledTwice()
+
+      it 'should decrement date by seven days', ->
+        @e.keyCode = WDP.Keys.UP
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        date = @context.setDate.args[0][0]
+        diff = date.getTime() - @context.date.getTime()
+        expect(diff).toEqual(-7 * 24 * 60 * 60 * 1000)
+
+        @e.keyCode = WDP.Keys.K
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        date = @context.setDate.args[0][0]
+        diff = date.getTime() - @context.date.getTime()
+        expect(diff).toEqual(-7 * 24 * 60 * 60 * 1000)
+
+
+      describe 'When Shift is pressed', ->
+        it 'should call highlightNext on Shortcuts', ->
+          @e.shiftKey = true
+          @e.keyCode = WDP.Keys.UP
+          WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+          @e.keyCode = WDP.Keys.K
+          WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+          expect(@context.shortcuts.highlightPrev).toHaveBeenCalledTwice()
+
+
+    describe 'When RIGHT or L pressed', ->
+      it 'should cancel event', ->
+        @e.keyCode = WDP.Keys.RIGHT
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        @e.keyCode = WDP.Keys.L
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        expect(@context._cancelEvent).toHaveBeenCalledTwice()
+
+      it 'should decrement date by one day', ->
+        @e.keyCode = WDP.Keys.RIGHT
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        date = @context.setDate.args[0][0]
+        diff = date.getTime() - @context.date.getTime()
+        expect(diff).toEqual(1 * 24 * 60 * 60 * 1000)
+
+        @e.keyCode = WDP.Keys.L
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        date = @context.setDate.args[0][0]
+        diff = date.getTime() - @context.date.getTime()
+        expect(diff).toEqual(1 * 24 * 60 * 60 * 1000)
+
+
+    describe 'When LEFT or H pressed', ->
+      it 'should cancel event', ->
+        @e.keyCode = WDP.Keys.LEFT
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        @e.keyCode = WDP.Keys.H
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        expect(@context._cancelEvent).toHaveBeenCalledTwice()
+
+      it 'should decrement date by one day', ->
+        @e.keyCode = WDP.Keys.LEFT
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        date = @context.setDate.args[0][0]
+        diff = date.getTime() - @context.date.getTime()
+        expect(diff).toEqual(-1 * 24 * 60 * 60 * 1000)
+
+        @e.keyCode = WDP.Keys.H
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        date = @context.setDate.args[0][0]
+        diff = date.getTime() - @context.date.getTime()
+        expect(diff).toEqual(-1 * 24 * 60 * 60 * 1000)

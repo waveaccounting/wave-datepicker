@@ -54,7 +54,7 @@
 
 
   # For keydown event handler
-  Keys =
+  WDP.Keys =
     LEFT: 37
     UP: 38
     RIGHT: 39
@@ -258,7 +258,7 @@
       @$el.on('blur', @hide)
       @$el.on 'change', @_updateFromInput
       @$el.on 'datechange', @render
-      @$el.on 'keydown', @_onInputKeyDown
+      @$el.on 'keydown', @_onInputKeydown
 
       @$datepicker.on 'mousedown', @_cancelEvent
       @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
@@ -360,27 +360,27 @@
 
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
-    _onInputKeyDown: (e) =>
+    _onInputKeydown: (e) =>
       switch e.keyCode
-        when Keys.DOWN, Keys.J
+        when WDP.Keys.DOWN, WDP.Keys.J
           @_cancelEvent e
           fn = @shortcuts.highlightNext
           offset = 7
 
-        when Keys.UP, Keys.K
+        when WDP.Keys.UP, WDP.Keys.K
           @_cancelEvent e
           fn = @shortcuts.highlightPrev
           offset = -7
 
-        when Keys.LEFT, Keys.H
+        when WDP.Keys.LEFT, WDP.Keys.H
           @_cancelEvent e
           offset = -1
 
-        when Keys.RIGHT, Keys.L
+        when WDP.Keys.RIGHT, WDP.Keys.L
           @_cancelEvent e
           offset = 1
 
-        when Keys.RETURN
+        when WDP.Keys.RETURN
           @_cancelEvent e
           fn = @shortcuts.selectHighlighted
 

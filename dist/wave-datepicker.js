@@ -10,7 +10,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     return root.WDP = factory(root.$);
   }
 })(this, function($) {
-  var Keys, WDP;
+  var WDP;
   WDP = {};
   WDP.template = '\
     <div class="wdp dropdown-menu">\
@@ -50,7 +50,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WDP.DateUtils.format = options.dateFormat || WDP.DateUtils.format;
     return WDP.DateUtils.parse = options.dateParse || WDP.DateUtils.parse;
   };
-  Keys = {
+  WDP.Keys = {
     LEFT: 37,
     UP: 38,
     RIGHT: 39,
@@ -171,7 +171,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.options = options;
       this._selectDate = __bind(this._selectDate, this);
 
-      this._onInputKeyDown = __bind(this._onInputKeyDown, this);
+      this._onInputKeydown = __bind(this._onInputKeydown, this);
 
       this._cancelEvent = __bind(this._cancelEvent, this);
 
@@ -305,7 +305,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$el.on('blur', this.hide);
       this.$el.on('change', this._updateFromInput);
       this.$el.on('datechange', this.render);
-      this.$el.on('keydown', this._onInputKeyDown);
+      this.$el.on('keydown', this._onInputKeydown);
       this.$datepicker.on('mousedown', this._cancelEvent);
       this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
@@ -402,32 +402,32 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return e.preventDefault();
     };
 
-    WaveDatepicker.prototype._onInputKeyDown = function(e) {
+    WaveDatepicker.prototype._onInputKeydown = function(e) {
       var date, fn, offset;
       switch (e.keyCode) {
-        case Keys.DOWN:
-        case Keys.J:
+        case WDP.Keys.DOWN:
+        case WDP.Keys.J:
           this._cancelEvent(e);
           fn = this.shortcuts.highlightNext;
           offset = 7;
           break;
-        case Keys.UP:
-        case Keys.K:
+        case WDP.Keys.UP:
+        case WDP.Keys.K:
           this._cancelEvent(e);
           fn = this.shortcuts.highlightPrev;
           offset = -7;
           break;
-        case Keys.LEFT:
-        case Keys.H:
+        case WDP.Keys.LEFT:
+        case WDP.Keys.H:
           this._cancelEvent(e);
           offset = -1;
           break;
-        case Keys.RIGHT:
-        case Keys.L:
+        case WDP.Keys.RIGHT:
+        case WDP.Keys.L:
           this._cancelEvent(e);
           offset = 1;
           break;
-        case Keys.RETURN:
+        case WDP.Keys.RETURN:
           this._cancelEvent(e);
           fn = this.shortcuts.selectHighlighted;
       }
