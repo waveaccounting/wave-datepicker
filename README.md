@@ -88,3 +88,12 @@ e.g. `years`, `months`, `days`
 **Destroying widget:**
 
     $('#MyInput').datepicker('destroy');
+
+
+## Keyboard navigation:
+
+Keyboard shortcuts can be used when focus in on the `<input>` element.
+
+The `Up`, `Down`, `Left`, `Right` keys will navigate the seleted date in the calendar. (HJKL Vim bindings are supported as well!)
+
+When the `Shift` key is held down, then the `Up` and `Down` keys will navigate the shortcuts instead of the calendar.
