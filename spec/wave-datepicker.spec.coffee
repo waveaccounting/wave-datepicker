@@ -132,6 +132,18 @@ describe 'Wave Datepicker', ->
         $cells.each -> array.push parseInt($.trim($(this).text()), 10)
         expect(array).toEqual(expected)
 
+      it 'should have weekday names in table header', ->
+        @$input.val('2012-08-01').datepicker()
+        $cells = @$input.data('datepicker').$calendar.find('.wdp-weekdays > th')
+        array = []
+        $cells.each -> array.push $.trim($(this).text())
+        expect(array).toEqual(['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'])
+
+      it 'should have month and year in table header', ->
+        @$input.val('2012-08-01').datepicker()
+        monthAndYear = $.trim @$input.data('datepicker').$calendar.find('.wdp-month-and-year').text()
+        expect(monthAndYear).toEqual('August 2012')
+
 
     # Tests for next and prev arrows for navigating through months.
     describe 'Navigation', ->
@@ -171,11 +183,77 @@ describe 'Wave Datepicker', ->
 
 
     describe 'Unit tests', ->
-      describe '_cancelEvent', ->
+      it '_cancelEvent', ->
         e =
           stopPropagation: sinon.spy()
           preventDefault: sinon.spy()
+
         WDP.WaveDatepicker.prototype._cancelEvent.call null, e
-        # TODO: Get jasmine-sinon to work then we can change these to `toHaveBeenCalledOnce`
-        expect(e.stopPropagation.callCount).not.toEqual(0)
-        expect(e.preventDefault.callCount).not.toEqual(0)
+
+        expect(e.stopPropagation).toHaveBeenCalledOnce()
+        expect(e.preventDefault).toHaveBeenCalledOnce()
+
+      describe '_initEvents', ->
+        beforeEach ->
+          @context =
+            $datepicker:
+              on: sinon.spy()
+            $el:
+              on: sinon.stub()
+            _cancelEvent: sinon.spy()
+            prev: sinon.spy()
+            next: sinon.spy()
+            prevSelect: sinon.spy()
+            nextSelect: sinon.spy()
+            _onShortcutClick: sinon.spy()
+            _selectDate: sinon.spy()
+            render: sinon.spy()
+            _updateFromInput: sinon.spy()
+            show: sinon.spy()
+            hide: sinon.spy()
+          @context.$el.on.returns @context.$el
+
+        it 'should bind cancel events to mousedown on datepicker', ->
+          WDP.WaveDatepicker.prototype._initEvents.call @context
+          expect(@context.$datepicker.on).toHaveBeenCalledWith('mousedown', @context._cancelEvent)
+
+        it 'should bind the prev/next callbacks to their corresponding elements', ->
+          WDP.WaveDatepicker.prototype._initEvents.call @context
+          expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev', @context.prev)
+          expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next', @context.next)
+          expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev-select', @context.prevSelect)
+          expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next-select', @context.nextSelect)
+
+        it 'should bind datechange event to render method', ->
+          WDP.WaveDatepicker.prototype._initEvents.call @context
+          expect(@context.$el.on).toHaveBeenCalledWith('datechange', @context.render)
+
+        it 'should bind input change event to update method', ->
+          WDP.WaveDatepicker.prototype._initEvents.call @context
+          expect(@context.$el.on).toHaveBeenCalledWith('change', @context._updateFromInput)
+
+        it 'should bind show/hide to focus/blur event', ->
+          WDP.WaveDatepicker.prototype._initEvents.call @context
+          expect(@context.$el.on).toHaveBeenCalledWith('focus', @context.show)
+          expect(@context.$el.on).toHaveBeenCalledWith('blur', @context.hide)
+
+      describe 'setDate', ->
+        it 'should update the date, state, and <inpput> of the widget', ->
+          context =
+            _formatDate: sinon.stub()
+            $el:
+              val: sinon.spy()
+              trigger: sinon.spy()
+            _state: {}
+          context._formatDate.returns 'FORMATTED'
+
+          date =
+            getMonth: -> 'MONTH'
+            getFullYear: -> 'YEAR'
+
+          WDP.WaveDatepicker.prototype.setDate.call context, date
+
+          expect(context.date).toEqual(date)
+          expect(context._state.month).toEqual('MONTH')
+          expect(context._state.year).toEqual('YEAR')
+          expect(context.$el.trigger).toHaveBeenCalledWith('datechange', date)

@@ -88,7 +88,7 @@ describe('Wave Datepicker', function() {
       });
     });
     describe('Rendered calendar', function() {
-      return it('should draw the calendar with current month and fill start/end with prev/next month', function() {
+      it('should draw the calendar with current month and fill start/end with prev/next month', function() {
         var $cells, array, expected;
         this.$input.val('2012-08-01').datepicker();
         $cells = this.$input.data('datepicker').$calendar.find('td');
@@ -122,6 +122,22 @@ describe('Wave Datepicker', function() {
           return array.push(parseInt($.trim($(this).text()), 10));
         });
         return expect(array).toEqual(expected);
+      });
+      it('should have weekday names in table header', function() {
+        var $cells, array;
+        this.$input.val('2012-08-01').datepicker();
+        $cells = this.$input.data('datepicker').$calendar.find('.wdp-weekdays > th');
+        array = [];
+        $cells.each(function() {
+          return array.push($.trim($(this).text()));
+        });
+        return expect(array).toEqual(['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']);
+      });
+      return it('should have month and year in table header', function() {
+        var monthAndYear;
+        this.$input.val('2012-08-01').datepicker();
+        monthAndYear = $.trim(this.$input.data('datepicker').$calendar.find('.wdp-month-and-year').text());
+        return expect(monthAndYear).toEqual('August 2012');
       });
     });
     describe('Navigation', function() {
@@ -159,15 +175,90 @@ describe('Wave Datepicker', function() {
       });
     });
     return describe('Unit tests', function() {
-      return describe('_cancelEvent', function() {
+      it('_cancelEvent', function() {
         var e;
         e = {
           stopPropagation: sinon.spy(),
           preventDefault: sinon.spy()
         };
         WDP.WaveDatepicker.prototype._cancelEvent.call(null, e);
-        expect(e.stopPropagation.callCount).not.toEqual(0);
-        return expect(e.preventDefault.callCount).not.toEqual(0);
+        expect(e.stopPropagation).toHaveBeenCalledOnce();
+        return expect(e.preventDefault).toHaveBeenCalledOnce();
+      });
+      describe('_initEvents', function() {
+        beforeEach(function() {
+          this.context = {
+            $datepicker: {
+              on: sinon.spy()
+            },
+            $el: {
+              on: sinon.stub()
+            },
+            _cancelEvent: sinon.spy(),
+            prev: sinon.spy(),
+            next: sinon.spy(),
+            prevSelect: sinon.spy(),
+            nextSelect: sinon.spy(),
+            _onShortcutClick: sinon.spy(),
+            _selectDate: sinon.spy(),
+            render: sinon.spy(),
+            _updateFromInput: sinon.spy(),
+            show: sinon.spy(),
+            hide: sinon.spy()
+          };
+          return this.context.$el.on.returns(this.context.$el);
+        });
+        it('should bind cancel events to mousedown on datepicker', function() {
+          WDP.WaveDatepicker.prototype._initEvents.call(this.context);
+          return expect(this.context.$datepicker.on).toHaveBeenCalledWith('mousedown', this.context._cancelEvent);
+        });
+        it('should bind the prev/next callbacks to their corresponding elements', function() {
+          WDP.WaveDatepicker.prototype._initEvents.call(this.context);
+          expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev', this.context.prev);
+          expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next', this.context.next);
+          expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev-select', this.context.prevSelect);
+          return expect(this.context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next-select', this.context.nextSelect);
+        });
+        it('should bind datechange event to render method', function() {
+          WDP.WaveDatepicker.prototype._initEvents.call(this.context);
+          return expect(this.context.$el.on).toHaveBeenCalledWith('datechange', this.context.render);
+        });
+        it('should bind input change event to update method', function() {
+          WDP.WaveDatepicker.prototype._initEvents.call(this.context);
+          return expect(this.context.$el.on).toHaveBeenCalledWith('change', this.context._updateFromInput);
+        });
+        return it('should bind show/hide to focus/blur event', function() {
+          WDP.WaveDatepicker.prototype._initEvents.call(this.context);
+          expect(this.context.$el.on).toHaveBeenCalledWith('focus', this.context.show);
+          return expect(this.context.$el.on).toHaveBeenCalledWith('blur', this.context.hide);
+        });
+      });
+      return describe('setDate', function() {
+        return it('should update the date, state, and <inpput> of the widget', function() {
+          var context, date;
+          context = {
+            _formatDate: sinon.stub(),
+            $el: {
+              val: sinon.spy(),
+              trigger: sinon.spy()
+            },
+            _state: {}
+          };
+          context._formatDate.returns('FORMATTED');
+          date = {
+            getMonth: function() {
+              return 'MONTH';
+            },
+            getFullYear: function() {
+              return 'YEAR';
+            }
+          };
+          WDP.WaveDatepicker.prototype.setDate.call(context, date);
+          expect(context.date).toEqual(date);
+          expect(context._state.month).toEqual('MONTH');
+          expect(context._state.year).toEqual('YEAR');
+          return expect(context.$el.trigger).toHaveBeenCalledWith('datechange', date);
+        });
       });
     });
   });
