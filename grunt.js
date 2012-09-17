@@ -23,7 +23,7 @@ module.exports = function(grunt) {
         },
         files: {
           'dist/wave-datepicker.js': 'src/wave-datepicker.coffee',
-          'spec/wave-datepicker.spec.js': 'spec/wave-datepicker.spec.coffee'
+          'spec/wave-datepicker.spec.js': 'spec/*.coffee'
         }
       }
     },
