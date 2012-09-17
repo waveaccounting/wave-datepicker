@@ -16,8 +16,7 @@
   WDP.template = '
     <div class="wdp dropdown-menu">
       <div class="row-fluid">
-        <div class="span5">
-          <ul class="wdp-shortcuts"></ul>
+        <div class="span5 wdp-shortcuts">
         </div>
         <div class="span7">
           <table class="table-condensed wdp-calendar">
@@ -54,18 +53,98 @@
     WDP.DateUtils.parse = options.dateParse or WDP.DateUtils.parse
 
 
-  class WDP.WaveDatepicker
-    _defaultFormat: 'YYYY-MM-DD'
+  # For keydown event handler
+  LEFT = 37
+  UP = 38
+  RIGHT = 39
+  DOWN = 40
+  RETURN = 13
+  KEY_H = 72
+  KEY_J = 74
+  KEY_K = 75
+  KEY_L = 76
 
+  # Class for handling shortcuts on the datepicker.
+  class WDP.Shortcuts
     # Shortcut key shows as links on left side of picker.
     #
     # The value is an object representing offsets from today's date.
     #
     # Offsets are processed using the `add` function from
     # [moment.js](http://momentjs.com/docs/#/manipulating/add/).
-    _defaultShortcuts:
+    _defaults:
       'Today':
         days: 0
+
+    currHighlightedIndex: 0
+
+    constructor: (@options = {}) ->
+      @options or= @_defaults
+      @$el = $ '<ul>'
+      @$el.on 'click', @_onShortcutClick
+
+    render: ->
+      shortcuts = []
+      @numShortcuts = 0
+      for name, offset of @options
+        shortcuts.push "<li><a data-days=\"#{offset.days or 0}\" 
+          data-months=\"#{offset.months or 0}\"
+          data-years=\"#{offset.years or 0}\"
+          data-shortcut-num=\"#{@numShortcuts}\"
+          class=\"wdp-shortcut js-wdp-shortcut\" 
+          href=\"javascript:void(0)\">
+          #{name}</a></li>"
+        @numShortcuts++
+      @$el.html shortcuts.join ''
+      @updateHighlighted()
+      return this
+
+    resetClass: ->
+      @$el.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active')
+      @resetHighlighted()
+
+    resetHighlighted: ->
+      @$el.find('.wdp-shortcut-highlighted').removeClass 'wdp-shortcut-highlighted'
+
+    highlightNext: =>
+      @currHighlightedIndex = (@currHighlightedIndex + 1) % @numShortcuts
+      @updateHighlighted()
+
+    highlightPrev: =>
+      @currHighlightedIndex = (@currHighlightedIndex - 1) % @numShortcuts
+      # modulo doesn't work on negative numbers :(
+      if @currHighlightedIndex < 0
+        @currHighlightedIndex = @numShortcuts - 1
+      @updateHighlighted()
+
+    updateHighlighted: =>
+      @resetHighlighted()
+      @$el.find(".wdp-shortcut[data-shortcut-num=#{@currHighlightedIndex}]").addClass 'wdp-shortcut-highlighted'
+
+    _onShortcutClick: (e) =>
+      @select $(e.target)
+
+    select: ($target) ->
+      data = $target.data()
+      wrapper = moment(new Date())
+      offset =
+        days: data.days
+        months: data.months
+        years: data.years
+      wrapper.add offset
+
+      @resetClass()
+      $target.addClass 'wdp-shortcut-active'
+
+      @$el.trigger 'dateselect', wrapper.toDate()
+
+    selectHighlighted: =>
+      $highlighted = @$el.find('.wdp-shortcut-highlighted')
+      if $highlighted.length
+        @select $highlighted
+
+  class WDP.WaveDatepicker
+    _defaultFormat: 'YYYY-MM-DD'
 
     # State our picker is currently in.
     # Month and year affect the calendar.
@@ -77,17 +156,18 @@
 
       @dateFormat = @options.format or @_defaultFormat
 
-      # e.g. 'today' -> sets calendar value to today's date
-      @shortcuts = options.shortcuts or @_defaultShortcuts
-
       @_state = {}
 
       @_updateFromInput()
 
       @_initPicker()
       @_initElements()
-      @_initShortcuts()
       @_initEvents()
+
+      # e.g. 'today' -> sets calendar value to today's date
+      @shortcuts = new WDP.Shortcuts(options.shortcuts).render()
+      @$shortcuts.append @shortcuts.$el
+      @$shortcuts.on 'dateselect', (e, date) => @setDate(date)
 
     render: =>
       @_updateMonthAndYear()
@@ -170,20 +250,13 @@
 
       @$datepicker.find('thead').append "<tr class=\"wdp-weekdays\"><th>#{weekdays}</th></tr>"
 
-    _initShortcuts: ->
-      shortcuts = []
-
-      for name, offset of @shortcuts
-        shortcuts.push "<li><a data-shortcut=\"#{name}\" class=\"wdp-shortcut js-wdp-shortcut\" href=\"javascript:void(0)\">
-          #{name}</a></li>"
-      @$shortcuts.html shortcuts.join ''
-
     _initEvents: ->
       # Show and hide picker
       @$el.on('focus', @show)
       @$el.on('blur', @hide)
       @$el.on 'change', @_updateFromInput
       @$el.on 'datechange', @render
+      @$el.on 'keydown', @_onInputKeyDown
 
       @$datepicker.on 'mousedown', @_cancelEvent
       @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
@@ -191,7 +264,6 @@
       @$datepicker.on 'click', '.js-wdp-prev-select', @_prevSelect
       @$datepicker.on 'click', '.js-wdp-next', @next
       @$datepicker.on 'click', '.js-wdp-next-select', @_nextSelect
-      @$datepicker.on 'click', '.js-wdp-shortcut', @_onShortcutClick
 
     _updateFromInput: =>
       # Reads the value of the `<input>` field and set it as the date.
@@ -286,23 +358,34 @@
 
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
-    _onShortcutClick: (e) =>
-      $shortcut = $(e.target)
-      name = $shortcut.data('shortcut')
-      offset = @shortcuts[name]
-      wrapper = moment(new Date())
+    _onInputKeyDown: (e) =>
+      if e.keyCode is DOWN or e.keyCode is KEY_J
+        @_cancelEvent e
+        fn = @shortcuts.highlightNext
+        offset = 7
 
-      # Go through each offset and set on date.
-      for k, v of offset
-        wrapper.add(k, v)
+      else if e.keyCode is UP or e.keyCode is KEY_K
+        @_cancelEvent e
+        fn = @shortcuts.highlightPrev
+        offset = -7
 
-      @_clearActiveShortcutClass()
-      $shortcut.addClass 'wdp-shortcut-active'
+      else if e.keyCode is LEFT or e.keyCode is KEY_H
+        @_cancelEvent e
+        offset = -1
 
-      @setDate wrapper.toDate()
+      else if e.keyCode is RIGHT or e.keyCode is KEY_L
+        @_cancelEvent e
+        offset = 1
 
-    _clearActiveShortcutClass: ->
-      @$shortcuts.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active')
+      else if e.keyCode is RETURN
+        fn = @shortcuts.selectHighlighted
+        @_cancelEvent e
+
+      if e.shiftKey and offset?
+        date = new Date(@date.getFullYear(), @date.getMonth(), @date.getDate() + offset)
+        @setDate date
+      else
+        fn?()
 
     _updateSelection: ->
       # Update selection
@@ -311,7 +394,7 @@
       @$tbody.find("td[data-date=#{dateStr}]").addClass('wdp-selected')
 
     _selectDate: (e) =>
-      @_clearActiveShortcutClass()
+      @shortcuts.resetClass()
       date = @_parseDate $(e.target).data('date')
       @setDate date
 

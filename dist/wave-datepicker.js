@@ -10,13 +10,12 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     return root.WDP = factory(root.$);
   }
 })(this, function($) {
-  var WDP;
+  var DOWN, KEY_H, KEY_J, KEY_K, KEY_L, LEFT, RETURN, RIGHT, UP, WDP;
   WDP = {};
   WDP.template = '\
     <div class="wdp dropdown-menu">\
       <div class="row-fluid">\
-        <div class="span5">\
-          <ul class="wdp-shortcuts"></ul>\
+        <div class="span5 wdp-shortcuts">\
         </div>\
         <div class="span7">\
           <table class="table-condensed wdp-calendar">\
@@ -51,23 +50,126 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WDP.DateUtils.format = options.dateFormat || WDP.DateUtils.format;
     return WDP.DateUtils.parse = options.dateParse || WDP.DateUtils.parse;
   };
-  WDP.WaveDatepicker = (function() {
+  LEFT = 37;
+  UP = 38;
+  RIGHT = 39;
+  DOWN = 40;
+  RETURN = 13;
+  KEY_H = 72;
+  KEY_J = 74;
+  KEY_K = 75;
+  KEY_L = 76;
+  WDP.Shortcuts = (function() {
 
-    WaveDatepicker.prototype._defaultFormat = 'YYYY-MM-DD';
-
-    WaveDatepicker.prototype._defaultShortcuts = {
+    Shortcuts.prototype._defaults = {
       'Today': {
         days: 0
       }
     };
 
+    Shortcuts.prototype.currHighlightedIndex = 0;
+
+    function Shortcuts(options) {
+      this.options = options != null ? options : {};
+      this.selectHighlighted = __bind(this.selectHighlighted, this);
+
+      this._onShortcutClick = __bind(this._onShortcutClick, this);
+
+      this.updateHighlighted = __bind(this.updateHighlighted, this);
+
+      this.highlightPrev = __bind(this.highlightPrev, this);
+
+      this.highlightNext = __bind(this.highlightNext, this);
+
+      this.options || (this.options = this._defaults);
+      this.$el = $('<ul>');
+      this.$el.on('click', this._onShortcutClick);
+    }
+
+    Shortcuts.prototype.render = function() {
+      var name, offset, shortcuts, _ref;
+      shortcuts = [];
+      this.numShortcuts = 0;
+      _ref = this.options;
+      for (name in _ref) {
+        offset = _ref[name];
+        shortcuts.push("<li><a data-days=\"" + (offset.days || 0) + "\"           data-months=\"" + (offset.months || 0) + "\"          data-years=\"" + (offset.years || 0) + "\"          data-shortcut-num=\"" + this.numShortcuts + "\"          class=\"wdp-shortcut js-wdp-shortcut\"           href=\"javascript:void(0)\">          " + name + "</a></li>");
+        this.numShortcuts++;
+      }
+      this.$el.html(shortcuts.join(''));
+      this.updateHighlighted();
+      return this;
+    };
+
+    Shortcuts.prototype.resetClass = function() {
+      this.$el.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active');
+      return this.resetHighlighted();
+    };
+
+    Shortcuts.prototype.resetHighlighted = function() {
+      return this.$el.find('.wdp-shortcut-highlighted').removeClass('wdp-shortcut-highlighted');
+    };
+
+    Shortcuts.prototype.highlightNext = function() {
+      this.currHighlightedIndex = (this.currHighlightedIndex + 1) % this.numShortcuts;
+      return this.updateHighlighted();
+    };
+
+    Shortcuts.prototype.highlightPrev = function() {
+      this.currHighlightedIndex = (this.currHighlightedIndex - 1) % this.numShortcuts;
+      if (this.currHighlightedIndex < 0) {
+        this.currHighlightedIndex = this.numShortcuts - 1;
+      }
+      return this.updateHighlighted();
+    };
+
+    Shortcuts.prototype.updateHighlighted = function() {
+      this.resetHighlighted();
+      return this.$el.find(".wdp-shortcut[data-shortcut-num=" + this.currHighlightedIndex + "]").addClass('wdp-shortcut-highlighted');
+    };
+
+    Shortcuts.prototype._onShortcutClick = function(e) {
+      return this.select($(e.target));
+    };
+
+    Shortcuts.prototype.select = function($target) {
+      var data, offset, wrapper;
+      data = $target.data();
+      wrapper = moment(new Date());
+      offset = {
+        days: data.days,
+        months: data.months,
+        years: data.years
+      };
+      wrapper.add(offset);
+      this.resetClass();
+      $target.addClass('wdp-shortcut-active');
+      return this.$el.trigger('dateselect', wrapper.toDate());
+    };
+
+    Shortcuts.prototype.selectHighlighted = function() {
+      var $highlighted;
+      $highlighted = this.$el.find('.wdp-shortcut-highlighted');
+      if ($highlighted.length) {
+        return this.select($highlighted);
+      }
+    };
+
+    return Shortcuts;
+
+  })();
+  WDP.WaveDatepicker = (function() {
+
+    WaveDatepicker.prototype._defaultFormat = 'YYYY-MM-DD';
+
     WaveDatepicker.prototype._state = null;
 
     function WaveDatepicker(options) {
+      var _this = this;
       this.options = options;
       this._selectDate = __bind(this._selectDate, this);
 
-      this._onShortcutClick = __bind(this._onShortcutClick, this);
+      this._onInputKeyDown = __bind(this._onInputKeyDown, this);
 
       this._cancelEvent = __bind(this._cancelEvent, this);
 
@@ -98,13 +200,16 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.el = this.options.el;
       this.$el = $(this.el);
       this.dateFormat = this.options.format || this._defaultFormat;
-      this.shortcuts = options.shortcuts || this._defaultShortcuts;
       this._state = {};
       this._updateFromInput();
       this._initPicker();
       this._initElements();
-      this._initShortcuts();
       this._initEvents();
+      this.shortcuts = new WDP.Shortcuts(options.shortcuts).render();
+      this.$shortcuts.append(this.shortcuts.$el);
+      this.$shortcuts.on('dateselect', function(e, date) {
+        return _this.setDate(date);
+      });
     }
 
     WaveDatepicker.prototype.render = function() {
@@ -193,29 +298,18 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return this.$datepicker.find('thead').append("<tr class=\"wdp-weekdays\"><th>" + weekdays + "</th></tr>");
     };
 
-    WaveDatepicker.prototype._initShortcuts = function() {
-      var name, offset, shortcuts, _ref;
-      shortcuts = [];
-      _ref = this.shortcuts;
-      for (name in _ref) {
-        offset = _ref[name];
-        shortcuts.push("<li><a data-shortcut=\"" + name + "\" class=\"wdp-shortcut js-wdp-shortcut\" href=\"javascript:void(0)\">          " + name + "</a></li>");
-      }
-      return this.$shortcuts.html(shortcuts.join(''));
-    };
-
     WaveDatepicker.prototype._initEvents = function() {
       this.$el.on('focus', this.show);
       this.$el.on('blur', this.hide);
       this.$el.on('change', this._updateFromInput);
       this.$el.on('datechange', this.render);
+      this.$el.on('keydown', this._onInputKeyDown);
       this.$datepicker.on('mousedown', this._cancelEvent);
       this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
       this.$datepicker.on('click', '.js-wdp-prev-select', this._prevSelect);
       this.$datepicker.on('click', '.js-wdp-next', this.next);
-      this.$datepicker.on('click', '.js-wdp-next-select', this._nextSelect);
-      return this.$datepicker.on('click', '.js-wdp-shortcut', this._onShortcutClick);
+      return this.$datepicker.on('click', '.js-wdp-next-select', this._nextSelect);
     };
 
     WaveDatepicker.prototype._updateFromInput = function() {
@@ -306,23 +400,32 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return e.preventDefault();
     };
 
-    WaveDatepicker.prototype._onShortcutClick = function(e) {
-      var $shortcut, k, name, offset, v, wrapper;
-      $shortcut = $(e.target);
-      name = $shortcut.data('shortcut');
-      offset = this.shortcuts[name];
-      wrapper = moment(new Date());
-      for (k in offset) {
-        v = offset[k];
-        wrapper.add(k, v);
+    WaveDatepicker.prototype._onInputKeyDown = function(e) {
+      var date, fn, offset;
+      if (e.keyCode === DOWN || e.keyCode === KEY_J) {
+        this._cancelEvent(e);
+        fn = this.shortcuts.highlightNext;
+        offset = 7;
+      } else if (e.keyCode === UP || e.keyCode === KEY_K) {
+        this._cancelEvent(e);
+        fn = this.shortcuts.highlightPrev;
+        offset = -7;
+      } else if (e.keyCode === LEFT || e.keyCode === KEY_H) {
+        this._cancelEvent(e);
+        offset = -1;
+      } else if (e.keyCode === RIGHT || e.keyCode === KEY_L) {
+        this._cancelEvent(e);
+        offset = 1;
+      } else if (e.keyCode === RETURN) {
+        fn = this.shortcuts.selectHighlighted;
+        this._cancelEvent(e);
       }
-      this._clearActiveShortcutClass();
-      $shortcut.addClass('wdp-shortcut-active');
-      return this.setDate(wrapper.toDate());
-    };
-
-    WaveDatepicker.prototype._clearActiveShortcutClass = function() {
-      return this.$shortcuts.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active');
+      if (e.shiftKey && (offset != null)) {
+        date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() + offset);
+        return this.setDate(date);
+      } else {
+        return typeof fn === "function" ? fn() : void 0;
+      }
     };
 
     WaveDatepicker.prototype._updateSelection = function() {
@@ -334,7 +437,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype._selectDate = function(e) {
       var date;
-      this._clearActiveShortcutClass();
+      this.shortcuts.resetClass();
       date = this._parseDate($(e.target).data('date'));
       return this.setDate(date);
     };

@@ -1,6 +1,6 @@
-.activeGradient {
-    background-color: @linkColor;
-    .buttonBackground(@linkColor, darken(@linkColor, 10%));
+.activeGradient (@bgColor: @linkColor) {
+    background-color: @bgColor;
+    .buttonBackground(@bgColor, darken(@bgColor, 10%));
 }
 
 .wdp {
@@ -30,19 +30,22 @@
 		left: 7px;
 	}
 }
-.wdp-shortcuts {
+.wdp-shortcuts ul {
     margin-left: 0;
     margin-bottom: 0;
     list-style-type: none;
     li > a {
-        &:hover, &:focus {
-            color: @black;
-            background-image: none;
-            background-color: @grayLightest;
-        }
         &.wdp-shortcut-active {
             color: @white;
             .activeGradient();
+        }
+        &:hover, &:focus, &.wdp-shortcut-highlighted {
+            background-image: none;
+            background-color: @grayLightest;
+            &.wdp-shortcut-active {
+                    color: @white;
+                .activeGradient(darken(@linkColor, 10%));
+            }
         }
     }
 }

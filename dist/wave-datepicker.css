@@ -22,30 +22,6 @@
 .wrap-wide {
   padding: 40px;
 }
-.activeGradient {
-  background-color: #0071bc;
-  background-color: #0065a8;
-  background-image: -moz-linear-gradient(top, #0071bc, #005289);
-  background-image: -ms-linear-gradient(top, #0071bc, #005289);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0071bc), to(#005289));
-  background-image: -webkit-linear-gradient(top, #0071bc, #005289);
-  background-image: -o-linear-gradient(top, #0071bc, #005289);
-  background-image: linear-gradient(top, #0071bc, #005289);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0071bc', endColorstr='#005289', GradientType=0);
-  border-color: #005289 #005289 #00243d;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-}
-.activeGradient:hover,
-.activeGradient:active,
-.activeGradient.active {
-  background-color: #005289;
-}
-.activeGradient:active,
-.activeGradient.active {
-  background-color: #003456 \9;
-}
 .wdp {
   min-width: 375px;
   max-width: 450px;
@@ -73,18 +49,12 @@
   top: -6px;
   left: 7px;
 }
-.wdp-shortcuts {
+.wdp-shortcuts ul {
   margin-left: 0;
   margin-bottom: 0;
   list-style-type: none;
 }
-.wdp-shortcuts li > a:hover,
-.wdp-shortcuts li > a:focus {
-  color: #000000;
-  background-image: none;
-  background-color: #dddddd;
-}
-.wdp-shortcuts li > a.wdp-shortcut-active {
+.wdp-shortcuts ul li > a.wdp-shortcut-active {
   color: #ffffff;
   background-color: #0071bc;
   background-color: #0065a8;
@@ -100,14 +70,57 @@
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
-.wdp-shortcuts li > a.wdp-shortcut-active:hover,
-.wdp-shortcuts li > a.wdp-shortcut-active:active,
-.wdp-shortcuts li > a.wdp-shortcut-active.active {
+.wdp-shortcuts ul li > a.wdp-shortcut-active:hover,
+.wdp-shortcuts ul li > a.wdp-shortcut-active:active,
+.wdp-shortcuts ul li > a.wdp-shortcut-active.active {
   background-color: #005289;
 }
-.wdp-shortcuts li > a.wdp-shortcut-active:active,
-.wdp-shortcuts li > a.wdp-shortcut-active.active {
+.wdp-shortcuts ul li > a.wdp-shortcut-active:active,
+.wdp-shortcuts ul li > a.wdp-shortcut-active.active {
   background-color: #003456 \9;
+}
+.wdp-shortcuts ul li > a:hover,
+.wdp-shortcuts ul li > a:focus,
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted {
+  background-image: none;
+  background-color: #dddddd;
+}
+.wdp-shortcuts ul li > a:hover.wdp-shortcut-active,
+.wdp-shortcuts ul li > a:focus.wdp-shortcut-active,
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active {
+  color: #ffffff;
+  background-color: #005289;
+  background-color: #004675;
+  background-image: -moz-linear-gradient(top, #005289, #003456);
+  background-image: -ms-linear-gradient(top, #005289, #003456);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#005289), to(#003456));
+  background-image: -webkit-linear-gradient(top, #005289, #003456);
+  background-image: -o-linear-gradient(top, #005289, #003456);
+  background-image: linear-gradient(top, #005289, #003456);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#005289', endColorstr='#003456', GradientType=0);
+  border-color: #003456 #003456 #00060a;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+.wdp-shortcuts ul li > a:hover.wdp-shortcut-active:hover,
+.wdp-shortcuts ul li > a:focus.wdp-shortcut-active:hover,
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active:hover,
+.wdp-shortcuts ul li > a:hover.wdp-shortcut-active:active,
+.wdp-shortcuts ul li > a:focus.wdp-shortcut-active:active,
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active:active,
+.wdp-shortcuts ul li > a:hover.wdp-shortcut-active.active,
+.wdp-shortcuts ul li > a:focus.wdp-shortcut-active.active,
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active.active {
+  background-color: #003456;
+}
+.wdp-shortcuts ul li > a:hover.wdp-shortcut-active:active,
+.wdp-shortcuts ul li > a:focus.wdp-shortcut-active:active,
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active:active,
+.wdp-shortcuts ul li > a:hover.wdp-shortcut-active.active,
+.wdp-shortcuts ul li > a:focus.wdp-shortcut-active.active,
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active.active {
+  background-color: #001523 \9;
 }
 .wdp-calendar {
   width: 100%;
