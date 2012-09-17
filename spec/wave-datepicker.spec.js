@@ -71,7 +71,23 @@ describe('Wave Datepicker', function() {
         return expect($.trim(today.text())).toEqual('Today');
       });
     });
-    return describe('render', function() {
+    describe('On input change', function() {
+      return it('should update the date of the the widget', function() {
+        var date, widget;
+        this.$input.val('2012-08-01').datepicker();
+        date = new Date(2012, 7, 1);
+        widget = this.$input.data('datepicker');
+        expect(widget.date.getFullYear()).toEqual(date.getFullYear());
+        expect(widget.date.getMonth()).toEqual(date.getMonth());
+        expect(widget.date.getDate()).toEqual(date.getDate());
+        this.$input.val('2011-04-13').trigger('change');
+        date = new Date(2011, 3, 13);
+        expect(widget.date.getFullYear()).toEqual(date.getFullYear());
+        expect(widget.date.getMonth()).toEqual(date.getMonth());
+        return expect(widget.date.getDate()).toEqual(date.getDate());
+      });
+    });
+    describe('Rendered calendar', function() {
       return it('should draw the calendar with current month and fill start/end with prev/next month', function() {
         var $cells, array, expected;
         this.$input.val('2012-08-01').datepicker();
@@ -106,6 +122,18 @@ describe('Wave Datepicker', function() {
           return array.push(parseInt($.trim($(this).text()), 10));
         });
         return expect(array).toEqual(expected);
+      });
+    });
+    return describe('Unit tests', function() {
+      return describe('_cancelEvent', function() {
+        var e;
+        e = {
+          stopPropagation: sinon.spy(),
+          preventDefault: sinon.spy()
+        };
+        WDP.WaveDatepicker.prototype._cancelEvent.call(null, e);
+        expect(e.stopPropagation.callCount).not.toEqual(0);
+        return expect(e.preventDefault.callCount).not.toEqual(0);
       });
     });
   });

@@ -14,9 +14,11 @@ describe 'Wave Datepicker', ->
     @restoreWaveDatepicker = ->
       @_WaveDatepickerStub.restore()
 
+
   afterEach ->
     @$input.datepicker('destroy')
     @$input.remove()
+
 
   describe '$.fn.datepicker', ->
     it 'should be defined on jQuery object', ->
@@ -66,6 +68,7 @@ describe 'Wave Datepicker', ->
       expect(date.getMonth()).toEqual(today.getMonth())
       expect(date.getDate()).toEqual(today.getDate())
 
+
     describe 'Shortcuts', ->
       it 'should by default provide the Today shortcut', ->
         @$input.datepicker()
@@ -74,7 +77,24 @@ describe 'Wave Datepicker', ->
         today = widget.$datepicker.find('.wdp-shortcut')
         expect($.trim(today.text())).toEqual('Today')
 
-    describe 'render', ->
+
+    describe 'On input change', ->
+      it 'should update the date of the the widget', ->
+        @$input.val('2012-08-01').datepicker()
+        date = new Date 2012, 7, 1  # 7 is Aug
+        widget = @$input.data('datepicker')
+        expect(widget.date.getFullYear()).toEqual(date.getFullYear())
+        expect(widget.date.getMonth()).toEqual(date.getMonth())
+        expect(widget.date.getDate()).toEqual(date.getDate())
+
+        @$input.val('2011-04-13').trigger('change')
+        date = new Date 2011, 3, 13  # 7 is Aug
+        expect(widget.date.getFullYear()).toEqual(date.getFullYear())
+        expect(widget.date.getMonth()).toEqual(date.getMonth())
+        expect(widget.date.getDate()).toEqual(date.getDate())
+
+
+    describe 'Rendered calendar', ->
       it 'should draw the calendar with current month and fill start/end with prev/next month', ->
         # Aug 2012
         @$input.val('2012-08-01').datepicker()
@@ -111,3 +131,14 @@ describe 'Wave Datepicker', ->
         array = []
         $cells.each -> array.push parseInt($.trim($(this).text()), 10)
         expect(array).toEqual(expected)
+
+
+    describe 'Unit tests', ->
+      describe '_cancelEvent', ->
+        e =
+          stopPropagation: sinon.spy()
+          preventDefault: sinon.spy()
+        WDP.WaveDatepicker.prototype._cancelEvent.call null, e
+        # TODO: Get jasmine-sinon to work then we can change these to `toHaveBeenCalledOnce`
+        expect(e.stopPropagation.callCount).not.toEqual(0)
+        expect(e.preventDefault.callCount).not.toEqual(0)
