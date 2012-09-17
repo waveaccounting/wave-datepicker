@@ -361,33 +361,34 @@
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
     _onInputKeyDown: (e) =>
-      if e.keyCode is Keys.DOWN or e.keyCode is Keys.J
-        @_cancelEvent e
-        fn = @shortcuts.highlightNext
-        offset = 7
+      switch e.keyCode
+        when Keys.DOWN, Keys.J
+          @_cancelEvent e
+          fn = @shortcuts.highlightNext
+          offset = 7
 
-      else if e.keyCode is Keys.UP or e.keyCode is Keys.K
-        @_cancelEvent e
-        fn = @shortcuts.highlightPrev
-        offset = -7
+        when Keys.UP, Keys.K
+          @_cancelEvent e
+          fn = @shortcuts.highlightPrev
+          offset = -7
 
-      else if e.keyCode is Keys.LEFT or e.keyCode is Keys.H
-        @_cancelEvent e
-        offset = -1
+        when Keys.LEFT, Keys.H
+          @_cancelEvent e
+          offset = -1
 
-      else if e.keyCode is Keys.RIGHT or e.keyCode is Keys.L
-        @_cancelEvent e
-        offset = 1
+        when Keys.RIGHT, Keys.L
+          @_cancelEvent e
+          offset = 1
 
-      else if e.keyCode is Keys.RETURN
-        fn = @shortcuts.selectHighlighted
-        @_cancelEvent e
+        when Keys.RETURN
+          @_cancelEvent e
+          fn = @shortcuts.selectHighlighted
 
-      if e.shiftKey and offset?
+      if e.shiftKey
+        fn?()
+      else if offset?
         date = new Date(@date.getFullYear(), @date.getMonth(), @date.getDate() + offset)
         @setDate date
-      else
-        fn?()
 
     _updateSelection: ->
       # Update selection

@@ -404,29 +404,38 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype._onInputKeyDown = function(e) {
       var date, fn, offset;
-      if (e.keyCode === Keys.DOWN || e.keyCode === Keys.J) {
-        this._cancelEvent(e);
-        fn = this.shortcuts.highlightNext;
-        offset = 7;
-      } else if (e.keyCode === Keys.UP || e.keyCode === Keys.K) {
-        this._cancelEvent(e);
-        fn = this.shortcuts.highlightPrev;
-        offset = -7;
-      } else if (e.keyCode === Keys.LEFT || e.keyCode === Keys.H) {
-        this._cancelEvent(e);
-        offset = -1;
-      } else if (e.keyCode === Keys.RIGHT || e.keyCode === Keys.L) {
-        this._cancelEvent(e);
-        offset = 1;
-      } else if (e.keyCode === Keys.RETURN) {
-        fn = this.shortcuts.selectHighlighted;
-        this._cancelEvent(e);
+      switch (e.keyCode) {
+        case Keys.DOWN:
+        case Keys.J:
+          this._cancelEvent(e);
+          fn = this.shortcuts.highlightNext;
+          offset = 7;
+          break;
+        case Keys.UP:
+        case Keys.K:
+          this._cancelEvent(e);
+          fn = this.shortcuts.highlightPrev;
+          offset = -7;
+          break;
+        case Keys.LEFT:
+        case Keys.H:
+          this._cancelEvent(e);
+          offset = -1;
+          break;
+        case Keys.RIGHT:
+        case Keys.L:
+          this._cancelEvent(e);
+          offset = 1;
+          break;
+        case Keys.RETURN:
+          this._cancelEvent(e);
+          fn = this.shortcuts.selectHighlighted;
       }
-      if (e.shiftKey && (offset != null)) {
+      if (e.shiftKey) {
+        return typeof fn === "function" ? fn() : void 0;
+      } else if (offset != null) {
         date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() + offset);
         return this.setDate(date);
-      } else {
-        return typeof fn === "function" ? fn() : void 0;
       }
     };
 
