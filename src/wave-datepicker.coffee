@@ -54,15 +54,17 @@
 
 
   # For keydown event handler
-  LEFT = 37
-  UP = 38
-  RIGHT = 39
-  DOWN = 40
-  RETURN = 13
-  KEY_H = 72
-  KEY_J = 74
-  KEY_K = 75
-  KEY_L = 76
+  Keys =
+    LEFT: 37
+    UP: 38
+    RIGHT: 39
+    DOWN: 40
+    RETURN: 13
+    # For Vim bindings
+    H: 72
+    J: 74
+    K: 75
+    L: 76
 
   # Class for handling shortcuts on the datepicker.
   class WDP.Shortcuts
@@ -78,7 +80,7 @@
 
     currHighlightedIndex: 0
 
-    constructor: (@options = {}) ->
+    constructor: (@options) ->
       @options or= @_defaults
       @$el = $ '<ul>'
       @$el.on 'click', @_onShortcutClick
@@ -359,25 +361,25 @@
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
     _onInputKeyDown: (e) =>
-      if e.keyCode is DOWN or e.keyCode is KEY_J
+      if e.keyCode is Keys.DOWN or e.keyCode is Keys.J
         @_cancelEvent e
         fn = @shortcuts.highlightNext
         offset = 7
 
-      else if e.keyCode is UP or e.keyCode is KEY_K
+      else if e.keyCode is Keys.UP or e.keyCode is Keys.K
         @_cancelEvent e
         fn = @shortcuts.highlightPrev
         offset = -7
 
-      else if e.keyCode is LEFT or e.keyCode is KEY_H
+      else if e.keyCode is Keys.LEFT or e.keyCode is Keys.H
         @_cancelEvent e
         offset = -1
 
-      else if e.keyCode is RIGHT or e.keyCode is KEY_L
+      else if e.keyCode is Keys.RIGHT or e.keyCode is Keys.L
         @_cancelEvent e
         offset = 1
 
-      else if e.keyCode is RETURN
+      else if e.keyCode is Keys.RETURN
         fn = @shortcuts.selectHighlighted
         @_cancelEvent e
 

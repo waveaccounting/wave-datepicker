@@ -10,7 +10,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     return root.WDP = factory(root.$);
   }
 })(this, function($) {
-  var DOWN, KEY_H, KEY_J, KEY_K, KEY_L, LEFT, RETURN, RIGHT, UP, WDP;
+  var Keys, WDP;
   WDP = {};
   WDP.template = '\
     <div class="wdp dropdown-menu">\
@@ -50,15 +50,17 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WDP.DateUtils.format = options.dateFormat || WDP.DateUtils.format;
     return WDP.DateUtils.parse = options.dateParse || WDP.DateUtils.parse;
   };
-  LEFT = 37;
-  UP = 38;
-  RIGHT = 39;
-  DOWN = 40;
-  RETURN = 13;
-  KEY_H = 72;
-  KEY_J = 74;
-  KEY_K = 75;
-  KEY_L = 76;
+  Keys = {
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    RETURN: 13,
+    H: 72,
+    J: 74,
+    K: 75,
+    L: 76
+  };
   WDP.Shortcuts = (function() {
 
     Shortcuts.prototype._defaults = {
@@ -70,7 +72,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     Shortcuts.prototype.currHighlightedIndex = 0;
 
     function Shortcuts(options) {
-      this.options = options != null ? options : {};
+      this.options = options;
       this.selectHighlighted = __bind(this.selectHighlighted, this);
 
       this._onShortcutClick = __bind(this._onShortcutClick, this);
@@ -402,21 +404,21 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype._onInputKeyDown = function(e) {
       var date, fn, offset;
-      if (e.keyCode === DOWN || e.keyCode === KEY_J) {
+      if (e.keyCode === Keys.DOWN || e.keyCode === Keys.J) {
         this._cancelEvent(e);
         fn = this.shortcuts.highlightNext;
         offset = 7;
-      } else if (e.keyCode === UP || e.keyCode === KEY_K) {
+      } else if (e.keyCode === Keys.UP || e.keyCode === Keys.K) {
         this._cancelEvent(e);
         fn = this.shortcuts.highlightPrev;
         offset = -7;
-      } else if (e.keyCode === LEFT || e.keyCode === KEY_H) {
+      } else if (e.keyCode === Keys.LEFT || e.keyCode === Keys.H) {
         this._cancelEvent(e);
         offset = -1;
-      } else if (e.keyCode === RIGHT || e.keyCode === KEY_L) {
+      } else if (e.keyCode === Keys.RIGHT || e.keyCode === Keys.L) {
         this._cancelEvent(e);
         offset = 1;
-      } else if (e.keyCode === RETURN) {
+      } else if (e.keyCode === Keys.RETURN) {
         fn = this.shortcuts.selectHighlighted;
         this._cancelEvent(e);
       }
