@@ -81,6 +81,30 @@ describe('Wave Datepicker', function() {
         $cells.each(function() {
           return array.push(parseInt($.trim($(this).text()), 10));
         });
+        expect(array).toEqual(expected);
+        this.$input.val('2014-11-13').trigger('change');
+        $cells = this.$input.data('datepicker').$calendar.find('td');
+        expected = [26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6];
+        array = [];
+        $cells.each(function() {
+          return array.push(parseInt($.trim($(this).text()), 10));
+        });
+        expect(array).toEqual(expected);
+        this.$input.val('1900-01-01').trigger('change');
+        $cells = this.$input.data('datepicker').$calendar.find('td');
+        expected = [31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        array = [];
+        $cells.each(function() {
+          return array.push(parseInt($.trim($(this).text()), 10));
+        });
+        expect(array).toEqual(expected);
+        this.$input.val('2996-07-12').trigger('change');
+        $cells = this.$input.data('datepicker').$calendar.find('td');
+        expected = [26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6];
+        array = [];
+        $cells.each(function() {
+          return array.push(parseInt($.trim($(this).text()), 10));
+        });
         return expect(array).toEqual(expected);
       });
     });

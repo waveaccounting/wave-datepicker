@@ -64,7 +64,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype._state = null;
 
     function WaveDatepicker(options) {
-      var dateStr;
       this.options = options;
       this._selectDate = __bind(this._selectDate, this);
 
@@ -75,6 +74,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this._place = __bind(this._place, this);
 
       this._updateMonthAndYear = __bind(this._updateMonthAndYear, this);
+
+      this._updateFromInput = __bind(this._updateFromInput, this);
 
       this.destroy = __bind(this.destroy, this);
 
@@ -97,12 +98,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.el = this.options.el;
       this.$el = $(this.el);
       this.dateFormat = this.options.format || this._defaultFormat;
-      if ((dateStr = this.$el.val())) {
-        this.date = this._parseDate(dateStr);
-      }
-      this.date || (this.date = new Date());
       this.shortcuts = options.shortcuts || this._defaultShortcuts;
-      this._initState();
+      this._state = {};
+      this._updateFromInput();
       this._initPicker();
       this._initElements();
       this._initShortcuts();
@@ -187,11 +185,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return this.$window = $(window);
     };
 
-    WaveDatepicker.prototype._initState = function() {
-      this._state = {};
-      return this.setDate(this.date);
-    };
-
     WaveDatepicker.prototype._initPicker = function() {
       var weekdays;
       this.$datepicker = $(WDP.template);
@@ -213,6 +206,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype._initEvents = function() {
       this.$el.on('focus', this.show).on('blur', this.hide);
+      this.$el.on('change', this._updateFromInput);
       this.$el.on('datechange', this.render);
       this.$datepicker.on('mousedown', this._cancelEvent);
       this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
@@ -221,6 +215,15 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$datepicker.on('click', '.js-wdp-next', this.next);
       this.$datepicker.on('click', '.js-wdp-next-select', this.nextSelect);
       return this.$datepicker.on('click', '.js-wdp-shortcut', this._onShortcutClick);
+    };
+
+    WaveDatepicker.prototype._updateFromInput = function() {
+      var dateStr;
+      if ((dateStr = this.$el.val())) {
+        this.date = this._parseDate(dateStr);
+      }
+      this.date || (this.date = new Date());
+      return this.setDate(this.date);
     };
 
     WaveDatepicker.prototype._updateMonthAndYear = function() {
@@ -252,7 +255,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype._fill = function() {
-      var currMonth, d, date, daysInMonth, endOfMonth, firstDateDay, formatted, formattedNextMonth, formattedPrevMonth, html, i, index, lastDateDay, n, nextMonth, paddingStart, prevMonth, startOfMonth, wrapped, _i, _j;
+      var currMonth, d, date, daysInMonth, endOfMonth, firstDateDay, formatted, formattedNextMonth, formattedPrevMonth, html, i, index, lastDateDay, nextMonth, paddingStart, prevMonth, startOfMonth, wrapped, _i, _j, _ref;
       date = new Date(this._state.year, this._state.month, 1);
       index = 0;
       html = [];
@@ -260,12 +263,12 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       daysInMonth = wrapped.daysInMonth();
       startOfMonth = wrapped.clone().startOf('month');
       endOfMonth = wrapped.clone().endOf('month');
-      firstDateDay = startOfMonth.day() - 1;
-      lastDateDay = endOfMonth.day() - 1;
+      firstDateDay = startOfMonth.day();
+      lastDateDay = endOfMonth.day();
       paddingStart = 0;
       if (firstDateDay !== 0) {
         prevMonth = startOfMonth.clone();
-        for (i = _i = 0; 0 <= firstDateDay ? _i <= firstDateDay : _i >= firstDateDay; i = 0 <= firstDateDay ? ++_i : --_i) {
+        for (i = _i = 0, _ref = firstDateDay - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
           if ((index++) === 0) {
             html.push('<tr class="wdp-calendar-row">');
           }
@@ -285,7 +288,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         html.push("<td class=\"js-wdp-calendar-cell\" data-date=\"" + formatted + "\">" + i + "</td>");
       }
       nextMonth = endOfMonth.clone();
-      n = paddingStart + daysInMonth;
       while (index < 42) {
         d = nextMonth.add('days', 1).date();
         formattedNextMonth = this._formatDate(new Date(this._state.year, this._state.month + 1, d));

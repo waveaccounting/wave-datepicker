@@ -76,17 +76,14 @@
       @$el = $(@el)
 
       @dateFormat = @options.format or @_defaultFormat
-      # Reads the value of the `<input>` field and set it as the date.
-      if (dateStr = @$el.val())
-        @date = @_parseDate dateStr
-
-      # If date could not be set from @$el.val() then set to today.
-      @date or= new Date()
 
       # e.g. 'today' -> sets calendar value to today's date
       @shortcuts = options.shortcuts or @_defaultShortcuts
 
-      @_initState()
+      @_state = {}
+
+      @_updateFromInput()
+
       @_initPicker()
       @_initElements()
       @_initShortcuts()
@@ -164,10 +161,6 @@
       @$monthAndYear = @$calendar.find '.wdp-month-and-year'
       @$window = $ window
 
-    _initState: ->
-      @_state = {}
-      @setDate @date
-
     # Renders the widget and append to the `<body>`
     _initPicker: ->
       @$datepicker = $ WDP.template
@@ -188,6 +181,7 @@
     _initEvents: ->
       # Show and hide picker
       @$el.on('focus', @show).on('blur', @hide)
+      @$el.on 'change', @_updateFromInput
       @$el.on 'datechange', @render
 
       @$datepicker.on 'mousedown', @_cancelEvent
@@ -197,6 +191,16 @@
       @$datepicker.on 'click', '.js-wdp-next', @next
       @$datepicker.on 'click', '.js-wdp-next-select', @nextSelect
       @$datepicker.on 'click', '.js-wdp-shortcut', @_onShortcutClick
+
+    _updateFromInput: =>
+      # Reads the value of the `<input>` field and set it as the date.
+      if (dateStr = @$el.val())
+        @date = @_parseDate dateStr
+
+      # If date could not be set from @$el.val() then set to today.
+      @date or= new Date()
+
+      @setDate @date
 
     # Updates the picker with the current date.
     _updateMonthAndYear: =>
@@ -238,15 +242,15 @@
       endOfMonth = wrapped.clone().endOf('month')
 
       # 0 == Sun, 1 == Mon, ..., 6 == Sat
-      firstDateDay = startOfMonth.day() - 1
-      lastDateDay = endOfMonth.day() - 1
+      firstDateDay = startOfMonth.day()
+      lastDateDay = endOfMonth.day()
       paddingStart = 0
 
       # If start date is not Sun then padd beginning of calendar.
       if firstDateDay isnt 0
         prevMonth = startOfMonth.clone()
 
-        for i in [0..firstDateDay]
+        for i in [0..firstDateDay-1]
           if (index++) is 0
             html.push '<tr class="wdp-calendar-row">'
           d = prevMonth.add('days', -1).date()
@@ -268,7 +272,6 @@
 
       # Fill out the rest of the calendar (six rows).
       nextMonth = endOfMonth.clone()
-      n = paddingStart + daysInMonth
       while index < 42  # 7 * 6 = 42
         d = nextMonth.add('days', 1).date()
         formattedNextMonth = @_formatDate new Date(@_state.year, @_state.month + 1, d)

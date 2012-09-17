@@ -38,5 +38,5 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', 'coffee less');
-  grunt.registerTask('test', 'jasmine');
+  grunt.registerTask('test', 'less coffee jasmine');
 };
