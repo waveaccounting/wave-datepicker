@@ -124,6 +124,40 @@ describe('Wave Datepicker', function() {
         return expect(array).toEqual(expected);
       });
     });
+    describe('Navigation', function() {
+      beforeEach(function() {
+        this.$input.val('2012-08-01').datepicker();
+        return this.widget = this.$input.data('datepicker');
+      });
+      describe('When next arrow is clicked', function() {
+        beforeEach(function() {
+          this.$next = this.widget.$datepicker.find('.js-wdp-next');
+          return this.$next.click();
+        });
+        return it('should set the month and year of state', function() {
+          this.$next.click();
+          expect(this.widget._state.month).toEqual(9);
+          expect(this.widget._state.year).toEqual(2012);
+          this.$next.click().click().click().click();
+          expect(this.widget._state.month).toEqual(1);
+          return expect(this.widget._state.year).toEqual(2013);
+        });
+      });
+      return describe('When prev arrow is clicked', function() {
+        beforeEach(function() {
+          this.$input.val('2012-03-01').trigger('change');
+          return this.$prev = this.widget.$datepicker.find('.js-wdp-prev');
+        });
+        return it('should set the month and year of state', function() {
+          this.$prev.click();
+          expect(this.widget._state.month).toEqual(1);
+          expect(this.widget._state.year).toEqual(2012);
+          this.$prev.click().click();
+          expect(this.widget._state.month).toEqual(11);
+          return expect(this.widget._state.year).toEqual(2011);
+        });
+      });
+    });
     return describe('Unit tests', function() {
       return describe('_cancelEvent', function() {
         var e;

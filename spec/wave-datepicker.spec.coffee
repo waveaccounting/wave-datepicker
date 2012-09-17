@@ -133,6 +133,43 @@ describe 'Wave Datepicker', ->
         expect(array).toEqual(expected)
 
 
+    # Tests for next and prev arrows for navigating through months.
+    describe 'Navigation', ->
+      beforeEach ->
+        @$input.val('2012-08-01').datepicker()
+        @widget = @$input.data 'datepicker'
+
+      describe 'When next arrow is clicked', ->
+        beforeEach ->
+          @$next = @widget.$datepicker.find('.js-wdp-next')
+          @$next.click()
+
+        it 'should set the month and year of state', ->
+          @$next.click()
+          expect(@widget._state.month).toEqual(9)
+          expect(@widget._state.year).toEqual(2012)
+
+          # Brings calendar to Jan 2013
+          @$next.click().click().click().click()
+          expect(@widget._state.month).toEqual(1)
+          expect(@widget._state.year).toEqual(2013)
+
+      describe 'When prev arrow is clicked', ->
+        beforeEach ->
+          @$input.val('2012-03-01').trigger('change')
+          @$prev = @widget.$datepicker.find('.js-wdp-prev')
+
+        it 'should set the month and year of state', ->
+          @$prev.click()
+          expect(@widget._state.month).toEqual(1)
+          expect(@widget._state.year).toEqual(2012)
+
+          # Brings calendar to Jan 2013
+          @$prev.click().click()
+          expect(@widget._state.month).toEqual(11)
+          expect(@widget._state.year).toEqual(2011)
+
+
     describe 'Unit tests', ->
       describe '_cancelEvent', ->
         e =
