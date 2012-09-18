@@ -11,6 +11,9 @@
   # Namespace to export
   WDP = {}
 
+  # Hold reference for testing purposes (so we can stub out if needed).
+  WDP.$ = $
+
   # Default template
   # .dropdown-menu is hidden by default
   WDP.template = '
@@ -59,7 +62,6 @@
     UP: 38
     RIGHT: 39
     DOWN: 40
-    RETURN: 13
     # For Vim bindings
     H: 72
     J: 74
@@ -78,53 +80,41 @@
       'Today':
         days: 0
 
-    currHighlightedIndex: 0
+    currSelectedIndex: -1 # Nothing selected by default
 
     constructor: (@options) ->
       @options or= @_defaults
-      @$el = $ '<ul>'
+      @$el = WDP.$ '<ul>'
       @$el.on 'click', @_onShortcutClick
 
     render: ->
       shortcuts = []
       @numShortcuts = 0
       for name, offset of @options
-        shortcuts.push "<li><a data-days=\"#{offset.days or 0}\" 
+        shortcuts.push "<li><a
+          data-days=\"#{offset.days or 0}\" 
           data-months=\"#{offset.months or 0}\"
           data-years=\"#{offset.years or 0}\"
           data-shortcut-num=\"#{@numShortcuts}\"
           class=\"wdp-shortcut js-wdp-shortcut\" 
-          href=\"javascript:void(0)\">
-          #{name}</a></li>"
+          href=\"javascript:void(0)\">#{name}</a></li>"
         @numShortcuts++
       @$el.html shortcuts.join ''
-      @updateHighlighted()
       return this
 
     resetClass: ->
       @$el.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active')
-      @resetHighlighted()
 
-    resetHighlighted: ->
-      @$el.find('.wdp-shortcut-highlighted').removeClass 'wdp-shortcut-highlighted'
+    selectNext: =>
+      @currSelectedIndex = (@currSelectedIndex + 1) % @numShortcuts
+      @_updateSelected()
 
-    highlightNext: =>
-      @currHighlightedIndex = (@currHighlightedIndex + 1) % @numShortcuts
-      @updateHighlighted()
-
-    highlightPrev: =>
-      @currHighlightedIndex = (@currHighlightedIndex - 1) % @numShortcuts
+    selectPrev: =>
+      @currSelectedIndex = (@currSelectedIndex - 1) % @numShortcuts
       # modulo doesn't work on negative numbers :(
-      if @currHighlightedIndex < 0
-        @currHighlightedIndex = @numShortcuts - 1
-      @updateHighlighted()
-
-    updateHighlighted: =>
-      @resetHighlighted()
-      @$el.find(".wdp-shortcut[data-shortcut-num=#{@currHighlightedIndex}]").addClass 'wdp-shortcut-highlighted'
-
-    _onShortcutClick: (e) =>
-      @select $(e.target)
+      if @currSelectedIndex < 0
+        @currSelectedIndex = @numShortcuts - 1
+      @_updateSelected()
 
     select: ($target) ->
       data = $target.data()
@@ -140,10 +130,13 @@
 
       @$el.trigger 'dateselect', wrapper.toDate()
 
-    selectHighlighted: =>
-      $highlighted = @$el.find('.wdp-shortcut-highlighted')
-      if $highlighted.length
-        @select $highlighted
+    _onShortcutClick: (e) => @select WDP.$(e.target)
+
+    _updateSelected: =>
+      @resetClass()
+      $target = @$el.find(".wdp-shortcut[data-shortcut-num=#{@currSelectedIndex}]").addClass 'wdp-shortcut-active'
+      @select $target
+
 
   class WDP.WaveDatepicker
     _defaultFormat: 'YYYY-MM-DD'
@@ -154,7 +147,7 @@
 
     constructor: (@options) ->
       @el = @options.el
-      @$el = $(@el)
+      @$el = WDP.$ @el
 
       @dateFormat = @options.format or @_defaultFormat
 
@@ -169,6 +162,12 @@
       # e.g. 'today' -> sets calendar value to today's date
       @shortcuts = new WDP.Shortcuts(options.shortcuts).render()
       @$shortcuts.append @shortcuts.$el
+      # Setting date clears any selected shortcuts
+      @shortcuts?.resetClass()
+
+      # Setting date clears any selected shortcuts
+      @shortcuts?.resetClass()
+
       @$shortcuts.on 'dateselect', (e, date) => @setDate(date)
 
     render: =>
@@ -364,12 +363,12 @@
       switch e.keyCode
         when WDP.Keys.DOWN, WDP.Keys.J
           @_cancelEvent e
-          fn = @shortcuts.highlightNext
+          fn = @shortcuts.selectNext
           offset = 7
 
         when WDP.Keys.UP, WDP.Keys.K
           @_cancelEvent e
-          fn = @shortcuts.highlightPrev
+          fn = @shortcuts.selectPrev
           offset = -7
 
         when WDP.Keys.LEFT, WDP.Keys.H
@@ -380,14 +379,11 @@
           @_cancelEvent e
           offset = 1
 
-        when WDP.Keys.RETURN
-          @_cancelEvent e
-          fn = @shortcuts.selectHighlighted
-
       if e.shiftKey
         fn?()
       else if offset?
         date = new Date(@date.getFullYear(), @date.getMonth(), @date.getDate() + offset)
+        @shortcuts.resetClass()  # Clear ay selected shortcuts
         @setDate date
 
     _updateSelection: ->

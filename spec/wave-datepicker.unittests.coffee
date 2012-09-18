@@ -15,18 +15,19 @@ describe 'Wave Datepicker unit tests', ->
         $datepicker:
           on: sinon.spy()
         $el:
-          on: sinon.stub()
-        _cancelEvent: sinon.spy()
-        prev: sinon.spy()
-        next: sinon.spy()
-        _prevSelect: sinon.spy()
-        _nextSelect: sinon.spy()
-        _onShortcutClick: sinon.spy()
-        _selectDate: sinon.spy()
-        render: sinon.spy()
-        _updateFromInput: sinon.spy()
-        show: sinon.spy()
-        hide: sinon.spy()
+          on: sinon.stub()  # Stub because we need to return $el
+        _cancelEvent: 'FUNCTION'
+        prev: 'FUNCTION'
+        next: 'FUNCTION'
+        _prevSelect: 'FUNCTION'
+        _nextSelect: 'FUNCTION'
+        _onShortcutClick: 'FUNCTION'
+        _selectDate: 'FUNCTION'
+        render: 'FUNCTION'
+        _updateFromInput: 'FUNCTION'
+        _onInputKeydown: 'FUNCTION'
+        show: 'FUNCTION'
+        hide: 'FUNCTION'
       @context.$el.on.returns @context.$el
 
     it 'should bind cancel events to mousedown on datepicker', ->
@@ -53,8 +54,13 @@ describe 'Wave Datepicker unit tests', ->
       expect(@context.$el.on).toHaveBeenCalledWith('focus', @context.show)
       expect(@context.$el.on).toHaveBeenCalledWith('blur', @context.hide)
 
+    it 'should bind keydown event of <input> to the _onInputKeydown handler', ->
+      WDP.WaveDatepicker.prototype._initEvents.call @context
+      expect(@context.$el.on).toHaveBeenCalledWith('keydown', @context._onInputKeydown)
+
+
   describe 'setDate', ->
-    it 'should update the date, state, and <inpput> of the widget', ->
+    it 'should update the date, state, and <input> of the widget', ->
       context =
         _formatDate: sinon.stub()
         $el:
@@ -169,9 +175,9 @@ describe 'Wave Datepicker unit tests', ->
     beforeEach ->
       @context =
         shortcuts:
-          highlightNext: sinon.spy()
-          highlightPrev: sinon.spy()
-          selectHighlighted: sinon.spy()
+          selectNext: sinon.spy()
+          selectPrev: sinon.spy()
+          resetClass: sinon.spy()
         _cancelEvent: sinon.spy()
         date: new  Date(2012, 7, 1, 0, 0, 0, 0)
         setDate: sinon.spy()
@@ -200,13 +206,13 @@ describe 'Wave Datepicker unit tests', ->
         expect(diff).toEqual(7 * 24 * 60 * 60 * 1000)
 
       describe 'When Shift is pressed', ->
-        it 'should call highlightNext on Shortcuts', ->
+        it 'should call selectNext on Shortcuts', ->
           @e.shiftKey = true
           @e.keyCode = WDP.Keys.DOWN
           WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
           @e.keyCode = WDP.Keys.J
           WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-          expect(@context.shortcuts.highlightNext).toHaveBeenCalledTwice()
+          expect(@context.shortcuts.selectNext).toHaveBeenCalledTwice()
 
 
     describe 'When UP or J pressed', ->
@@ -232,13 +238,13 @@ describe 'Wave Datepicker unit tests', ->
 
 
       describe 'When Shift is pressed', ->
-        it 'should call highlightNext on Shortcuts', ->
+        it 'should call selectPrev on Shortcuts', ->
           @e.shiftKey = true
           @e.keyCode = WDP.Keys.UP
           WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
           @e.keyCode = WDP.Keys.K
           WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-          expect(@context.shortcuts.highlightPrev).toHaveBeenCalledTwice()
+          expect(@context.shortcuts.selectPrev).toHaveBeenCalledTwice()
 
 
     describe 'When RIGHT or L pressed', ->
@@ -283,3 +289,49 @@ describe 'Wave Datepicker unit tests', ->
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
         expect(diff).toEqual(-1 * 24 * 60 * 60 * 1000)
+
+
+describe 'Shortcuts', ->
+  beforeEach ->
+    @context =
+      currSelectedIndex: -1
+      numShortcuts: 3
+      _updateSelected: sinon.spy()
+
+
+  describe 'selectNext', ->
+    it 'should increment the selected index', ->
+      WDP.Shortcuts.prototype.selectNext.call @context
+
+      expect(@context.currSelectedIndex).toEqual(0)
+      expect(@context._updateSelected).toHaveBeenCalledOnce()
+
+    it 'should wrap to first shortcut if index is out of bounds', ->
+      @context.currSelectedIndex = 2
+      WDP.Shortcuts.prototype.selectNext.call @context
+      expect(@context.currSelectedIndex).toEqual(0)
+
+
+  describe 'selectPrev', ->
+    it 'should decrement the selected index', ->
+      WDP.Shortcuts.prototype.selectPrev.call @context
+
+      expect(@context.currSelectedIndex).toEqual(2)
+      expect(@context._updateSelected).toHaveBeenCalledOnce()
+
+    it 'should wrap to last shortcut if index is negative', ->
+      @context.currSelectedIndex = 0
+      WDP.Shortcuts.prototype.selectPrev.call @context
+      expect(@context.currSelectedIndex).toEqual(2)
+
+
+  describe '_onShortcutClick', ->
+    it 'should call select method on the target element', ->
+      @context.select = sinon.spy()
+      _$ = sinon.stub WDP, '$'
+      _$.returns 'OBJECT'
+      e = {target: 'TARGET'}
+      WDP.Shortcuts.prototype._onShortcutClick.call @context, e
+      expect(_$).toHaveBeenCalledWith(e.target)
+      expect(@context.select).toHaveBeenCalledWith('OBJECT')
+      _$.restore()

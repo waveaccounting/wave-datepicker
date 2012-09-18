@@ -12,6 +12,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 })(this, function($) {
   var WDP;
   WDP = {};
+  WDP.$ = $;
   WDP.template = '\
     <div class="wdp dropdown-menu">\
       <div class="row-fluid">\
@@ -55,7 +56,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     UP: 38,
     RIGHT: 39,
     DOWN: 40,
-    RETURN: 13,
     H: 72,
     J: 74,
     K: 75,
@@ -69,22 +69,20 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       }
     };
 
-    Shortcuts.prototype.currHighlightedIndex = 0;
+    Shortcuts.prototype.currSelectedIndex = -1;
 
     function Shortcuts(options) {
       this.options = options;
-      this.selectHighlighted = __bind(this.selectHighlighted, this);
+      this._updateSelected = __bind(this._updateSelected, this);
 
       this._onShortcutClick = __bind(this._onShortcutClick, this);
 
-      this.updateHighlighted = __bind(this.updateHighlighted, this);
+      this.selectPrev = __bind(this.selectPrev, this);
 
-      this.highlightPrev = __bind(this.highlightPrev, this);
-
-      this.highlightNext = __bind(this.highlightNext, this);
+      this.selectNext = __bind(this.selectNext, this);
 
       this.options || (this.options = this._defaults);
-      this.$el = $('<ul>');
+      this.$el = WDP.$('<ul>');
       this.$el.on('click', this._onShortcutClick);
     }
 
@@ -95,43 +93,28 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       _ref = this.options;
       for (name in _ref) {
         offset = _ref[name];
-        shortcuts.push("<li><a data-days=\"" + (offset.days || 0) + "\"           data-months=\"" + (offset.months || 0) + "\"          data-years=\"" + (offset.years || 0) + "\"          data-shortcut-num=\"" + this.numShortcuts + "\"          class=\"wdp-shortcut js-wdp-shortcut\"           href=\"javascript:void(0)\">          " + name + "</a></li>");
+        shortcuts.push("<li><a          data-days=\"" + (offset.days || 0) + "\"           data-months=\"" + (offset.months || 0) + "\"          data-years=\"" + (offset.years || 0) + "\"          data-shortcut-num=\"" + this.numShortcuts + "\"          class=\"wdp-shortcut js-wdp-shortcut\"           href=\"javascript:void(0)\">" + name + "</a></li>");
         this.numShortcuts++;
       }
       this.$el.html(shortcuts.join(''));
-      this.updateHighlighted();
       return this;
     };
 
     Shortcuts.prototype.resetClass = function() {
-      this.$el.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active');
-      return this.resetHighlighted();
+      return this.$el.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active');
     };
 
-    Shortcuts.prototype.resetHighlighted = function() {
-      return this.$el.find('.wdp-shortcut-highlighted').removeClass('wdp-shortcut-highlighted');
+    Shortcuts.prototype.selectNext = function() {
+      this.currSelectedIndex = (this.currSelectedIndex + 1) % this.numShortcuts;
+      return this._updateSelected();
     };
 
-    Shortcuts.prototype.highlightNext = function() {
-      this.currHighlightedIndex = (this.currHighlightedIndex + 1) % this.numShortcuts;
-      return this.updateHighlighted();
-    };
-
-    Shortcuts.prototype.highlightPrev = function() {
-      this.currHighlightedIndex = (this.currHighlightedIndex - 1) % this.numShortcuts;
-      if (this.currHighlightedIndex < 0) {
-        this.currHighlightedIndex = this.numShortcuts - 1;
+    Shortcuts.prototype.selectPrev = function() {
+      this.currSelectedIndex = (this.currSelectedIndex - 1) % this.numShortcuts;
+      if (this.currSelectedIndex < 0) {
+        this.currSelectedIndex = this.numShortcuts - 1;
       }
-      return this.updateHighlighted();
-    };
-
-    Shortcuts.prototype.updateHighlighted = function() {
-      this.resetHighlighted();
-      return this.$el.find(".wdp-shortcut[data-shortcut-num=" + this.currHighlightedIndex + "]").addClass('wdp-shortcut-highlighted');
-    };
-
-    Shortcuts.prototype._onShortcutClick = function(e) {
-      return this.select($(e.target));
+      return this._updateSelected();
     };
 
     Shortcuts.prototype.select = function($target) {
@@ -149,12 +132,15 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return this.$el.trigger('dateselect', wrapper.toDate());
     };
 
-    Shortcuts.prototype.selectHighlighted = function() {
-      var $highlighted;
-      $highlighted = this.$el.find('.wdp-shortcut-highlighted');
-      if ($highlighted.length) {
-        return this.select($highlighted);
-      }
+    Shortcuts.prototype._onShortcutClick = function(e) {
+      return this.select(WDP.$(e.target));
+    };
+
+    Shortcuts.prototype._updateSelected = function() {
+      var $target;
+      this.resetClass();
+      $target = this.$el.find(".wdp-shortcut[data-shortcut-num=" + this.currSelectedIndex + "]").addClass('wdp-shortcut-active');
+      return this.select($target);
     };
 
     return Shortcuts;
@@ -167,7 +153,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype._state = null;
 
     function WaveDatepicker(options) {
-      var _this = this;
+      var _ref, _ref1,
+        _this = this;
       this.options = options;
       this._selectDate = __bind(this._selectDate, this);
 
@@ -200,7 +187,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.render = __bind(this.render, this);
 
       this.el = this.options.el;
-      this.$el = $(this.el);
+      this.$el = WDP.$(this.el);
       this.dateFormat = this.options.format || this._defaultFormat;
       this._state = {};
       this._updateFromInput();
@@ -209,6 +196,12 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this._initEvents();
       this.shortcuts = new WDP.Shortcuts(options.shortcuts).render();
       this.$shortcuts.append(this.shortcuts.$el);
+      if ((_ref = this.shortcuts) != null) {
+        _ref.resetClass();
+      }
+      if ((_ref1 = this.shortcuts) != null) {
+        _ref1.resetClass();
+      }
       this.$shortcuts.on('dateselect', function(e, date) {
         return _this.setDate(date);
       });
@@ -408,13 +401,13 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         case WDP.Keys.DOWN:
         case WDP.Keys.J:
           this._cancelEvent(e);
-          fn = this.shortcuts.highlightNext;
+          fn = this.shortcuts.selectNext;
           offset = 7;
           break;
         case WDP.Keys.UP:
         case WDP.Keys.K:
           this._cancelEvent(e);
-          fn = this.shortcuts.highlightPrev;
+          fn = this.shortcuts.selectPrev;
           offset = -7;
           break;
         case WDP.Keys.LEFT:
@@ -426,15 +419,12 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         case WDP.Keys.L:
           this._cancelEvent(e);
           offset = 1;
-          break;
-        case WDP.Keys.RETURN:
-          this._cancelEvent(e);
-          fn = this.shortcuts.selectHighlighted;
       }
       if (e.shiftKey) {
         return typeof fn === "function" ? fn() : void 0;
       } else if (offset != null) {
         date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() + offset);
+        this.shortcuts.resetClass();
         return this.setDate(date);
       }
     };
