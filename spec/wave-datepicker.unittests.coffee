@@ -28,9 +28,9 @@ describe 'Wave Datepicker unit tests', ->
         hide: 'FUNCTION'
       @context.$el.on.returns @context.$el
 
-    it 'should bind cancel events to mousedown on datepicker', ->
+    it 'should bind cancel events to click on datepicker', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$datepicker.on).toHaveBeenCalledWith('mousedown', @context._cancelEvent)
+      expect(@context.$datepicker.on).toHaveBeenCalledWith('click', @context._cancelEvent)
 
     it 'should bind the prev/next callbacks to their corresponding elements', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
@@ -45,10 +45,9 @@ describe 'Wave Datepicker unit tests', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
       expect(@context.$el.on).toHaveBeenCalledWith('change', @context._updateFromInput)
 
-    it 'should bind show/hide to focus/blur event', ->
+    it 'should bind show to focus event', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
       expect(@context.$el.on).toHaveBeenCalledWith('focus', @context.show)
-      expect(@context.$el.on).toHaveBeenCalledWith('blur', @context.hide)
 
     it 'should bind keydown event of <input> to the _onInputKeydown handler', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
@@ -133,8 +132,8 @@ describe 'Wave Datepicker unit tests', ->
 
 
   describe 'show', ->
-    it 'should place datepicker and show it', ->
-      context =
+    beforeEach ->
+      @context =
         $datepicker:
           addClass: sinon.spy()
         $el:
@@ -142,32 +141,47 @@ describe 'Wave Datepicker unit tests', ->
         _place: sinon.spy()
         $window:
           on: sinon.spy()
-      context.$el.outerHeight.returns 'HEIGHT'
+        $document:
+          on: sinon.spy()
+        hide: 'FUNCTION'
+        _isShown: false
+      @context.$el.outerHeight.returns 'HEIGHT'
 
-      date = WDP.WaveDatepicker.prototype.show.call context
+    it 'should place datepicker and show it', ->
+      WDP.WaveDatepicker.prototype.show.call @context
+      expect(@context.$datepicker.addClass).toHaveBeenCalledWith('show')
+      expect(@context.height).toBe('HEIGHT')
+      expect(@context._place).toHaveBeenCalledOnce()
+      expect(@context.$window.on).toHaveBeenCalledWith('resize', @context._place)
+      expect(@context._isShown).toBeTruthy()
 
-      expect(context.$datepicker.addClass).toHaveBeenCalledWith('show')
-      expect(context.height).toBe('HEIGHT')
-      expect(context._place).toHaveBeenCalledOnce()
-      expect(context.$window.on).toHaveBeenCalledWith('resize', context._place)
-      expect(context._isShown).toBeTruthy()
+    it 'should bind document click to hide method', ->
+      WDP.WaveDatepicker.prototype.show.call @context
+      expect(@context.$document.on).toHaveBeenCalledWith('click', @context.hide)
 
 
   describe 'hide', ->
-    it 'should hide datepicker and unbind place callback from window resize', ->
-      context =
+    beforeEach ->
+      @context =
         $datepicker:
           removeClass: sinon.spy()
         _place: 'PLACE'
         $window:
           off: sinon.spy()
+        $document:
+          off: sinon.spy()
         _isShown: true
+        hide: 'FUNCTION'
 
-      date = WDP.WaveDatepicker.prototype.hide.call context
+    it 'should hide datepicker and unbind place callback from window resize', ->
+      WDP.WaveDatepicker.prototype.hide.call @context
+      expect(@context.$datepicker.removeClass).toHaveBeenCalledWith('show')
+      expect(@context.$window.off).toHaveBeenCalledWith('resize', @context._place)
+      expect(@context._isShown).not.toBeTruthy()
 
-      expect(context.$datepicker.removeClass).toHaveBeenCalledWith('show')
-      expect(context.$window.off).toHaveBeenCalledWith('resize', context._place)
-      expect(context._isShown).not.toBeTruthy()
+    it 'should unbind the hide method from document click event', ->
+      WDP.WaveDatepicker.prototype.hide.call @context
+      expect(@context.$document.off).toHaveBeenCalledWith('click', @context.hide)
 
 
   describe '_onInputKeydown', ->

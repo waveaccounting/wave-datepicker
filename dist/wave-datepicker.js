@@ -34,6 +34,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     UP: 38,
     RIGHT: 39,
     DOWN: 40,
+    TAB: 9,
     H: 72,
     J: 74,
     K: 75,
@@ -194,7 +195,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         this.$datepicker.addClass('show');
         this.height = this.$el.outerHeight();
         this._place();
-        return this.$window.on('resize', this._place);
+        this.$window.on('resize', this._place);
+        return this.$document.on('click', this.hide);
       }
     };
 
@@ -202,7 +204,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       if (this._isShown) {
         this._isShown = false;
         this.$datepicker.removeClass('show');
-        return this.$window.off('resize', this._place);
+        this.$window.off('resize', this._place);
+        return this.$document.off('click', this.hide);
       }
     };
 
@@ -252,7 +255,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$calendar = this.$datepicker.find('.wdp-calendar');
       this.$tbody = this.$calendar.find('tbody');
       this.$monthAndYear = this.$calendar.find('.wdp-month-and-year');
-      return this.$window = $(window);
+      this.$window = $(window);
+      return this.$document = $(document);
     };
 
     WaveDatepicker.prototype._initPicker = function() {
@@ -265,14 +269,15 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype._initEvents = function() {
       this.$el.on('focus', this.show);
-      this.$el.on('blur', this.hide);
       this.$el.on('change', this._updateFromInput);
       this.$el.on('datechange', this.render);
       this.$el.on('keydown', this._onInputKeydown);
-      this.$datepicker.on('mousedown', this._cancelEvent);
+      this.$el.on('click', this._cancelEvent);
       this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
-      return this.$datepicker.on('click', '.js-wdp-next', this.next);
+      this.$datepicker.on('click', '.js-wdp-next', this.next);
+      this.$datepicker.on('click', this._cancelEvent);
+      return this.$datepicker.on('mousedown', this._cancelEvent);
     };
 
     WaveDatepicker.prototype._updateFromInput = function() {
@@ -393,6 +398,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
           offset = 1;
           break;
         case WDP.Keys.ESC:
+        case WDP.Keys.TAB:
           this.hide();
       }
       if (e.shiftKey) {
