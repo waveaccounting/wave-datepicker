@@ -5,10 +5,6 @@ Supports shortcuts on the left-side of the picker.
 
 ## Getting Started
 
-**Installing dependencies:**
-
-    npm install
-    
 **Dependencies:**
 
 * [jQuery](http://jquery.com/) (1.7+)
@@ -16,22 +12,11 @@ Supports shortcuts on the left-side of the picker.
 * [Bootstrap CSS](http://twitter.github.com/bootstrap/)
 
 
-**Building file:**
+**Including on website:**
 
-Run the local `grunt` binary.
+You can either use `dist/wave-datepicker.js` or the minified version `dist/wave-datepicker.min.js`.
 
-    ./node_modules/grunt/bin/grunt
-
-If you have grunt installed globally via the `npm install -g` switch, simply run `grunt`.
-
-This will generate the `dist/wave-datepicker.js` file that can be included on the page via `<script>` node or AMD.
-
-
-**Testing:**
-
-Run the `test` task:
-
-    ./node_modules/grunt/bin/grunt test
+You will also need the stylesheet `dist/wave-datepicker.css`.
 
 
 ## Usage:
@@ -42,14 +27,30 @@ Run the `test` task:
     $('#MyInput').datepicker();
 
 
-
 ### Methods:
 
 Methods are called via the `.datepicker(method, args...)` function.
 
-**.datepicker('setDate', date)**
+* **.datepicker('setDate', date)**
 
-Updates the widget's selected date to the `Date` object.
+  Updates the widget's selected date to the `Date` object.
+
+* **.datepicker('getDate')**
+
+  Returns the current `Date` object of the widget.
+
+* **.datepicker('destroy')**
+  
+  Destroys the widget, removing any created elements and events from DOM.
+
+
+### Events:
+
+* **datechange**
+
+  Notifies of any date changes on the widget. Passes the `Date` object
+  as the first argument.
+
 
 ### Examples:
 
@@ -85,6 +86,13 @@ The offset key can be anything supported in the [add function of moment.js](http
 e.g. `years`, `months`, `days`
 
 
+**Listening on datechange events:**
+
+    $('#MyInput').on('datechange', function (e, date) {
+      console.log(date);
+    });
+
+
 **Destroying widget:**
 
     $('#MyInput').datepicker('destroy');
@@ -97,3 +105,28 @@ Keyboard shortcuts can be used when focus in on the `<input>` element.
 The `Up`, `Down`, `Left`, `Right` keys will navigate the seleted date in the calendar. (HJKL Vim bindings are supported as well!)
 
 When the `Shift` key is held down, then the `Up` and `Down` keys will navigate the shortcuts instead of the calendar.
+
+
+## Development
+
+**Installing dependencies:**
+
+    npm install
+    
+
+**Building file:**
+
+Run the local `grunt` binary.
+
+    ./node_modules/grunt/bin/grunt
+
+If you have grunt installed globally via the `npm install -g` switch, simply run `grunt`.
+
+This will generate the `dist/wave-datepicker.js` file that can be included on the page via `<script>` node or AMD.
+
+
+**Testing:**
+
+Run the `test` task:
+
+    ./node_modules/grunt/bin/grunt test

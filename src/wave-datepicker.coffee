@@ -1,10 +1,8 @@
 ((root, factory) ->
   # Define AMD module if AMD support exists.
   if typeof define is 'function' and define.amd
-    define ['jquery'], ($) ->
-      root.WDP = factory($)
-  # Otherwise attach module to root.
-  else
+    define ['jquery'], ($) -> root.WDP = factory($)
+  else  # Otherwise attach module to root.
     root.WDP = factory(root.$)
 )(this, ($) ->
 
@@ -16,31 +14,27 @@
 
   # Default template
   # .dropdown-menu is hidden by default
-  WDP.template = '
-    <div class="wdp dropdown-menu">
-      <div class="row-fluid">
-        <div class="span5 wdp-shortcuts">
-        </div>
-        <div class="span7">
-          <table class="table-condensed wdp-calendar">
-            <thead>
-              <tr>
-                  <th class="wdp-prev">
-                    <a href="javascript:void(0)" class="js-wdp-prev"><i class="icon-arrow-left"/></a>
-                  </th>
-                  <th colspan="5" class="wdp-month-and-year">
-                  </th>
-                  <th class="wdp-next">
-                    <a href="javascript:void(0)" class="js-wdp-next"><i class="icon-arrow-right"/></a>
-                  </th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>'
+  WDP.template = "<div class=\"wdp dropdown-menu\">
+  <div class=\"row-fluid\">
+    <div class=\"span5 wdp-shortcuts\"></div>
+    <div class=\"span7\">
+      <table class=\"table-condensed wdp-calendar\">
+        <thead>
+          <tr>
+              <th class=\"wdp-prev\">
+                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\"><i class=\"icon-arrow-left\"/></a>
+              </th>
+              <th colspan=\"5\" class=\"wdp-month-and-year\"></th>
+              <th class=\"wdp-next\">
+                <a href=\"javascript:void(0)\" class=\"js-wdp-next\"><i class=\"icon-arrow-right\"/></a>
+              </th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>"
 
 
   # Date parsing and formatting utils
@@ -64,6 +58,7 @@
     UP: 38
     RIGHT: 39
     DOWN: 40
+
     # For Vim bindings
     H: 72
     J: 74
@@ -104,13 +99,16 @@
       @$el.html shortcuts.join ''
       return this
 
+    # Removes all active class names from shortcuts.
     resetClass: ->
       @$el.find('.wdp-shortcut-active').removeClass('wdp-shortcut-active')
 
+    # Increments the currently selected shortcut index and updates class names.
     selectNext: =>
       @currSelectedIndex = (@currSelectedIndex + 1) % @numShortcuts
       @_updateSelected()
 
+    # Decrements the currently selected shortcut index and updates class names.
     selectPrev: =>
       @currSelectedIndex = (@currSelectedIndex - 1) % @numShortcuts
       # modulo doesn't work on negative numbers :(
@@ -118,6 +116,11 @@
         @currSelectedIndex = @numShortcuts - 1
       @_updateSelected()
 
+    # Selects the target shortcut `<a>` element.
+    #
+    # Event:
+    #
+    # * dateselect - Passes the `Date` object as the second argument to callback.
     select: ($target) ->
       data = $target.data()
       wrapper = moment(new Date())
@@ -132,15 +135,22 @@
 
       @$el.trigger 'dateselect', wrapper.toDate()
 
+    # Calls select for any clicks on shortcut `<a>` elements.
     _onShortcutClick: (e) => @select WDP.$(e.target)
+    
 
+    # Updates the class names to reflect the currently selected shortcut.
+    #
+    # Calls select method on the shortcut `<a>` element.
     _updateSelected: =>
       @resetClass()
       $target = @$el.find(".wdp-shortcut[data-shortcut-num=#{@currSelectedIndex}]").addClass 'wdp-shortcut-active'
       @select $target
 
 
+  # Main datepicker widget.
   class WDP.WaveDatepicker
+    # Format is as specified in [moment.js](http://momentjs.com/).
     _defaultFormat: 'YYYY-MM-DD'
 
     # State our picker is currently in.
@@ -178,17 +188,21 @@
       @_updateSelection()
       return this
 
+    # Shows the widget if not shown already.
     show: =>
-      @_isShown = true
-      @$datepicker.addClass 'show'
-      @height = @$el.outerHeight()
-      @_place()
-      @$window.on 'resize', @_place
+      unless @_isShown
+        @_isShown = true
+        @$datepicker.addClass 'show'
+        @height = @$el.outerHeight()
+        @_place()
+        @$window.on 'resize', @_place
 
+    # Hides the widget if it is shown.
     hide: =>
-      @_isShown = false
-      @$datepicker.removeClass 'show'
-      @$window.off 'resize', @_place
+      if @_isShown
+        @_isShown = false
+        @$datepicker.removeClass 'show'
+        @$window.off 'resize', @_place
 
     # Sets the Date object for this widget and update `<input>` field.
     setDate: (date) =>
@@ -218,19 +232,10 @@
         @_state.month += 1
       @render()
 
+    # Cleanup method.
     destroy: =>
       @$datepicker.remove()
       @$el.removeData('datepicker')
-
-    # Navigate to the previous month and select the date clicked
-    _prevSelect: (e) =>
-      @prev
-      @_selectDate e
-
-    # Navigate to the next month and select the date clicked
-    _nextSelect: (e) =>
-      @next
-      @_selectDate e
 
     _initElements: ->
       if @options.className
@@ -266,9 +271,7 @@
       @$datepicker.on 'mousedown', @_cancelEvent
       @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
       @$datepicker.on 'click', '.js-wdp-prev', @prev
-      @$datepicker.on 'click', '.js-wdp-prev-select', @_prevSelect
       @$datepicker.on 'click', '.js-wdp-next', @next
-      @$datepicker.on 'click', '.js-wdp-next-select', @_nextSelect
 
     _updateFromInput: =>
       # Reads the value of the `<input>` field and set it as the date.
@@ -334,7 +337,7 @@
           d = prevMonth.add('days', -1).date()
           formattedPrevMonth = @_formatDate new Date(@_state.year, @_state.month - 1, d)
           # + 1 because element at index zero is the <tr>
-          html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth js-wdp-prev-select\" data-date=\"#{formattedPrevMonth}\">#{d}</td>"
+          html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell\" data-date=\"#{formattedPrevMonth}\">#{d}</td>"
           paddingStart++
 
       # For formatting purposes in the following loop.
@@ -355,7 +358,7 @@
         formattedNextMonth = @_formatDate new Date(@_state.year, @_state.month + 1, d)
         if (index++) % 7 is 0
           html.push '</tr><tr class="wdp-calendar-row">'
-        html.push "<td class=\"wdp-calendar-othermonth js-wdp-next-select\" data-date=\"#{formattedNextMonth}\">#{d}</td>"
+        html.push "<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell\" data-date=\"#{formattedNextMonth}\">#{d}</td>"
 
       html.push '</tr>'
 
@@ -370,10 +373,10 @@
           fn = @shortcuts.selectNext
           offset = 7
 
-          @show() unless @_isShown
+          @show()
 
         when WDP.Keys.RETURN
-          @show() unless @_isShown
+          @show()
 
         when WDP.Keys.UP, WDP.Keys.K
           @_cancelEvent e
@@ -389,7 +392,7 @@
           offset = 1
 
         when WDP.Keys.ESC
-          @hide() if @_isShown
+          @hide()
 
       if e.shiftKey
         fn?()

@@ -33,10 +33,16 @@ module.exports = function(grunt) {
     },
     jasmine: {
       all: ['specrunner_headless.html']
+    },
+    min: {
+      dist: {
+        src: ['dist/wave-datepicker.js'],
+        dest: 'dist/wave-datepicker.min.js'
+      }
     }
   });
 
   // Default task.
-  grunt.registerTask('default', 'coffee less');
+  grunt.registerTask('default', 'coffee less min');
   grunt.registerTask('test', 'less coffee jasmine');
 };

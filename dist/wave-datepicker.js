@@ -13,31 +13,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
   var WDP;
   WDP = {};
   WDP.$ = $;
-  WDP.template = '\
-    <div class="wdp dropdown-menu">\
-      <div class="row-fluid">\
-        <div class="span5 wdp-shortcuts">\
-        </div>\
-        <div class="span7">\
-          <table class="table-condensed wdp-calendar">\
-            <thead>\
-              <tr>\
-                  <th class="wdp-prev">\
-                    <a href="javascript:void(0)" class="js-wdp-prev"><i class="icon-arrow-left"/></a>\
-                  </th>\
-                  <th colspan="5" class="wdp-month-and-year">\
-                  </th>\
-                  <th class="wdp-next">\
-                    <a href="javascript:void(0)" class="js-wdp-next"><i class="icon-arrow-right"/></a>\
-                  </th>\
-              </tr>\
-            </thead>\
-            <tbody>\
-            </tbody>\
-          </table>\
-        </div>\
-      </div>\
-    </div>';
+  WDP.template = "<div class=\"wdp dropdown-menu\">  <div class=\"row-fluid\">    <div class=\"span5 wdp-shortcuts\"></div>    <div class=\"span7\">      <table class=\"table-condensed wdp-calendar\">        <thead>          <tr>              <th class=\"wdp-prev\">                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\"><i class=\"icon-arrow-left\"/></a>              </th>              <th colspan=\"5\" class=\"wdp-month-and-year\"></th>              <th class=\"wdp-next\">                <a href=\"javascript:void(0)\" class=\"js-wdp-next\"><i class=\"icon-arrow-right\"/></a>              </th>          </tr>        </thead>        <tbody></tbody>      </table>    </div>  </div></div>";
   WDP.DateUtils = {
     format: function(date, format) {
       return moment(date).format(format);
@@ -170,10 +146,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
       this._updateFromInput = __bind(this._updateFromInput, this);
 
-      this._nextSelect = __bind(this._nextSelect, this);
-
-      this._prevSelect = __bind(this._prevSelect, this);
-
       this.destroy = __bind(this.destroy, this);
 
       this.next = __bind(this.next, this);
@@ -217,17 +189,21 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype.show = function() {
-      this._isShown = true;
-      this.$datepicker.addClass('show');
-      this.height = this.$el.outerHeight();
-      this._place();
-      return this.$window.on('resize', this._place);
+      if (!this._isShown) {
+        this._isShown = true;
+        this.$datepicker.addClass('show');
+        this.height = this.$el.outerHeight();
+        this._place();
+        return this.$window.on('resize', this._place);
+      }
     };
 
     WaveDatepicker.prototype.hide = function() {
-      this._isShown = false;
-      this.$datepicker.removeClass('show');
-      return this.$window.off('resize', this._place);
+      if (this._isShown) {
+        this._isShown = false;
+        this.$datepicker.removeClass('show');
+        return this.$window.off('resize', this._place);
+      }
     };
 
     WaveDatepicker.prototype.setDate = function(date) {
@@ -267,16 +243,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return this.$el.removeData('datepicker');
     };
 
-    WaveDatepicker.prototype._prevSelect = function(e) {
-      this.prev;
-      return this._selectDate(e);
-    };
-
-    WaveDatepicker.prototype._nextSelect = function(e) {
-      this.next;
-      return this._selectDate(e);
-    };
-
     WaveDatepicker.prototype._initElements = function() {
       if (this.options.className) {
         this.$el.addClass(this.options.className);
@@ -306,9 +272,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$datepicker.on('mousedown', this._cancelEvent);
       this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
-      this.$datepicker.on('click', '.js-wdp-prev-select', this._prevSelect);
-      this.$datepicker.on('click', '.js-wdp-next', this.next);
-      return this.$datepicker.on('click', '.js-wdp-next-select', this._nextSelect);
+      return this.$datepicker.on('click', '.js-wdp-next', this.next);
     };
 
     WaveDatepicker.prototype._updateFromInput = function() {
@@ -368,7 +332,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
           }
           d = prevMonth.add('days', -1).date();
           formattedPrevMonth = this._formatDate(new Date(this._state.year, this._state.month - 1, d));
-          html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth js-wdp-prev-select\" data-date=\"" + formattedPrevMonth + "\">" + d + "</td>";
+          html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell\" data-date=\"" + formattedPrevMonth + "\">" + d + "</td>";
           paddingStart++;
         }
       }
@@ -388,7 +352,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         if ((index++) % 7 === 0) {
           html.push('</tr><tr class="wdp-calendar-row">');
         }
-        html.push("<td class=\"wdp-calendar-othermonth js-wdp-next-select\" data-date=\"" + formattedNextMonth + "\">" + d + "</td>");
+        html.push("<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell\" data-date=\"" + formattedNextMonth + "\">" + d + "</td>");
       }
       html.push('</tr>');
       return this.$tbody.html(html.join(''));
@@ -407,14 +371,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
           this._cancelEvent(e);
           fn = this.shortcuts.selectNext;
           offset = 7;
-          if (!this._isShown) {
-            this.show();
-          }
+          this.show();
           break;
         case WDP.Keys.RETURN:
-          if (!this._isShown) {
-            this.show();
-          }
+          this.show();
           break;
         case WDP.Keys.UP:
         case WDP.Keys.K:
@@ -433,9 +393,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
           offset = 1;
           break;
         case WDP.Keys.ESC:
-          if (this._isShown) {
-            this.hide();
-          }
+          this.hide();
       }
       if (e.shiftKey) {
         return typeof fn === "function" ? fn() : void 0;

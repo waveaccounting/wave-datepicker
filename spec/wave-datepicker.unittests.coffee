@@ -19,8 +19,6 @@ describe 'Wave Datepicker unit tests', ->
         _cancelEvent: 'FUNCTION'
         prev: 'FUNCTION'
         next: 'FUNCTION'
-        _prevSelect: 'FUNCTION'
-        _nextSelect: 'FUNCTION'
         _onShortcutClick: 'FUNCTION'
         _selectDate: 'FUNCTION'
         render: 'FUNCTION'
@@ -38,8 +36,6 @@ describe 'Wave Datepicker unit tests', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
       expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev', @context.prev)
       expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next', @context.next)
-      expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev-select', @context._prevSelect)
-      expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next-select', @context._nextSelect)
 
     it 'should bind datechange event to render method', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
@@ -154,6 +150,7 @@ describe 'Wave Datepicker unit tests', ->
       expect(context.height).toBe('HEIGHT')
       expect(context._place).toHaveBeenCalledOnce()
       expect(context.$window.on).toHaveBeenCalledWith('resize', context._place)
+      expect(context._isShown).toBeTruthy()
 
 
   describe 'hide', ->
@@ -164,11 +161,13 @@ describe 'Wave Datepicker unit tests', ->
         _place: 'PLACE'
         $window:
           off: sinon.spy()
+        _isShown: true
 
       date = WDP.WaveDatepicker.prototype.hide.call context
 
       expect(context.$datepicker.removeClass).toHaveBeenCalledWith('show')
       expect(context.$window.off).toHaveBeenCalledWith('resize', context._place)
+      expect(context._isShown).not.toBeTruthy()
 
 
   describe '_onInputKeydown', ->
@@ -211,8 +210,6 @@ describe 'Wave Datepicker unit tests', ->
         @e.keyCode = WDP.Keys.DOWN
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         expect(@context.show).toHaveBeenCalledOnce()
-
-        @context._isShown = false  # Reset state
 
         @e.keyCode = WDP.Keys.J
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
@@ -308,7 +305,6 @@ describe 'Wave Datepicker unit tests', ->
     describe 'When Esc if pressed', ->
       it 'should hide the datepicker', ->
         @e.keyCode = WDP.Keys.ESC
-        @context._isShown = true
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         expect(@context.hide).toHaveBeenCalledOnce()
 
