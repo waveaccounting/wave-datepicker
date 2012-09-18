@@ -58,6 +58,8 @@
 
   # For keydown event handler
   WDP.Keys =
+    RETURN: 13
+    ESC: 27
     LEFT: 37
     UP: 38
     RIGHT: 39
@@ -177,12 +179,14 @@
       return this
 
     show: =>
+      @_isShown = true
       @$datepicker.addClass 'show'
       @height = @$el.outerHeight()
       @_place()
       @$window.on 'resize', @_place
 
     hide: =>
+      @_isShown = false
       @$datepicker.removeClass 'show'
       @$window.off 'resize', @_place
 
@@ -366,6 +370,11 @@
           fn = @shortcuts.selectNext
           offset = 7
 
+          @show() unless @_isShown
+
+        when WDP.Keys.RETURN
+          @show() unless @_isShown
+
         when WDP.Keys.UP, WDP.Keys.K
           @_cancelEvent e
           fn = @shortcuts.selectPrev
@@ -378,6 +387,9 @@
         when WDP.Keys.RIGHT, WDP.Keys.L
           @_cancelEvent e
           offset = 1
+
+        when WDP.Keys.ESC
+          @hide() if @_isShown
 
       if e.shiftKey
         fn?()

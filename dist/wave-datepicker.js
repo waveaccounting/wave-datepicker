@@ -52,6 +52,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     return WDP.DateUtils.parse = options.dateParse || WDP.DateUtils.parse;
   };
   WDP.Keys = {
+    RETURN: 13,
+    ESC: 27,
     LEFT: 37,
     UP: 38,
     RIGHT: 39,
@@ -215,6 +217,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype.show = function() {
+      this._isShown = true;
       this.$datepicker.addClass('show');
       this.height = this.$el.outerHeight();
       this._place();
@@ -222,6 +225,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype.hide = function() {
+      this._isShown = false;
       this.$datepicker.removeClass('show');
       return this.$window.off('resize', this._place);
     };
@@ -403,6 +407,14 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
           this._cancelEvent(e);
           fn = this.shortcuts.selectNext;
           offset = 7;
+          if (!this._isShown) {
+            this.show();
+          }
+          break;
+        case WDP.Keys.RETURN:
+          if (!this._isShown) {
+            this.show();
+          }
           break;
         case WDP.Keys.UP:
         case WDP.Keys.K:
@@ -419,6 +431,11 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         case WDP.Keys.L:
           this._cancelEvent(e);
           offset = 1;
+          break;
+        case WDP.Keys.ESC:
+          if (this._isShown) {
+            this.hide();
+          }
       }
       if (e.shiftKey) {
         return typeof fn === "function" ? fn() : void 0;

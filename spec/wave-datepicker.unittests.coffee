@@ -181,6 +181,8 @@ describe 'Wave Datepicker unit tests', ->
         _cancelEvent: sinon.spy()
         date: new  Date(2012, 7, 1, 0, 0, 0, 0)
         setDate: sinon.spy()
+        show: sinon.spy()
+        hide: sinon.spy()
 
       @e = {}
 
@@ -205,6 +207,18 @@ describe 'Wave Datepicker unit tests', ->
         diff = date.getTime() - @context.date.getTime()
         expect(diff).toEqual(7 * 24 * 60 * 60 * 1000)
 
+      it 'should show the datepicker if not already shown', ->
+        @e.keyCode = WDP.Keys.DOWN
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        expect(@context.show).toHaveBeenCalledOnce()
+
+        @context._isShown = false  # Reset state
+
+        @e.keyCode = WDP.Keys.J
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        expect(@context.show).toHaveBeenCalledTwice()
+
+
       describe 'When Shift is pressed', ->
         it 'should call selectNext on Shortcuts', ->
           @e.shiftKey = true
@@ -215,7 +229,7 @@ describe 'Wave Datepicker unit tests', ->
           expect(@context.shortcuts.selectNext).toHaveBeenCalledTwice()
 
 
-    describe 'When UP or J pressed', ->
+    describe 'When UP or K pressed', ->
       it 'should cancel event', ->
         @e.keyCode = WDP.Keys.UP
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
@@ -289,6 +303,21 @@ describe 'Wave Datepicker unit tests', ->
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
         expect(diff).toEqual(-1 * 24 * 60 * 60 * 1000)
+
+
+    describe 'When Esc if pressed', ->
+      it 'should hide the datepicker', ->
+        @e.keyCode = WDP.Keys.ESC
+        @context._isShown = true
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        expect(@context.hide).toHaveBeenCalledOnce()
+
+
+    describe 'When Return if pressed', ->
+      it 'should show the datepicker', ->
+        @e.keyCode = WDP.Keys.RETURN
+        WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
+        expect(@context.show).toHaveBeenCalledOnce()
 
 
 describe 'Shortcuts', ->
