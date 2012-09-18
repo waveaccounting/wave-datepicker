@@ -24,13 +24,19 @@
               <th class=\"wdp-prev\">
                 <a href=\"javascript:void(0)\" class=\"js-wdp-prev\"><i class=\"icon-arrow-left\"/></a>
               </th>
-              <th colspan=\"5\" class=\"wdp-month-and-year\"></th>
+              <th colspan=\"5\" class=\"wdp-month-and-year js-wdp-set-month-year\"></th>
               <th class=\"wdp-next\">
                 <a href=\"javascript:void(0)\" class=\"js-wdp-next\"><i class=\"icon-arrow-right\"/></a>
               </th>
           </tr>
         </thead>
         <tbody></tbody>
+      </table>
+      <table class=\"table-condensed wdp-year-calendar\">
+      <tbody></tbody>
+      </table>
+      <table class=\"table-condensed wdp-month-calendar\">
+      <tbody></tbody>
       </table>
     </div>
   </div>
@@ -89,11 +95,11 @@
       @numShortcuts = 0
       for name, offset of @options
         shortcuts.push "<li><a
-          data-days=\"#{offset.days or 0}\" 
+          data-days=\"#{offset.days or 0}\"
           data-months=\"#{offset.months or 0}\"
           data-years=\"#{offset.years or 0}\"
           data-shortcut-num=\"#{@numShortcuts}\"
-          class=\"wdp-shortcut js-wdp-shortcut\" 
+          class=\"wdp-shortcut js-wdp-shortcut\"
           href=\"javascript:void(0)\">#{name}</a></li>"
         @numShortcuts++
       @$el.html shortcuts.join ''
@@ -137,7 +143,6 @@
 
     # Calls select for any clicks on shortcut `<a>` elements.
     _onShortcutClick: (e) => @select WDP.$(e.target)
-    
 
     # Updates the class names to reflect the currently selected shortcut.
     #
@@ -192,6 +197,7 @@
     show: =>
       unless @_isShown
         @_isShown = true
+        @$calendar.show()
         @$datepicker.addClass 'show'
         @height = @$el.outerHeight()
         @_place()
@@ -201,6 +207,8 @@
     hide: =>
       if @_isShown
         @_isShown = false
+        @$calendarYear.hide()
+        @$calendarMonth.hide()
         @$datepicker.removeClass 'show'
         @$window.off 'resize', @_place
 
@@ -247,7 +255,11 @@
       # Set up elements cache
       @$shortcuts = @$datepicker.find '.wdp-shortcuts'
       @$calendar = @$datepicker.find '.wdp-calendar'
-      @$tbody = @$calendar.find 'tbody'
+      @$calendarTbody = @$calendar.find 'tbody'
+      @$calendarYear = @$datepicker.find '.wdp-year-calendar'
+      @$calendarYearTbody = @$calendarYear.find 'tbody'
+      @$calendarMonth = @$datepicker.find '.wdp-month-calendar'
+      @$calendarMonthTbody = @$calendarMonth.find 'tbody'
       @$monthAndYear = @$calendar.find '.wdp-month-and-year'
       @$window = $ window
 
@@ -263,6 +275,7 @@
     _initEvents: ->
       # Show and hide picker
       @$el.on('focus', @show)
+      @$el.on('mousedown', @show)
       @$el.on('blur', @hide)
       @$el.on 'change', @_updateFromInput
       @$el.on 'datechange', @render
@@ -272,6 +285,8 @@
       @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
       @$datepicker.on 'click', '.js-wdp-prev', @prev
       @$datepicker.on 'click', '.js-wdp-next', @next
+      @$datepicker.on 'click', '.js-wdp-set-month-year', @_showYearGrid
+      @$datepicker.on 'click', '.js-wdp-year-calendar-cell', @_showMonthGrid
 
     _updateFromInput: =>
       # Reads the value of the `<input>` field and set it as the date.
@@ -306,6 +321,46 @@
         left: offset.left
         zIndex: zIndex
       )
+
+    _showYearGrid: =>
+      html = []
+
+      m = moment(new Date(@_state.year - 9, 0, 1))
+      for i in [0..19]
+        if i % 5 is 0
+          html.push "<tr class=\"wdp-calendar-row\">"
+        if m.year() is @_state.year
+          currentClass = "wdp-current-month-year-cell"
+        else
+          currentClass = ""
+        html.push "<td class=\"js-wdp-year-calendar-cell #{currentClass}\" data-date=\"#{m.format("YYYY-MM-DD")}\">#{m.format("YYYY")}</td>"
+        m.add "years", 1
+
+      html.push "</tr>"
+      @$calendarYearTbody.html html.join ''
+      @$calendar.hide()
+      @$calendarYear.show()
+
+    _showMonthGrid: (e) =>
+      html = []
+      date = moment(@_parseDate $(e.target).data('date'))
+
+      m = moment(new Date(date.year(), 0, 1))
+      for i in [0..11]
+        if i % 3 is 0
+          html.push "<tr class=\"wdp-calendar-row\">"
+        if m.month() is @_state.month
+          currentClass = 'wdp-current-month-year-cell'
+        else
+          currentClass = ""
+        html.push "<td class=\"js-wdp-calendar-cell #{currentClass}\" data-date=\"#{m.format("YYYY-MM-DD")}\">#{m.format("MMM")}</td>"
+        m.add "months", 1
+
+      html.push "</tr>"
+      @$calendarMonthTbody.html html.join ''
+
+      @$calendarYear.hide()
+      @$calendarMonth.show()
 
     # Fills in calendar based on month and year we're currently viewing.
     _fill: ->
@@ -362,7 +417,10 @@
 
       html.push '</tr>'
 
-      @$tbody.html html.join ''
+      @$calendarYear.hide()
+      @$calendarMonth.hide()
+      @$calendarTbody.html html.join ''
+      @$calendar.show()
 
     _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
 
@@ -404,10 +462,12 @@
     _updateSelection: ->
       # Update selection
       dateStr = @_formatDate @date
-      @$tbody.find('.wdp-selected').removeClass('wdp-selected')
-      @$tbody.find("td[data-date=#{dateStr}]").addClass('wdp-selected')
+      @$calendarTbody.find('.wdp-selected').removeClass('wdp-selected')
+      @$calendarTbody.find("td[data-date=#{dateStr}]").addClass('wdp-selected')
 
     _selectDate: (e) =>
+      @$calendarMonth.hide()
+      @$calendar.show()
       @shortcuts.resetClass()
       date = @_parseDate $(e.target).data('date')
       @setDate date
