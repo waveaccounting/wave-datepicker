@@ -330,19 +330,22 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       var currentClass, html, i, m, _i;
       html = [];
       m = moment(new Date(this._state.year - 9, 0, 1));
-      for (i = _i = 0; _i <= 19; i = ++_i) {
-        if (i % 5 === 0) {
-          html.push("<tr class=\"wdp-calendar-row\">");
-        }
+      html.push("<tr class=\"wdp-calendar-row\">");
+      for (i = _i = 1; _i <= 20; i = ++_i) {
         if (m.year() === this._state.year) {
-          currentClass = "wdp-current-month-year-cell";
+          currentClass = "wdp-selected";
         } else {
           currentClass = "";
         }
         html.push("<td class=\"js-wdp-year-calendar-cell " + currentClass + "\" data-date=\"" + (m.format("YYYY-MM-DD")) + "\">" + (m.format("YYYY")) + "</td>");
+        if (i % 5 === 0) {
+          html.push("</tr>");
+          if (i !== 20) {
+            html.push("<tr class\"wdp-calendar-row\">");
+          }
+        }
         m.add("years", 1);
       }
-      html.push("</tr>");
       this.$calendarYearTbody.html(html.join(''));
       this.$calendar.hide();
       return this.$calendarYear.show();
@@ -353,19 +356,18 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       html = [];
       date = moment(this._parseDate($(e.target).data('date')));
       m = moment(new Date(date.year(), 0, 1));
-      for (i = _i = 0; _i <= 11; i = ++_i) {
-        if (i % 3 === 0) {
-          html.push("<tr class=\"wdp-calendar-row\">");
-        }
-        if (m.month() === this._state.month) {
-          currentClass = 'wdp-current-month-year-cell';
-        } else {
-          currentClass = "";
-        }
+      html.push("<tr class=\"wdp-calendar-row\">");
+      for (i = _i = 1; _i <= 12; i = ++_i) {
+        currentClass = m.month() === this._state.month ? 'wdp-selected' : '';
         html.push("<td class=\"js-wdp-calendar-cell " + currentClass + "\" data-date=\"" + (m.format("YYYY-MM-DD")) + "\">" + (m.format("MMM")) + "</td>");
+        if (i % 3 === 0) {
+          html.push("</tr>");
+          if (i !== 12) {
+            html.push("<tr class=\"wdp-calendar-row\">");
+          }
+        }
         m.add("months", 1);
       }
-      html.push("</tr>");
       this.$calendarMonthTbody.html(html.join(''));
       this.$calendarYear.hide();
       return this.$calendarMonth.show();

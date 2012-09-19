@@ -148,11 +148,6 @@
 .wdp-month-calendar td:hover:not(.wdp-selected) {
   background-color: #dddddd;
 }
-.wdp-calendar td.wdp-current-month,
-.wdp-year-calendar td.wdp-current-month,
-.wdp-month-calendar td.wdp-current-month {
-  background-color: pink;
-}
 .wdp-calendar .wdp-prev,
 .wdp-year-calendar .wdp-prev,
 .wdp-month-calendar .wdp-prev {
@@ -208,13 +203,4 @@
 .wdp-month-calendar tr,
 .wdp-year-calendar tr {
   height: 60px;
-}
-.wdp-month-calendar td:hover,
-.wdp-year-calendar td:hover {
-  background-color: #7b7b7b;
-  color: #ffffff;
-}
-.wdp-month-calendar td.wdp-current-month-year-cell,
-.wdp-year-calendar td.wdp-current-month-year-cell {
-  background-color: #dddddd;
 }

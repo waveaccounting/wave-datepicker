@@ -274,9 +274,9 @@
 
     _initEvents: ->
       # Show and hide picker
-      @$el.on('focus', @show)
-      @$el.on('mousedown', @show)
-      @$el.on('blur', @hide)
+      @$el.on 'focus', @show
+      @$el.on 'mousedown', @show
+      @$el.on 'blur', @hide
       @$el.on 'change', @_updateFromInput
       @$el.on 'datechange', @render
       @$el.on 'keydown', @_onInputKeydown
@@ -326,17 +326,18 @@
       html = []
 
       m = moment(new Date(@_state.year - 9, 0, 1))
-      for i in [0..19]
-        if i % 5 is 0
-          html.push "<tr class=\"wdp-calendar-row\">"
-        if m.year() is @_state.year
-          currentClass = "wdp-current-month-year-cell"
-        else
-          currentClass = ""
+      html.push '<tr class="wdp-calendar-row">'
+      for i in [1..20]
+        currentClass = if m.year() is @_state.year then 'wdp-selected' else ''
         html.push "<td class=\"js-wdp-year-calendar-cell #{currentClass}\" data-date=\"#{m.format("YYYY-MM-DD")}\">#{m.format("YYYY")}</td>"
-        m.add "years", 1
 
-      html.push "</tr>"
+        if i % 5 is 0
+          html.push '</tr>'
+          if i isnt 20
+            html.push '<tr class"wdp-calendar-row">'
+
+        m.add 'years', 1
+
       @$calendarYearTbody.html html.join ''
       @$calendar.hide()
       @$calendarYear.show()
@@ -346,17 +347,18 @@
       date = moment(@_parseDate $(e.target).data('date'))
 
       m = moment(new Date(date.year(), 0, 1))
-      for i in [0..11]
-        if i % 3 is 0
-          html.push "<tr class=\"wdp-calendar-row\">"
-        if m.month() is @_state.month
-          currentClass = 'wdp-current-month-year-cell'
-        else
-          currentClass = ""
+      html.push '<tr class="wdp-calendar-row">'
+      for i in [1..12]
+        currentClass = if m.month() is @_state.month then 'wdp-selected' else ''
         html.push "<td class=\"js-wdp-calendar-cell #{currentClass}\" data-date=\"#{m.format("YYYY-MM-DD")}\">#{m.format("MMM")}</td>"
-        m.add "months", 1
 
-      html.push "</tr>"
+        if i % 3 is 0
+          html.push '</tr>'
+          if i isnt 12
+            html.push '<tr class="wdp-calendar-row">'
+
+        m.add 'months', 1
+
       @$calendarMonthTbody.html html.join ''
 
       @$calendarYear.hide()
