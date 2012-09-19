@@ -49,7 +49,7 @@
         }
     }
 }
-.wdp-calendar {
+.wdp-calendar, .wdp-year-calendar, .wdp-month-calendar {
     width: 100%;
     a {
         padding: 2px 3px;
@@ -76,5 +76,11 @@
     .wdp-selected {
         .activeGradient();
         color: @white;
+    }
+}
+
+.wdp-month-calendar, .wdp-year-calendar {
+    tr {
+        height: 60px;
     }
 }

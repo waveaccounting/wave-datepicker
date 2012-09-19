@@ -13,7 +13,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
   var WDP;
   WDP = {};
   WDP.$ = $;
-  WDP.template = "<div class=\"wdp dropdown-menu\">  <div class=\"row-fluid\">    <div class=\"span5 wdp-shortcuts\"></div>    <div class=\"span7\">      <table class=\"table-condensed wdp-calendar\">        <thead>          <tr>              <th class=\"wdp-prev\">                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\"><i class=\"icon-arrow-left\"/></a>              </th>              <th colspan=\"5\" class=\"wdp-month-and-year\"></th>              <th class=\"wdp-next\">                <a href=\"javascript:void(0)\" class=\"js-wdp-next\"><i class=\"icon-arrow-right\"/></a>              </th>          </tr>        </thead>        <tbody></tbody>      </table>    </div>  </div></div>";
+  WDP.template = "<div class=\"wdp dropdown-menu\">  <div class=\"row-fluid\">    <div class=\"span5 wdp-shortcuts\"></div>    <div class=\"span7\">      <table class=\"table-condensed wdp-calendar\">        <thead>          <tr>              <th class=\"wdp-prev\">                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\"><i class=\"icon-arrow-left\"/></a>              </th>              <th colspan=\"5\" class=\"wdp-month-and-year js-wdp-set-month-year\"></th>              <th class=\"wdp-next\">                <a href=\"javascript:void(0)\" class=\"js-wdp-next\"><i class=\"icon-arrow-right\"/></a>              </th>          </tr>        </thead>        <tbody></tbody>      </table>      <table class=\"table-condensed wdp-year-calendar\">      <tbody></tbody>      </table>      <table class=\"table-condensed wdp-month-calendar\">      <tbody></tbody>      </table>    </div>  </div></div>";
   WDP.DateUtils = {
     format: function(date, format) {
       return moment(date).format(format);
@@ -72,7 +72,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       _ref = this.options;
       for (name in _ref) {
         offset = _ref[name];
-        shortcuts.push("<li><a          data-days=\"" + (offset.days || 0) + "\"           data-months=\"" + (offset.months || 0) + "\"          data-years=\"" + (offset.years || 0) + "\"          data-shortcut-num=\"" + this.numShortcuts + "\"          class=\"wdp-shortcut js-wdp-shortcut\"           href=\"javascript:void(0)\">" + name + "</a></li>");
+        shortcuts.push("<li><a          data-days=\"" + (offset.days || 0) + "\"          data-months=\"" + (offset.months || 0) + "\"          data-years=\"" + (offset.years || 0) + "\"          data-shortcut-num=\"" + this.numShortcuts + "\"          class=\"wdp-shortcut js-wdp-shortcut\"          href=\"javascript:void(0)\">" + name + "</a></li>");
         this.numShortcuts++;
       }
       this.$el.html(shortcuts.join(''));
@@ -141,6 +141,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
       this._cancelEvent = __bind(this._cancelEvent, this);
 
+      this._showMonthGrid = __bind(this._showMonthGrid, this);
+
+      this._showYearGrid = __bind(this._showYearGrid, this);
+
       this._place = __bind(this._place, this);
 
       this._updateMonthAndYear = __bind(this._updateMonthAndYear, this);
@@ -192,6 +196,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype.show = function() {
       if (!this._isShown) {
         this._isShown = true;
+        this.$calendar.show();
         this.$datepicker.addClass('show');
         this.height = this.$el.outerHeight();
         this._place();
@@ -203,6 +208,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype.hide = function() {
       if (this._isShown) {
         this._isShown = false;
+        this.$calendarYear.hide();
+        this.$calendarMonth.hide();
         this.$datepicker.removeClass('show');
         this.$window.off('resize', this._place);
         return this.$document.off('click', this.hide);
@@ -253,7 +260,11 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$el.val(this._formatDate(this.date));
       this.$shortcuts = this.$datepicker.find('.wdp-shortcuts');
       this.$calendar = this.$datepicker.find('.wdp-calendar');
-      this.$tbody = this.$calendar.find('tbody');
+      this.$calendarTbody = this.$calendar.find('tbody');
+      this.$calendarYear = this.$datepicker.find('.wdp-year-calendar');
+      this.$calendarYearTbody = this.$calendarYear.find('tbody');
+      this.$calendarMonth = this.$datepicker.find('.wdp-month-calendar');
+      this.$calendarMonthTbody = this.$calendarMonth.find('tbody');
       this.$monthAndYear = this.$calendar.find('.wdp-month-and-year');
       this.$window = $(window);
       return this.$document = $(document);
@@ -269,6 +280,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype._initEvents = function() {
       this.$el.on('focus', this.show);
+      this.$el.on('mousedown', this.show);
       this.$el.on('change', this._updateFromInput);
       this.$el.on('datechange', this.render);
       this.$el.on('keydown', this._onInputKeydown);
@@ -277,6 +289,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
       this.$datepicker.on('click', '.js-wdp-next', this.next);
       this.$datepicker.on('click', this._cancelEvent);
+      this.$datepicker.on('click', '.js-wdp-set-month-year', this._showYearGrid);
+      this.$datepicker.on('click', '.js-wdp-year-calendar-cell', this._showMonthGrid);
       return this.$datepicker.on('mousedown', this._cancelEvent);
     };
 
@@ -315,6 +329,49 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         left: offset.left,
         zIndex: zIndex
       });
+    };
+
+    WaveDatepicker.prototype._showYearGrid = function() {
+      var currentClass, html, i, m, _i;
+      html = [];
+      m = moment(new Date(this._state.year - 9, 0, 1));
+      html.push('<tr class="wdp-calendar-row">');
+      for (i = _i = 1; _i <= 20; i = ++_i) {
+        currentClass = m.year() === this._state.year ? 'wdp-selected' : '';
+        html.push("<td class=\"js-wdp-year-calendar-cell " + currentClass + "\" data-date=\"" + (m.format("YYYY-MM-DD")) + "\">" + (m.format("YYYY")) + "</td>");
+        if (i % 5 === 0) {
+          html.push('</tr>');
+          if (i !== 20) {
+            html.push('<tr class"wdp-calendar-row">');
+          }
+        }
+        m.add('years', 1);
+      }
+      this.$calendarYearTbody.html(html.join(''));
+      this.$calendar.hide();
+      return this.$calendarYear.show();
+    };
+
+    WaveDatepicker.prototype._showMonthGrid = function(e) {
+      var currentClass, date, html, i, m, _i;
+      html = [];
+      date = moment(this._parseDate($(e.target).data('date')));
+      m = moment(new Date(date.year(), 0, 1));
+      html.push('<tr class="wdp-calendar-row">');
+      for (i = _i = 1; _i <= 12; i = ++_i) {
+        currentClass = m.month() === this._state.month ? 'wdp-selected' : '';
+        html.push("<td class=\"js-wdp-calendar-cell " + currentClass + "\" data-date=\"" + (m.format("YYYY-MM-DD")) + "\">" + (m.format("MMM")) + "</td>");
+        if (i % 3 === 0) {
+          html.push('</tr>');
+          if (i !== 12) {
+            html.push('<tr class="wdp-calendar-row">');
+          }
+        }
+        m.add('months', 1);
+      }
+      this.$calendarMonthTbody.html(html.join(''));
+      this.$calendarYear.hide();
+      return this.$calendarMonth.show();
     };
 
     WaveDatepicker.prototype._fill = function() {
@@ -360,7 +417,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         html.push("<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell\" data-date=\"" + formattedNextMonth + "\">" + d + "</td>");
       }
       html.push('</tr>');
-      return this.$tbody.html(html.join(''));
+      this.$calendarYear.hide();
+      this.$calendarMonth.hide();
+      this.$calendarTbody.html(html.join(''));
+      return this.$calendar.show();
     };
 
     WaveDatepicker.prototype._cancelEvent = function(e) {
@@ -413,12 +473,14 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype._updateSelection = function() {
       var dateStr;
       dateStr = this._formatDate(this.date);
-      this.$tbody.find('.wdp-selected').removeClass('wdp-selected');
-      return this.$tbody.find("td[data-date=" + dateStr + "]").addClass('wdp-selected');
+      this.$calendarTbody.find('.wdp-selected').removeClass('wdp-selected');
+      return this.$calendarTbody.find("td[data-date=" + dateStr + "]").addClass('wdp-selected');
     };
 
     WaveDatepicker.prototype._selectDate = function(e) {
       var date;
+      this.$calendarMonth.hide();
+      this.$calendar.show();
       this.shortcuts.resetClass();
       date = this._parseDate($(e.target).data('date'));
       return this.setDate(date);
