@@ -34,6 +34,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     UP: 38,
     RIGHT: 39,
     DOWN: 40,
+    TAB: 9,
     H: 72,
     J: 74,
     K: 75,
@@ -199,7 +200,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         this.$datepicker.addClass('show');
         this.height = this.$el.outerHeight();
         this._place();
-        return this.$window.on('resize', this._place);
+        this.$window.on('resize', this._place);
+        return this.$document.on('click', this.hide);
       }
     };
 
@@ -209,7 +211,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         this.$calendarYear.hide();
         this.$calendarMonth.hide();
         this.$datepicker.removeClass('show');
-        return this.$window.off('resize', this._place);
+        this.$window.off('resize', this._place);
+        return this.$document.off('click', this.hide);
       }
     };
 
@@ -263,7 +266,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$calendarMonth = this.$datepicker.find('.wdp-month-calendar');
       this.$calendarMonthTbody = this.$calendarMonth.find('tbody');
       this.$monthAndYear = this.$calendar.find('.wdp-month-and-year');
-      return this.$window = $(window);
+      this.$window = $(window);
+      return this.$document = $(document);
     };
 
     WaveDatepicker.prototype._initPicker = function() {
@@ -277,16 +281,15 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype._initEvents = function() {
       this.$el.on('focus', this.show);
       this.$el.on('mousedown', this.show);
-      this.$el.on('blur', this.hide);
       this.$el.on('change', this._updateFromInput);
       this.$el.on('datechange', this.render);
       this.$el.on('keydown', this._onInputKeydown);
-      this.$datepicker.on('mousedown', this._cancelEvent);
+      this.$el.on('click', this._cancelEvent);
       this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
       this.$datepicker.on('click', '.js-wdp-next', this.next);
-      this.$datepicker.on('click', '.js-wdp-set-month-year', this._showYearGrid);
-      return this.$datepicker.on('click', '.js-wdp-year-calendar-cell', this._showMonthGrid);
+      this.$datepicker.on('click', this._cancelEvent);
+      return this.$datepicker.on('mousedown', this._cancelEvent);
     };
 
     WaveDatepicker.prototype._updateFromInput = function() {
@@ -330,21 +333,17 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       var currentClass, html, i, m, _i;
       html = [];
       m = moment(new Date(this._state.year - 9, 0, 1));
-      html.push("<tr class=\"wdp-calendar-row\">");
+      html.push('<tr class="wdp-calendar-row">');
       for (i = _i = 1; _i <= 20; i = ++_i) {
-        if (m.year() === this._state.year) {
-          currentClass = "wdp-selected";
-        } else {
-          currentClass = "";
-        }
+        currentClass = m.year() === this._state.year ? 'wdp-selected' : '';
         html.push("<td class=\"js-wdp-year-calendar-cell " + currentClass + "\" data-date=\"" + (m.format("YYYY-MM-DD")) + "\">" + (m.format("YYYY")) + "</td>");
         if (i % 5 === 0) {
-          html.push("</tr>");
+          html.push('</tr>');
           if (i !== 20) {
-            html.push("<tr class\"wdp-calendar-row\">");
+            html.push('<tr class"wdp-calendar-row">');
           }
         }
-        m.add("years", 1);
+        m.add('years', 1);
       }
       this.$calendarYearTbody.html(html.join(''));
       this.$calendar.hide();
@@ -356,17 +355,17 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       html = [];
       date = moment(this._parseDate($(e.target).data('date')));
       m = moment(new Date(date.year(), 0, 1));
-      html.push("<tr class=\"wdp-calendar-row\">");
+      html.push('<tr class="wdp-calendar-row">');
       for (i = _i = 1; _i <= 12; i = ++_i) {
         currentClass = m.month() === this._state.month ? 'wdp-selected' : '';
         html.push("<td class=\"js-wdp-calendar-cell " + currentClass + "\" data-date=\"" + (m.format("YYYY-MM-DD")) + "\">" + (m.format("MMM")) + "</td>");
         if (i % 3 === 0) {
-          html.push("</tr>");
+          html.push('</tr>');
           if (i !== 12) {
-            html.push("<tr class=\"wdp-calendar-row\">");
+            html.push('<tr class="wdp-calendar-row">');
           }
         }
-        m.add("months", 1);
+        m.add('months', 1);
       }
       this.$calendarMonthTbody.html(html.join(''));
       this.$calendarYear.hide();
@@ -457,6 +456,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
           offset = 1;
           break;
         case WDP.Keys.ESC:
+        case WDP.Keys.TAB:
           this.hide();
       }
       if (e.shiftKey) {

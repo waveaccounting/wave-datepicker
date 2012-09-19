@@ -64,6 +64,7 @@
     UP: 38
     RIGHT: 39
     DOWN: 40
+    TAB: 9
 
     # For Vim bindings
     H: 72
@@ -202,6 +203,7 @@
         @height = @$el.outerHeight()
         @_place()
         @$window.on 'resize', @_place
+        @$document.on 'click', @hide
 
     # Hides the widget if it is shown.
     hide: =>
@@ -211,6 +213,7 @@
         @$calendarMonth.hide()
         @$datepicker.removeClass 'show'
         @$window.off 'resize', @_place
+        @$document.off 'click', @hide
 
     # Sets the Date object for this widget and update `<input>` field.
     setDate: (date) =>
@@ -262,6 +265,7 @@
       @$calendarMonthTbody = @$calendarMonth.find 'tbody'
       @$monthAndYear = @$calendar.find '.wdp-month-and-year'
       @$window = $ window
+      @$document = $ document
 
     # Renders the widget and append to the `<body>`
     _initPicker: ->
@@ -276,17 +280,18 @@
       # Show and hide picker
       @$el.on 'focus', @show
       @$el.on 'mousedown', @show
-      @$el.on 'blur', @hide
       @$el.on 'change', @_updateFromInput
       @$el.on 'datechange', @render
       @$el.on 'keydown', @_onInputKeydown
+      @$el.on 'click', @_cancelEvent
 
-      @$datepicker.on 'mousedown', @_cancelEvent
       @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
       @$datepicker.on 'click', '.js-wdp-prev', @prev
       @$datepicker.on 'click', '.js-wdp-next', @next
+      @$datepicker.on 'click', @_cancelEvent
       @$datepicker.on 'click', '.js-wdp-set-month-year', @_showYearGrid
       @$datepicker.on 'click', '.js-wdp-year-calendar-cell', @_showMonthGrid
+      @$datepicker.on 'mousedown', @_cancelEvent
 
     _updateFromInput: =>
       # Reads the value of the `<input>` field and set it as the date.
@@ -424,7 +429,9 @@
       @$calendarTbody.html html.join ''
       @$calendar.show()
 
-    _cancelEvent: (e) => e.stopPropagation(); e.preventDefault()
+    _cancelEvent: (e) =>
+      e.stopPropagation()
+      e.preventDefault()
 
     _onInputKeydown: (e) =>
       switch e.keyCode
@@ -451,7 +458,7 @@
           @_cancelEvent e
           offset = 1
 
-        when WDP.Keys.ESC
+        when WDP.Keys.ESC, WDP.Keys.TAB
           @hide()
 
       if e.shiftKey
