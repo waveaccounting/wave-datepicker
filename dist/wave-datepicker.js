@@ -289,6 +289,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
       this.$datepicker.on('click', '.js-wdp-next', this.next);
       this.$datepicker.on('click', this._cancelEvent);
+      this.$datepicker.on('click', '.js-wdp-set-month-year', this._showYearGrid);
+      this.$datepicker.on('click', '.js-wdp-year-calendar-cell', this._showMonthGrid);
       return this.$datepicker.on('mousedown', this._cancelEvent);
     };
 
