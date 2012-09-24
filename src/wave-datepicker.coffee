@@ -420,8 +420,11 @@
       @setDate date
 
 
-  # Add jQuery widget
-  $.fn.datepicker = (options = {}, args...) ->
+  # Hold reference to old function in case it exists
+  _oldDatepicker = $.fn.datepicker
+    
+  # Init function for jQuery widget
+  WDP.init = (options = {}, args...) ->
     # Calling a method on widget.
     # Prevent methods beginning with _ to be called because they are private
     if typeof options is 'string' and options[0] isnt '_' and options isnt 'render'
@@ -435,6 +438,12 @@
 
       unless widget
         $this.data 'datepicker', (widget = new WDP.WaveDatepicker(options).render())
+
+  # Add jQuery widget
+  $.fn.datepicker = WDP.init
+
+  # Restore function to support previous datepicker
+  WDP.noConflict = -> $.fn.datepicker = _oldDatepicker
 
 
   return WDP

@@ -10,7 +10,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     return root.WDP = factory(root.$);
   }
 })(this, function($) {
-  var WDP;
+  var WDP, _oldDatepicker;
   WDP = {};
   WDP.$ = $;
   WDP.template = "<div class=\"wdp dropdown-menu\">  <div class=\"row-fluid\">    <div class=\"span5 wdp-shortcuts\"></div>    <div class=\"span7\">      <table class=\"table-condensed wdp-calendar\">        <thead>          <tr>              <th class=\"wdp-prev\">                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\"><i class=\"icon-arrow-left\"/></a>              </th>              <th colspan=\"5\" class=\"wdp-month-and-year\"></th>              <th class=\"wdp-next\">                <a href=\"javascript:void(0)\" class=\"js-wdp-next\"><i class=\"icon-arrow-right\"/></a>              </th>          </tr>        </thead>        <tbody></tbody>      </table>    </div>  </div></div>";
@@ -427,7 +427,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     return WaveDatepicker;
 
   })();
-  $.fn.datepicker = function() {
+  _oldDatepicker = $.fn.datepicker;
+  WDP.init = function() {
     var args, options, widget;
     options = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     if (options == null) {
@@ -448,6 +449,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         return $this.data('datepicker', (widget = new WDP.WaveDatepicker(options).render()));
       }
     });
+  };
+  $.fn.datepicker = WDP.init;
+  WDP.noConflict = function() {
+    return $.fn.datepicker = _oldDatepicker;
   };
   return WDP;
 });
