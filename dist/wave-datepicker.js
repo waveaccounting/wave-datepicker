@@ -243,7 +243,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this._state.month = this.date.getMonth();
       this._state.year = this.date.getFullYear();
       this.$el.val(this._formatDate(date));
-      return this.$el.trigger('datechange', this.date);
+      this.$el.trigger('datechange', this.date);
+      if (this.options.hideOnSelect) {
+        return this.hide();
+      }
     };
 
     WaveDatepicker.prototype.getDate = function() {
@@ -488,10 +491,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.shortcuts.resetClass();
       date = this._parseDate($(e.target).data('date'));
       this.$el.trigger('shortcutclear');
-      this.setDate(date);
-      if (this.options.hideOnSelect) {
-        return this.hide();
-      }
+      return this.setDate(date);
     };
 
     return WaveDatepicker;

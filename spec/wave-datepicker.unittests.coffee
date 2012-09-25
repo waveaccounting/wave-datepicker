@@ -66,6 +66,8 @@ describe 'Wave Datepicker unit tests', ->
           val: sinon.spy()
           trigger: sinon.spy()
         _state: {}
+        options:
+          hideOnSelect: false
       context._formatDate.returns 'FORMATTED'
 
       date =
@@ -333,8 +335,9 @@ describe 'Wave Datepicker unit tests', ->
         expect(@context.hide).toHaveBeenCalledOnce()
 
 
-    describe 'When Return if pressed', ->
+    describe 'When Return is pressed', ->
       it 'should show the datepicker', ->
+        @context._isShown = false
         @e.keyCode = WDP.Keys.RETURN
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         expect(@context.show).toHaveBeenCalledOnce()

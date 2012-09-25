@@ -244,6 +244,9 @@
       @$el.val @_formatDate(date)
       @$el.trigger 'datechange', @date
 
+      if @options.hideOnSelect
+        @hide()
+
     getDate: -> @date
 
     # Navigate to prev month.
@@ -470,9 +473,6 @@
       date = @_parseDate $(e.target).data('date')
       @$el.trigger 'shortcutclear'
       @setDate date
-
-      if @options.hideOnSelect
-        @hide()
 
 
   # Hold reference to old function in case it exists
