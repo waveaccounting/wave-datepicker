@@ -66,13 +66,21 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     }
 
     Shortcuts.prototype.render = function() {
-      var name, offset, shortcuts, _ref;
+      var extraAttributes, k, name, options, shortcuts, v, _ref, _ref1;
       shortcuts = [];
       this.numShortcuts = 0;
       _ref = this.options;
       for (name in _ref) {
-        offset = _ref[name];
-        shortcuts.push("<li><a          data-days=\"" + (offset.days || 0) + "\"           data-months=\"" + (offset.months || 0) + "\"          data-years=\"" + (offset.years || 0) + "\"          data-shortcut-num=\"" + this.numShortcuts + "\"          class=\"wdp-shortcut js-wdp-shortcut\"           href=\"javascript:void(0)\">" + name + "</a></li>");
+        options = _ref[name];
+        extraAttributes = [];
+        if (options.attrs) {
+          _ref1 = options.attrs;
+          for (k in _ref1) {
+            v = _ref1[k];
+            extraAttributes.push("" + k + "=\"" + v + "\"");
+          }
+        }
+        shortcuts.push("<li><a          data-days=\"" + (options.days || 0) + "\"           data-months=\"" + (options.months || 0) + "\"          data-years=\"" + (options.years || 0) + "\"          data-shortcut-num=\"" + this.numShortcuts + "\"          " + (extraAttributes.join('')) + "          class=\"wdp-shortcut js-wdp-shortcut\"           href=\"javascript:void(0)\">" + name + "</a></li>");
         this.numShortcuts++;
       }
       this.$el.html(shortcuts.join(''));

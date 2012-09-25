@@ -77,6 +77,16 @@ describe 'Wave Datepicker', ->
         today = widget.$datepicker.find('.wdp-shortcut')
         expect($.trim(today.text())).toEqual('Today')
 
+      it 'should attach extra element attributes if they are provided', ->
+        @$input.datepicker(
+          shortcuts: {
+            'Foo': {days: 1, attrs: {'data-bar': 'abc'}}
+          })
+
+        widget = @$input.data('datepicker')
+
+        expect(widget.shortcuts.$el.find('[data-bar=abc]')).toExist()
+
       describe 'When a shortcut is clicked', ->
         it 'should add the corresponding offset to the widget date', ->
           @$input.datepicker(

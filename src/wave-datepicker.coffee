@@ -88,12 +88,19 @@
     render: ->
       shortcuts = []
       @numShortcuts = 0
-      for name, offset of @options
+      for name, options of @options
+        extraAttributes = []
+
+        if options.attrs
+          for k, v of options.attrs
+            extraAttributes.push "#{k}=\"#{v}\""
+
         shortcuts.push "<li><a
-          data-days=\"#{offset.days or 0}\" 
-          data-months=\"#{offset.months or 0}\"
-          data-years=\"#{offset.years or 0}\"
+          data-days=\"#{options.days or 0}\" 
+          data-months=\"#{options.months or 0}\"
+          data-years=\"#{options.years or 0}\"
           data-shortcut-num=\"#{@numShortcuts}\"
+          #{extraAttributes.join('')}
           class=\"wdp-shortcut js-wdp-shortcut\" 
           href=\"javascript:void(0)\">#{name}</a></li>"
         @numShortcuts++
