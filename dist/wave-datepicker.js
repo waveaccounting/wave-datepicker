@@ -125,6 +125,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     return Shortcuts;
 
   })();
+  WDP.activeDatepicker = null;
+  WDP.datepickers = [];
   WDP.WaveDatepicker = (function() {
 
     WaveDatepicker.prototype._defaultFormat = 'YYYY-MM-DD';
@@ -180,6 +182,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$shortcuts.on('dateselect', function(e, date) {
         return _this.setDate(date);
       });
+      WDP.datepickers.push(this);
     }
 
     WaveDatepicker.prototype.render = function() {
@@ -189,8 +192,23 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return this;
     };
 
+    WaveDatepicker.prototype.hideInactive = function() {
+      var picker, _i, _len, _ref, _results;
+      _ref = WDP.datepickers;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        picker = _ref[_i];
+        if (picker !== WDP.activeDatepicker) {
+          _results.push(picker.hide());
+        }
+      }
+      return _results;
+    };
+
     WaveDatepicker.prototype.show = function() {
       if (!this._isShown) {
+        WDP.activeDatepicker = this;
+        this.hideInactive();
         this._isShown = true;
         this.$datepicker.addClass('show');
         this.height = this.$el.outerHeight();
@@ -200,7 +218,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       }
     };
 
-    WaveDatepicker.prototype.hide = function() {
+    WaveDatepicker.prototype.hide = function(e) {
       if (this._isShown) {
         this._isShown = false;
         this.$datepicker.removeClass('show');
@@ -242,8 +260,21 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype.destroy = function() {
+      var picker;
       this.$datepicker.remove();
-      return this.$el.removeData('datepicker');
+      this.$el.removeData('datepicker');
+      return WDP.datepickers = (function() {
+        var _i, _len, _ref, _results;
+        _ref = WDP.datepickers;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          picker = _ref[_i];
+          if (picker !== this) {
+            _results.push(picker);
+          }
+        }
+        return _results;
+      }).call(this);
     };
 
     WaveDatepicker.prototype._initElements = function() {
@@ -370,6 +401,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype._onInputKeydown = function(e) {
       var date, fn, offset;
+      if (e.metaKey) {
+        return;
+      }
       switch (e.keyCode) {
         case WDP.Keys.DOWN:
         case WDP.Keys.J:

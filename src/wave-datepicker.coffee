@@ -149,6 +149,11 @@
       @select $target
 
 
+  WDP.activeDatepicker = null
+  
+  # Keep track of datepickers in memory.
+  WDP.datepickers = []
+
   # Main datepicker widget.
   class WDP.WaveDatepicker
     # Format is as specified in [moment.js](http://momentjs.com/).
@@ -183,15 +188,26 @@
 
       @$shortcuts.on 'dateselect', (e, date) => @setDate(date)
 
+      # Keep track of this instance
+      WDP.datepickers.push this
+
     render: =>
       @_updateMonthAndYear()
       @_fill()
       @_updateSelection()
       return this
 
+    hideInactive: ->
+      picker.hide() for picker in WDP.datepickers when picker isnt WDP.activeDatepicker
+
     # Shows the widget if not shown already.
     show: =>
       unless @_isShown
+        # Mark current picker as the active one.
+        # Hide all others.
+        WDP.activeDatepicker = this
+        @hideInactive()
+
         @_isShown = true
         @$datepicker.addClass 'show'
         @height = @$el.outerHeight()
@@ -200,7 +216,7 @@
         @$document.on 'click', @hide
 
     # Hides the widget if it is shown.
-    hide: =>
+    hide: (e) =>
       if @_isShown
         @_isShown = false
         @$datepicker.removeClass 'show'
@@ -239,6 +255,9 @@
     destroy: =>
       @$datepicker.remove()
       @$el.removeData('datepicker')
+
+      # Remove this instance
+      WDP.datepickers = (picker for picker in WDP.datepickers when picker isnt this)
 
     _initElements: ->
       if @options.className
@@ -374,6 +393,10 @@
       e.preventDefault()
 
     _onInputKeydown: (e) =>
+      # Prevent overriding meta key behaviour in browser.
+      if e.metaKey
+        return
+
       switch e.keyCode
         when WDP.Keys.DOWN, WDP.Keys.J
           @_cancelEvent e

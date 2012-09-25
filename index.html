@@ -12,15 +12,17 @@
 
   <body>
     <div class="container">
-      <input id="Date" class="input-medium" value="2012-08-01"/>
-      <input>
+      <input id="Date1" class="input-medium" value="2012-08-01"/>
+      <input id="Date2" class="input-medium" value="2012-08-01"/>
     </div>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/1.7.0/moment.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     <script src="dist/wave-datepicker.js"></script>
     <script>
       $(function() {
-        $('#Date').datepicker({
+        $('#Date1').datepicker();
+
+        $('#Date2').datepicker({
           shortcuts: {
             'Today': {
               days: 0

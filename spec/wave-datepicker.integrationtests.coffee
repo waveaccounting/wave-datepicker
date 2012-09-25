@@ -197,3 +197,38 @@ describe 'Wave Datepicker', ->
           @$prev.click().click()
           expect(@widget._state.month).toEqual(11)
           expect(@widget._state.year).toEqual(2011)
+
+    describe 'Multiple pickers on page', ->
+      beforeEach ->
+        @$input.datepicker()
+        @$input2 = $('<input id="Date2">').appendTo(document.body).datepicker()
+        @$input3 = $('<input id="Date3">').appendTo(document.body).datepicker()
+
+        @picker1 = @$input.data('datepicker')
+        @picker2 = @$input2.data('datepicker')
+        @picker3 = @$input3.data('datepicker')
+
+      afterEach ->
+        @$input2.datepicker('destroy')
+        @$input2.remove()
+
+        @$input3.datepicker('destroy')
+        @$input3.remove()
+
+      describe 'When a click is on a different picker than current active picker', ->
+        it 'should set new focus and hide inactive picker', ->
+          @$input.focus()
+          expect(@picker1._isShown).toBeTruthy()
+          expect(@picker2._isShown).not.toBeTruthy()
+          expect(@picker3._isShown).not.toBeTruthy()
+
+          @$input2.focus()
+          expect(@picker1._isShown).not.toBeTruthy()
+          expect(@picker2._isShown).toBeTruthy()
+          expect(@picker3._isShown).not.toBeTruthy()
+
+          @$input3.focus()
+          expect(@picker1._isShown).not.toBeTruthy()
+          expect(@picker2._isShown).not.toBeTruthy()
+          expect(@picker3._isShown).toBeTruthy()
+

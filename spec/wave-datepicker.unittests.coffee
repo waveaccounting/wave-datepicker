@@ -145,6 +145,7 @@ describe 'Wave Datepicker unit tests', ->
           on: sinon.spy()
         hide: 'FUNCTION'
         _isShown: false
+        hideInactive: sinon.spy()
       @context.$el.outerHeight.returns 'HEIGHT'
 
     it 'should place datepicker and show it', ->
@@ -158,6 +159,10 @@ describe 'Wave Datepicker unit tests', ->
     it 'should bind document click to hide method', ->
       WDP.WaveDatepicker.prototype.show.call @context
       expect(@context.$document.on).toHaveBeenCalledWith('click', @context.hide)
+
+    it 'should hide inactive datepickers', ->
+      WDP.WaveDatepicker.prototype.show.call @context
+      expect(@context.hideInactive).toHaveBeenCalledOnce()
 
 
   describe 'hide', ->
