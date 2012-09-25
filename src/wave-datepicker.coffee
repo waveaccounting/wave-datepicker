@@ -237,12 +237,14 @@
         @$document.off 'click', @hide
 
     # Sets the Date object for this widget and update `<input>` field.
-    setDate: (date) =>
+    setDate: (date, options) =>
       @date = date
       @_state.month = @date.getMonth()
       @_state.year = @date.getFullYear()
       @$el.val @_formatDate(date)
-      @$el.trigger 'datechange', @date
+
+      unless options?.silent is true
+        @$el.trigger 'change', @date
 
       if @options.hideOnSelect
         @hide()
@@ -309,7 +311,7 @@
       # Show and hide picker
       @$el.on 'focus', @show
       @$el.on 'change', @_updateFromInput
-      @$el.on 'datechange', @render
+      @$el.on 'change', @render
       @$el.on 'keydown', @_onInputKeydown
       # Also show on click (it might be hidden but focused)
       @$el.on 'click', @show
@@ -329,7 +331,7 @@
       # If date could not be set from @$el.val() then set to today.
       @date or= new Date()
 
-      @setDate @date
+      @setDate @date, {silent: true}
 
     # Updates the picker with the current date.
     _updateMonthAndYear: =>

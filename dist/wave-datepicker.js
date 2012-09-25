@@ -238,12 +238,14 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       }
     };
 
-    WaveDatepicker.prototype.setDate = function(date) {
+    WaveDatepicker.prototype.setDate = function(date, options) {
       this.date = date;
       this._state.month = this.date.getMonth();
       this._state.year = this.date.getFullYear();
       this.$el.val(this._formatDate(date));
-      this.$el.trigger('datechange', this.date);
+      if ((options != null ? options.silent : void 0) !== true) {
+        this.$el.trigger('change', this.date);
+      }
       if (this.options.hideOnSelect) {
         return this.hide();
       }
@@ -323,7 +325,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype._initEvents = function() {
       this.$el.on('focus', this.show);
       this.$el.on('change', this._updateFromInput);
-      this.$el.on('datechange', this.render);
+      this.$el.on('change', this.render);
       this.$el.on('keydown', this._onInputKeydown);
       this.$el.on('click', this.show);
       this.$el.on('click', this._cancelEvent);
@@ -340,7 +342,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         this.date = this._parseDate(dateStr);
       }
       this.date || (this.date = new Date());
-      return this.setDate(this.date);
+      return this.setDate(this.date, {
+        silent: true
+      });
     };
 
     WaveDatepicker.prototype._updateMonthAndYear = function() {

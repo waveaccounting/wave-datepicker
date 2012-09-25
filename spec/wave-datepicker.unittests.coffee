@@ -37,9 +37,9 @@ describe 'Wave Datepicker unit tests', ->
       expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev', @context.prev)
       expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next', @context.next)
 
-    it 'should bind datechange event to render method', ->
+    it 'should bind change event to render method', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$el.on).toHaveBeenCalledWith('datechange', @context.render)
+      expect(@context.$el.on).toHaveBeenCalledWith('change', @context.render)
 
     it 'should bind input change event to update method', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
@@ -79,7 +79,7 @@ describe 'Wave Datepicker unit tests', ->
       expect(context.date).toEqual(date)
       expect(context._state.month).toEqual('MONTH')
       expect(context._state.year).toEqual('YEAR')
-      expect(context.$el.trigger).toHaveBeenCalledWith('datechange', date)
+      expect(context.$el.trigger).toHaveBeenCalledWith('change', date)
 
   describe 'next', ->
     it 'should increment month then call render method', ->
