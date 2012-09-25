@@ -28,6 +28,9 @@
   min-height: 225px;
   max-height: 250px;
 }
+.wdp.dropdown-menu {
+  background: #ffffff;
+}
 .wdp:before {
   content: '';
   display: inline-block;
