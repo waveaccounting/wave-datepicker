@@ -463,6 +463,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       var date;
       this.shortcuts.resetClass();
       date = this._parseDate($(e.target).data('date'));
+      this.$el.trigger('shortcutclear');
       return this.setDate(date);
     };
 

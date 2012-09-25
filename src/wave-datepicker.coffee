@@ -447,6 +447,7 @@
     _selectDate: (e) =>
       @shortcuts.resetClass()
       date = @_parseDate $(e.target).data('date')
+      @$el.trigger 'shortcutclear'
       @setDate date
 
 
