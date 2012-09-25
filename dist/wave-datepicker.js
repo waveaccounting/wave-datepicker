@@ -217,7 +217,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype.show = function() {
-      if (!this._isShown) {
+      if (!(this._isShown || this.$el.is(':not(:visible)'))) {
         WDP.activeDatepicker = this;
         this.hideInactive();
         this._isShown = true;
@@ -324,6 +324,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype._initEvents = function() {
       this.$el.on('focus', this.show);
+      this.$el.on('blur', this.hide);
       this.$el.on('change', this._updateFromInput);
       this.$el.on('change', this.render);
       this.$el.on('keydown', this._onInputKeydown);

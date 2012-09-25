@@ -215,7 +215,7 @@
 
     # Shows the widget if not shown already.
     show: =>
-      unless @_isShown
+      unless @_isShown or @$el.is(':not(:visible)')
         # Mark current picker as the active one.
         # Hide all others.
         WDP.activeDatepicker = this
@@ -310,6 +310,7 @@
     _initEvents: ->
       # Show and hide picker
       @$el.on 'focus', @show
+      @$el.on 'blur', @hide
       @$el.on 'change', @_updateFromInput
       @$el.on 'change', @render
       @$el.on 'keydown', @_onInputKeydown
