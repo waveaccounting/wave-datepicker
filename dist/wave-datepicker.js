@@ -427,29 +427,41 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       switch (e.keyCode) {
         case WDP.Keys.DOWN:
         case WDP.Keys.J:
-          this._cancelEvent(e);
-          fn = this.shortcuts.selectNext;
-          offset = 7;
+          if (this._isShown) {
+            this._cancelEvent(e);
+            fn = this.shortcuts.selectNext;
+            offset = 7;
+          }
           this.show();
           break;
         case WDP.Keys.RETURN:
-          this.show();
+          if (this._isShown) {
+            this.hide();
+          } else {
+            this.show();
+          }
           break;
         case WDP.Keys.UP:
         case WDP.Keys.K:
-          this._cancelEvent(e);
-          fn = this.shortcuts.selectPrev;
-          offset = -7;
+          if (this._isShown) {
+            this._cancelEvent(e);
+            fn = this.shortcuts.selectPrev;
+            offset = -7;
+          }
           break;
         case WDP.Keys.LEFT:
         case WDP.Keys.H:
-          this._cancelEvent(e);
-          offset = -1;
+          if (this._isShown) {
+            this._cancelEvent(e);
+            offset = -1;
+          }
           break;
         case WDP.Keys.RIGHT:
         case WDP.Keys.L:
-          this._cancelEvent(e);
-          offset = 1;
+          if (this._isShown) {
+            this._cancelEvent(e);
+            offset = 1;
+          }
           break;
         case WDP.Keys.ESC:
         case WDP.Keys.TAB:

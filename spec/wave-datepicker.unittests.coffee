@@ -205,6 +205,7 @@ describe 'Wave Datepicker unit tests', ->
         setDate: sinon.spy()
         show: sinon.spy()
         hide: sinon.spy()
+        _isShown: true
 
       @e = {}
 

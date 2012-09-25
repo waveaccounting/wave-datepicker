@@ -420,27 +420,34 @@
 
       switch e.keyCode
         when WDP.Keys.DOWN, WDP.Keys.J
-          @_cancelEvent e
-          fn = @shortcuts.selectNext
-          offset = 7
+          if @_isShown
+            @_cancelEvent e
+            fn = @shortcuts.selectNext
+            offset = 7
 
           @show()
 
         when WDP.Keys.RETURN
-          @show()
+          if @_isShown
+            @hide()
+          else
+            @show()
 
         when WDP.Keys.UP, WDP.Keys.K
-          @_cancelEvent e
-          fn = @shortcuts.selectPrev
-          offset = -7
+          if @_isShown
+            @_cancelEvent e
+            fn = @shortcuts.selectPrev
+            offset = -7
 
         when WDP.Keys.LEFT, WDP.Keys.H
-          @_cancelEvent e
-          offset = -1
+          if @_isShown
+            @_cancelEvent e
+            offset = -1
 
         when WDP.Keys.RIGHT, WDP.Keys.L
-          @_cancelEvent e
-          offset = 1
+          if @_isShown
+            @_cancelEvent e
+            offset = 1
 
         when WDP.Keys.ESC, WDP.Keys.TAB
           @hide()
