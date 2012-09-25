@@ -49,6 +49,10 @@ describe 'Wave Datepicker unit tests', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
       expect(@context.$el.on).toHaveBeenCalledWith('focus', @context.show)
 
+    it 'should bind show to click event', ->
+      WDP.WaveDatepicker.prototype._initEvents.call @context
+      expect(@context.$el.on).toHaveBeenCalledWith('click', @context.show)
+
     it 'should bind keydown event of <input> to the _onInputKeydown handler', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
       expect(@context.$el.on).toHaveBeenCalledWith('keydown', @context._onInputKeydown)

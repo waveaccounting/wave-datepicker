@@ -308,6 +308,8 @@
       @$el.on 'change', @_updateFromInput
       @$el.on 'datechange', @render
       @$el.on 'keydown', @_onInputKeydown
+      # Also show on click (it might be hidden but focused)
+      @$el.on 'click', @show
       @$el.on 'click', @_cancelEvent
 
       @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
@@ -461,6 +463,9 @@
       date = @_parseDate $(e.target).data('date')
       @$el.trigger 'shortcutclear'
       @setDate date
+
+      if @options.hideOnSelect
+        @hide()
 
 
   # Hold reference to old function in case it exists

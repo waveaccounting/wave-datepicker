@@ -322,6 +322,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.$el.on('change', this._updateFromInput);
       this.$el.on('datechange', this.render);
       this.$el.on('keydown', this._onInputKeydown);
+      this.$el.on('click', this.show);
       this.$el.on('click', this._cancelEvent);
       this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
@@ -475,7 +476,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.shortcuts.resetClass();
       date = this._parseDate($(e.target).data('date'));
       this.$el.trigger('shortcutclear');
-      return this.setDate(date);
+      this.setDate(date);
+      if (this.options.hideOnSelect) {
+        return this.hide();
+      }
     };
 
     return WaveDatepicker;
