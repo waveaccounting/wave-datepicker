@@ -16,6 +16,7 @@ describe 'Wave Datepicker unit tests', ->
           on: sinon.spy()
         $el:
           on: sinon.stub()  # Stub because we need to return $el
+          is: sinon.stub()
         _cancelEvent: 'FUNCTION'
         prev: 'FUNCTION'
         next: 'FUNCTION'
@@ -27,6 +28,7 @@ describe 'Wave Datepicker unit tests', ->
         show: 'FUNCTION'
         hide: 'FUNCTION'
       @context.$el.on.returns @context.$el
+      @context.$el.is.returns true
 
     it 'should bind cancel events to click on datepicker', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
@@ -144,6 +146,7 @@ describe 'Wave Datepicker unit tests', ->
           addClass: sinon.spy()
         $el:
           outerHeight: sinon.stub()
+          is: sinon.stub()
         _place: sinon.spy()
         $window:
           on: sinon.spy()
@@ -153,6 +156,8 @@ describe 'Wave Datepicker unit tests', ->
         _isShown: false
         hideInactive: sinon.spy()
       @context.$el.outerHeight.returns 'HEIGHT'
+      # false means it's visible
+      @context.$el.is.returns false
 
     it 'should place datepicker and show it', ->
       WDP.WaveDatepicker.prototype.show.call @context
