@@ -116,7 +116,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       wrapper.add(offset);
       this.resetClass();
       $target.addClass('wdp-shortcut-active');
-      return this.$el.trigger('dateselect', wrapper.toDate());
+      return $target.trigger('dateselect', wrapper.toDate());
     };
 
     Shortcuts.prototype._onShortcutClick = function(e) {

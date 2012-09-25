@@ -141,7 +141,7 @@
       @resetClass()
       $target.addClass 'wdp-shortcut-active'
 
-      @$el.trigger 'dateselect', wrapper.toDate()
+      $target.trigger 'dateselect', wrapper.toDate()
 
     # Calls select for any clicks on shortcut `<a>` elements.
     _onShortcutClick: (e) => @select WDP.$(e.target)
