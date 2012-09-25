@@ -84,6 +84,7 @@
       @options or= @_defaults
       @$el = WDP.$ '<ul>'
       @$el.on 'click', @_onShortcutClick
+      @baseDate = @options.baseDate
 
     render: ->
       shortcuts = []
@@ -131,7 +132,8 @@
     # * dateselect - Passes the `Date` object as the second argument to callback.
     select: ($target) ->
       data = $target.data()
-      wrapper = moment(new Date())
+      # Clone so we don't modify exist date.
+      wrapper = moment(@baseDate).clone()
       offset =
         days: data.days
         months: data.months
@@ -184,11 +186,15 @@
       @_initElements()
       @_initEvents()
 
+      @baseDate = @options.baseDate or new Date()
+
       # e.g. 'today' -> sets calendar value to today's date
       @shortcuts = new WDP.Shortcuts(options.shortcuts).render()
       @$shortcuts.append @shortcuts.$el
       # Setting date clears any selected shortcuts
       @shortcuts?.resetClass()
+      @shortcuts.baseDate = @baseDate
+
 
       # Setting date clears any selected shortcuts
       @shortcuts?.resetClass()
@@ -265,6 +271,12 @@
 
       # Remove this instance
       WDP.datepickers = (picker for picker in WDP.datepickers when picker isnt this)
+
+    # Base date is used to calculate shortcuts.
+    setBaseDate: (date) ->
+      @basedate = @shortcuts.baseDate = date
+
+    getBaseDate: -> @baseDate
 
     _initElements: ->
       if @options.className

@@ -242,3 +242,20 @@ describe 'Wave Datepicker', ->
           expect(@picker2._isShown).not.toBeTruthy()
           expect(@picker3._isShown).toBeTruthy()
 
+    describe 'Base date', ->
+      it 'should be used to calcualte shortcuts', ->
+        expected = new Date(2012, 7, 1) 
+
+        @$input.datepicker(
+          baseDate: expected
+          shortcuts:
+            'Right away':
+              days: 1
+        )
+        widget = @$input.data('datepicker')
+
+        widget.$datepicker.find('.wdp-shortcut').click()
+
+        expect(widget.date.getFullYear()).toEqual(expected.getFullYear())
+        expect(widget.date.getMonth()).toEqual(expected.getMonth())
+        expect(widget.date.getDate()).toEqual(expected.getDate() + 1)

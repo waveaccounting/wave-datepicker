@@ -63,6 +63,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.options || (this.options = this._defaults);
       this.$el = WDP.$('<ul>');
       this.$el.on('click', this._onShortcutClick);
+      this.baseDate = this.options.baseDate;
     }
 
     Shortcuts.prototype.render = function() {
@@ -107,7 +108,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     Shortcuts.prototype.select = function($target) {
       var data, offset, wrapper;
       data = $target.data();
-      wrapper = moment(new Date());
+      wrapper = moment(this.baseDate).clone();
       offset = {
         days: data.days,
         months: data.months,
@@ -179,11 +180,13 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this._initPicker();
       this._initElements();
       this._initEvents();
+      this.baseDate = this.options.baseDate || new Date();
       this.shortcuts = new WDP.Shortcuts(options.shortcuts).render();
       this.$shortcuts.append(this.shortcuts.$el);
       if ((_ref = this.shortcuts) != null) {
         _ref.resetClass();
       }
+      this.shortcuts.baseDate = this.baseDate;
       if ((_ref1 = this.shortcuts) != null) {
         _ref1.resetClass();
       }
@@ -283,6 +286,14 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         }
         return _results;
       }).call(this);
+    };
+
+    WaveDatepicker.prototype.setBaseDate = function(date) {
+      return this.basedate = this.shortcuts.baseDate = date;
+    };
+
+    WaveDatepicker.prototype.getBaseDate = function() {
+      return this.baseDate;
     };
 
     WaveDatepicker.prototype._initElements = function() {
