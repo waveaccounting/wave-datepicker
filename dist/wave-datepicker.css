@@ -23,10 +23,9 @@
   padding: 40px;
 }
 .wdp {
-  min-width: 375px;
-  max-width: 450px;
-  min-height: 225px;
-  max-height: 250px;
+  font-size: 15px;
+  min-width: 450px;
+  max-width: 600px;
 }
 .wdp.dropdown-menu {
   background: #ffffff;
@@ -138,7 +137,8 @@
   -moz-border-radius: 4px;
   border-radius: 4px;
   width: 14.28%;
-  height: 20px;
+  line-height: 25px;
+  height: 25px;
 }
 .wdp-calendar td:hover:not(.wdp-selected) {
   background-color: #dddddd;

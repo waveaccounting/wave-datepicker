@@ -4,10 +4,9 @@
 }
 
 .wdp {
-    min-width: 375px;
-    max-width: 450px;
-    min-height: 225px;
-    max-height: 250px;
+    font-size: @baseFontSize;
+    min-width: @baseFontSize * 30;
+    max-width: @baseFontSize * 40;
     &.dropdown-menu {
         background: @white;
     }
@@ -62,7 +61,8 @@
         cursor: pointer;
         .border-radius();
         width: 14.28%;
-        height: 20px;
+        line-height: @baseFontSize + 10;
+        height: @baseFontSize + 10;
         &:hover:not(.wdp-selected) {
             background-color: @grayLightest;
         }
