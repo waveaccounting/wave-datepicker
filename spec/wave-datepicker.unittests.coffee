@@ -72,15 +72,13 @@ describe 'Wave Datepicker unit tests', ->
           hideOnSelect: false
       context._formatDate.returns 'FORMATTED'
 
-      date =
-        getMonth: -> 'MONTH'
-        getFullYear: -> 'YEAR'
+      date = new Date(2012, 7, 1, 0, 0, 0, 0)
 
       WDP.WaveDatepicker.prototype.setDate.call context, date
 
       expect(context.date).toEqual(date)
-      expect(context._state.month).toEqual('MONTH')
-      expect(context._state.year).toEqual('YEAR')
+      expect(context._state.month).toEqual(7)
+      expect(context._state.year).toEqual(2012)
       expect(context.$el.trigger).toHaveBeenCalledWith('change', date)
 
   describe 'next', ->

@@ -239,6 +239,12 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype.setDate = function(date, options) {
+      if (typeof date === 'string') {
+        date = WDP.DateUtils.parse(date);
+      }
+      if (!(date instanceof Date)) {
+        return;
+      }
       this.date = date;
       this._state.month = this.date.getMonth();
       this._state.year = this.date.getFullYear();

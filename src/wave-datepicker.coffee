@@ -238,6 +238,14 @@
 
     # Sets the Date object for this widget and update `<input>` field.
     setDate: (date, options) =>
+      # If we're setting a string, then parse it first.
+      if typeof date is 'string'
+        date = WDP.DateUtils.parse date
+
+      # Cannot set non-dates
+      unless date instanceof Date
+        return
+
       @date = date
       @_state.month = @date.getMonth()
       @_state.year = @date.getFullYear()
