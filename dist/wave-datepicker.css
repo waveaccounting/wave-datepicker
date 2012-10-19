@@ -24,6 +24,10 @@
 }
 .wdp {
   font-size: 15px;
+  min-width: 225px;
+  max-width: 375px;
+}
+.wdp.wdp-has-shortcuts {
   min-width: 450px;
   max-width: 600px;
 }

@@ -70,8 +70,13 @@ describe 'Wave Datepicker', ->
 
 
     describe 'Shortcuts', ->
-      it 'should by default provide the Today shortcut', ->
+      it 'should by default not have shortcuts', ->
         @$input.datepicker()
+        widget = @$input.data('datepicker')
+        expect(widget.$datepicker).not.toContain('.wdp-shortcut')
+
+      it 'should provide default options if `shortcuts` is passed as true', ->
+        @$input.datepicker({shortcuts: true})
         widget = @$input.data('datepicker')
         expect(widget.$datepicker).toContain('.wdp-shortcut')
         today = widget.$datepicker.find('.wdp-shortcut')

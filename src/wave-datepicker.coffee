@@ -16,8 +16,8 @@
   # .dropdown-menu is hidden by default
   WDP.template = "<div class=\"wdp dropdown-menu\">
   <div class=\"row-fluid\">
-    <div class=\"span5 wdp-shortcuts\"></div>
-    <div class=\"span7\">
+    <div class=\"wdp-shortcuts span5\"></div>
+    <div class=\"wdp-main\">
       <table class=\"table-condensed wdp-calendar\">
         <thead>
           <tr>
@@ -193,18 +193,25 @@
 
       @baseDate = @options.baseDate or new Date()
 
-      # e.g. 'today' -> sets calendar value to today's date
-      @shortcuts = new WDP.Shortcuts(options.shortcuts).render()
-      @$shortcuts.append @shortcuts.$el
-      # Setting date clears any selected shortcuts
-      @shortcuts?.resetClass()
-      @shortcuts.baseDate = @baseDate
+      # Check if we want to show shortcuts or not.
+      if options.shortcuts?
+        if typeof options.shortcuts is 'object'
+          shortcutOptions = options.shortcuts
+        # If option pass is just `true` then we should the default shortcuts.
+        else shortcutOptions = null
+
+        # e.g. 'today' -> sets calendar value to today's date
+        @shortcuts = new WDP.Shortcuts(shortcutOptions).render()
+        @$shortcuts.append @shortcuts.$el
+        # Setting date clears any selected shortcuts
+        @shortcuts?.resetClass()
+        @shortcuts.baseDate = @baseDate
 
 
-      # Setting date clears any selected shortcuts
-      @shortcuts?.resetClass()
+        # Setting date clears any selected shortcuts
+        @shortcuts?.resetClass()
 
-      @$shortcuts.on 'dateselect', (e, date) => @setDate(date)
+        @$shortcuts.on 'dateselect', (e, date) => @setDate(date)
 
       # Keep track of this instance
       WDP.datepickers.push this
@@ -213,6 +220,16 @@
       @_updateMonthAndYear()
       @_fill()
       @_updateSelection()
+
+      if @shortcuts?
+        @$datepicker.addClass('wdp-has-shortcuts')
+        @$datepicker.find('.wdp-main').addClass('span7').removeClass('span12')
+        @$shortcuts.insertBefore @$main
+      else
+        @$datepicker.removeClass('wdp-has-shortcuts')
+        @$datepicker.find('.wdp-main').addClass('span12').removeClass('span7')
+        @$shortcuts.detach()
+
       return this
 
     hideInactive: ->
@@ -308,7 +325,8 @@
 
       # Set up elements cache
       @$shortcuts = @$datepicker.find '.wdp-shortcuts'
-      @$calendar = @$datepicker.find '.wdp-calendar'
+      @$main = @$datepicker.find '.wdp-main'
+      @$calendar = @$main.find '.wdp-calendar'
       @$calendarTbody = @$calendar.find 'tbody'
       @$calendarYear = @$datepicker.find '.wdp-year-calendar'
       @$calendarYearTbody = @$calendarYear.find 'tbody'

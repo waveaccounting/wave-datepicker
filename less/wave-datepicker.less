@@ -5,8 +5,12 @@
 
 .wdp {
     font-size: @baseFontSize;
-    min-width: @baseFontSize * 30;
-    max-width: @baseFontSize * 40;
+        min-width: @baseFontSize * 15;
+        max-width: @baseFontSize * 25;
+    &.wdp-has-shortcuts {
+        min-width: @baseFontSize * 30;
+        max-width: @baseFontSize * 40;
+    }
     &.dropdown-menu {
         background: @white;
     }

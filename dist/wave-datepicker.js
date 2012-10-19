@@ -13,7 +13,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
   var WDP, _oldDatepicker;
   WDP = {};
   WDP.$ = $;
-  WDP.template = "<div class=\"wdp dropdown-menu\">  <div class=\"row-fluid\">    <div class=\"span5 wdp-shortcuts\"></div>    <div class=\"span7\">      <table class=\"table-condensed wdp-calendar\">        <thead>          <tr>              <th class=\"wdp-prev\">                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\"><i class=\"icon-arrow-left\"/></a>              </th>              <th colspan=\"5\" class=\"wdp-month-and-year js-wdp-set-month-year\"></th>              <th class=\"wdp-next\">                <a href=\"javascript:void(0)\" class=\"js-wdp-next\"><i class=\"icon-arrow-right\"/></a>              </th>          </tr>        </thead>        <tbody></tbody>      </table>      <table class=\"table-condensed wdp-year-calendar\">      <tbody></tbody>      </table>      <table class=\"table-condensed wdp-month-calendar\">      <tbody></tbody>      </table>    </div>  </div></div>";
+  WDP.template = "<div class=\"wdp dropdown-menu\">  <div class=\"row-fluid\">    <div class=\"wdp-shortcuts span5\"></div>    <div class=\"wdp-main\">      <table class=\"table-condensed wdp-calendar\">        <thead>          <tr>              <th class=\"wdp-prev\">                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\"><i class=\"icon-arrow-left\"/></a>              </th>              <th colspan=\"5\" class=\"wdp-month-and-year js-wdp-set-month-year\"></th>              <th class=\"wdp-next\">                <a href=\"javascript:void(0)\" class=\"js-wdp-next\"><i class=\"icon-arrow-right\"/></a>              </th>          </tr>        </thead>        <tbody></tbody>      </table>      <table class=\"table-condensed wdp-year-calendar\">      <tbody></tbody>      </table>      <table class=\"table-condensed wdp-month-calendar\">      <tbody></tbody>      </table>    </div>  </div></div>";
   WDP.DateUtils = {
     format: function(date, format) {
       return moment(date).format(format);
@@ -143,7 +143,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype._state = null;
 
     function WaveDatepicker(options) {
-      var _ref, _ref1,
+      var shortcutOptions, _ref, _ref1,
         _this = this;
       this.options = options;
       this._selectDate = __bind(this._selectDate, this);
@@ -185,18 +185,25 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this._initElements();
       this._initEvents();
       this.baseDate = this.options.baseDate || new Date();
-      this.shortcuts = new WDP.Shortcuts(options.shortcuts).render();
-      this.$shortcuts.append(this.shortcuts.$el);
-      if ((_ref = this.shortcuts) != null) {
-        _ref.resetClass();
+      if (options.shortcuts != null) {
+        if (typeof options.shortcuts === 'object') {
+          shortcutOptions = options.shortcuts;
+        } else {
+          shortcutOptions = null;
+        }
+        this.shortcuts = new WDP.Shortcuts(shortcutOptions).render();
+        this.$shortcuts.append(this.shortcuts.$el);
+        if ((_ref = this.shortcuts) != null) {
+          _ref.resetClass();
+        }
+        this.shortcuts.baseDate = this.baseDate;
+        if ((_ref1 = this.shortcuts) != null) {
+          _ref1.resetClass();
+        }
+        this.$shortcuts.on('dateselect', function(e, date) {
+          return _this.setDate(date);
+        });
       }
-      this.shortcuts.baseDate = this.baseDate;
-      if ((_ref1 = this.shortcuts) != null) {
-        _ref1.resetClass();
-      }
-      this.$shortcuts.on('dateselect', function(e, date) {
-        return _this.setDate(date);
-      });
       WDP.datepickers.push(this);
     }
 
@@ -204,6 +211,15 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this._updateMonthAndYear();
       this._fill();
       this._updateSelection();
+      if (this.shortcuts != null) {
+        this.$datepicker.addClass('wdp-has-shortcuts');
+        this.$datepicker.find('.wdp-main').addClass('span7').removeClass('span12');
+        this.$shortcuts.insertBefore(this.$main);
+      } else {
+        this.$datepicker.removeClass('wdp-has-shortcuts');
+        this.$datepicker.find('.wdp-main').addClass('span12').removeClass('span7');
+        this.$shortcuts.detach();
+      }
       return this;
     };
 
@@ -320,7 +336,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       }
       this.$el.val(this._formatDate(this.date));
       this.$shortcuts = this.$datepicker.find('.wdp-shortcuts');
-      this.$calendar = this.$datepicker.find('.wdp-calendar');
+      this.$main = this.$datepicker.find('.wdp-main');
+      this.$calendar = this.$main.find('.wdp-calendar');
       this.$calendarTbody = this.$calendar.find('tbody');
       this.$calendarYear = this.$datepicker.find('.wdp-year-calendar');
       this.$calendarYearTbody = this.$calendarYear.find('tbody');
