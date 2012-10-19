@@ -142,6 +142,8 @@ describe 'Wave Datepicker unit tests', ->
       @context =
         $datepicker:
           addClass: sinon.spy()
+        $calendar:
+          show: sinon.spy()
         $el:
           outerHeight: sinon.stub()
           is: sinon.stub()
@@ -179,6 +181,10 @@ describe 'Wave Datepicker unit tests', ->
       @context =
         $datepicker:
           removeClass: sinon.spy()
+        $calendarYear:
+          hide: sinon.spy()
+        $calendarMonth:
+          hide: sinon.spy()
         _place: 'PLACE'
         $window:
           off: sinon.spy()
