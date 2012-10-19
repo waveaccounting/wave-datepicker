@@ -323,7 +323,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype.setBaseDate = function(date) {
-      return this.basedate = this.shortcuts.baseDate = date;
+      var _ref;
+      return this.basedate = (_ref = this.shortcuts) != null ? _ref.baseDate = date : void 0;
     };
 
     WaveDatepicker.prototype.getBaseDate = function() {
@@ -511,7 +512,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype._onInputKeydown = function(e) {
-      var date, fn, offset;
+      var date, fn, offset, _ref, _ref1, _ref2;
       if (e.metaKey) {
         return;
       }
@@ -520,7 +521,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         case WDP.Keys.J:
           if (this._isShown) {
             this._cancelEvent(e);
-            fn = this.shortcuts.selectNext;
+            fn = (_ref = this.shortcuts) != null ? _ref.selectNext : void 0;
             offset = 7;
           }
           this.show();
@@ -536,7 +537,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         case WDP.Keys.K:
           if (this._isShown) {
             this._cancelEvent(e);
-            fn = this.shortcuts.selectPrev;
+            fn = (_ref1 = this.shortcuts) != null ? _ref1.selectPrev : void 0;
             offset = -7;
           }
           break;
@@ -562,7 +563,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         return typeof fn === "function" ? fn() : void 0;
       } else if (offset != null) {
         date = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() + offset);
-        this.shortcuts.resetClass();
+        if ((_ref2 = this.shortcuts) != null) {
+          _ref2.resetClass();
+        }
         return this.setDate(date);
       }
     };
@@ -575,10 +578,12 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype._selectDate = function(e) {
-      var date;
+      var date, _ref;
       this.$calendarMonth.hide();
       this.$calendar.show();
-      this.shortcuts.resetClass();
+      if ((_ref = this.shortcuts) != null) {
+        _ref.resetClass();
+      }
       date = this._parseDate($(e.target).data('date'));
       this.$el.trigger('shortcutclear');
       return this.setDate(date);

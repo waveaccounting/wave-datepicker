@@ -312,7 +312,7 @@
 
     # Base date is used to calculate shortcuts.
     setBaseDate: (date) ->
-      @basedate = @shortcuts.baseDate = date
+      @basedate = @shortcuts?.baseDate = date
 
     getBaseDate: -> @baseDate
 
@@ -514,7 +514,7 @@
         when WDP.Keys.DOWN, WDP.Keys.J
           if @_isShown
             @_cancelEvent e
-            fn = @shortcuts.selectNext
+            fn = @shortcuts?.selectNext
             offset = 7
 
           @show()
@@ -528,7 +528,7 @@
         when WDP.Keys.UP, WDP.Keys.K
           if @_isShown
             @_cancelEvent e
-            fn = @shortcuts.selectPrev
+            fn = @shortcuts?.selectPrev
             offset = -7
 
         when WDP.Keys.LEFT, WDP.Keys.H
@@ -548,7 +548,7 @@
         fn?()
       else if offset?
         date = new Date(@date.getFullYear(), @date.getMonth(), @date.getDate() + offset)
-        @shortcuts.resetClass()  # Clear ay selected shortcuts
+        @shortcuts?.resetClass()  # Clear ay selected shortcuts
         @setDate date
 
     _updateSelection: ->
@@ -560,7 +560,7 @@
     _selectDate: (e) =>
       @$calendarMonth.hide()
       @$calendar.show()
-      @shortcuts.resetClass()
+      @shortcuts?.resetClass()
       date = @_parseDate $(e.target).data('date')
       @$el.trigger 'shortcutclear'
       @setDate date
