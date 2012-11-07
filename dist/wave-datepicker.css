@@ -137,6 +137,7 @@
 .wdp-year-calendar a,
 .wdp-month-calendar a {
   padding: 2px 3px;
+  text-decoration: none;
 }
 .wdp-calendar td,
 .wdp-year-calendar td,

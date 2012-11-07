@@ -22,11 +22,11 @@
         <thead>
           <tr>
               <th class=\"wdp-prev\">
-                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\"><i class=\"icon-arrow-left\"/></a>
+                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\">◀</a>
               </th>
               <th colspan=\"5\" class=\"wdp-month-and-year js-wdp-set-month-year\"></th>
               <th class=\"wdp-next\">
-                <a href=\"javascript:void(0)\" class=\"js-wdp-next\"><i class=\"icon-arrow-right\"/></a>
+                <a href=\"javascript:void(0)\" class=\"js-wdp-next\">▶</a>
               </th>
           </tr>
         </thead>
