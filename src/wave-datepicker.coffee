@@ -312,7 +312,7 @@
 
     # Base date is used to calculate shortcuts.
     setBaseDate: (date) ->
-      @basedate = @shortcuts?.baseDate = date
+      @baseDate = @shortcuts?.baseDate = date
 
     getBaseDate: -> @baseDate
 

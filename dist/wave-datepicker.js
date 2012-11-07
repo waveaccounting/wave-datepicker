@@ -324,7 +324,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype.setBaseDate = function(date) {
       var _ref;
-      return this.basedate = (_ref = this.shortcuts) != null ? _ref.baseDate = date : void 0;
+      return this.baseDate = (_ref = this.shortcuts) != null ? _ref.baseDate = date : void 0;
     };
 
     WaveDatepicker.prototype.getBaseDate = function() {
