@@ -2,6 +2,8 @@ Datepicker widget for jQuery that uses Bootstrap styles.
 
 Supports shortcuts on the left-side of the picker.
 
+**Latest Version**: 0.2.0
+
 
 ## Getting Started
 
@@ -130,3 +132,10 @@ This will generate the `dist/wave-datepicker.js` file that can be included on th
 Run the `test` task:
 
     ./node_modules/grunt/bin/grunt test
+
+
+##Changelog
+
+**0.2.0:**
+
+- Added support for `.add-on` icon to show/hide the datepicker

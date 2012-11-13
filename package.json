@@ -1,10 +1,9 @@
 {
   "name": "wave-datepicker",
   "description": "Datepicker for Wave",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "author": {
-    "name": "Jack Hsu",
-    "email": "jack.hsu@gmail.com",
+    "name": "Wave",
     "url": "http://waveaccounting.com/"
   },
   "homepage": "http://github.com/waveaccounting/wave-datepicker",
