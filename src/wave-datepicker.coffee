@@ -252,7 +252,7 @@
         @$document.on 'click', @hide
 
     # Hides the widget if it is shown.
-    hide: (e) =>
+    hide: =>
       if @_isShown
         @_isShown = false
         @$calendarYear.hide()
@@ -260,6 +260,12 @@
         @$datepicker.removeClass 'show'
         @$window.off 'resize', @_place
         @$document.off 'click', @hide
+
+    toggle: =>
+      if @_isShown
+        @hide()
+      else
+        @show()
 
     # Sets the Date object for this widget and update `<input>` field.
     setDate: (date, options) =>
@@ -346,15 +352,33 @@
       @$datepicker.find('thead').append "<tr class=\"wdp-weekdays\"><th>#{weekdays}</th></tr>"
 
     _initEvents: ->
-      # Show and hide picker
-      @$el.on 'focus', @show
+
+      # Show picker...
+      #
+      # If this input has an add-on icon attached to it, then we want to trigger show only when
+      # the icon is clicked on. The `<input>` box is also focused when icon is clicked.
+      if (@$icon = @$el.siblings('.add-on')).length
+        showAndFocus = (e) =>
+          @_cancelEvent e
+          if @_isShown
+            @$el.focus()
+          @toggle()
+
+        @$icon.on 'click', showAndFocus
+
+      # Otherwise we just show datepicker when `<input>` is focused.
+      else
+        # Also show on click (it might be hidden but focused).
+        @$el.on 'focus click mousedown', @show
+
+      # Hide picker
       @$el.on 'blur', @hide
-      @$el.on 'mousedown', @show
+
       @$el.on 'change', @_updateFromInput
       @$el.on 'change', @render
       @$el.on 'keydown', @_onInputKeydown
-      # Also show on click (it might be hidden but focused)
-      @$el.on 'click', @show
+
+      # Cancel all click events so we don't hide the picker unnecessarily.
       @$el.on 'click', @_cancelEvent
 
       @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate

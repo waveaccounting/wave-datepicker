@@ -264,3 +264,15 @@ describe 'Wave Datepicker', ->
         expect(widget.date.getFullYear()).toEqual(expected.getFullYear())
         expect(widget.date.getMonth()).toEqual(expected.getMonth())
         expect(widget.date.getDate()).toEqual(expected.getDate() + 1)
+
+    describe 'Add-on icon trigger', ->
+      beforeEach ->
+        # The input box to test on.
+        @$box = $('<div class="input-append"><input id="Date2"><span class="add-on">*</span></div>').appendTo(document.body)
+        @$box.find('input').datepicker()
+
+      it 'should open datepicker when the add-on icon is clicked', ->
+        @$box.find('.add-on').click()
+        picker = @$box.find('input').data('datepicker')
+        expect(picker._isShown).toBeTruthy()
+

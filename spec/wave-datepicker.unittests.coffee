@@ -17,6 +17,7 @@ describe 'Wave Datepicker unit tests', ->
         $el:
           on: sinon.stub()  # Stub because we need to return $el
           is: sinon.stub()
+          siblings: sinon.stub()  # For finding add-on icon
         _cancelEvent: 'FUNCTION'
         prev: 'FUNCTION'
         next: 'FUNCTION'
@@ -29,6 +30,10 @@ describe 'Wave Datepicker unit tests', ->
         hide: 'FUNCTION'
       @context.$el.on.returns @context.$el
       @context.$el.is.returns true
+      @$icon =
+        length: 0
+        on: sinon.spy()
+      @context.$el.siblings.withArgs('.add-on').returns @$icon
 
     it 'should bind cancel events to click on datepicker', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
@@ -47,13 +52,9 @@ describe 'Wave Datepicker unit tests', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
       expect(@context.$el.on).toHaveBeenCalledWith('change', @context._updateFromInput)
 
-    it 'should bind show to focus event', ->
+    it 'should bind show to focus, click, and mousedown events', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$el.on).toHaveBeenCalledWith('focus', @context.show)
-
-    it 'should bind show to click event', ->
-      WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$el.on).toHaveBeenCalledWith('click', @context.show)
+      expect(@context.$el.on).toHaveBeenCalledWith('focus click mousedown', @context.show)
 
     it 'should bind keydown event of <input> to the _onInputKeydown handler', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context

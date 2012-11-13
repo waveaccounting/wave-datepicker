@@ -12,20 +12,38 @@
 
   <body>
     <div class="container">
-      <label>
-        Default picker with no shortcuts
-        <input id="Date1" class="input-medium" value="2012-08-01"/>
-      </label>
+      <form class="form-horizontal">
+        <div class="control-group">
+          <label class="control-label">Default picker with no shortcuts</label>
+          <div class="controls">
+            <input type="text" id="Date1" class="input-small" value="2012-08-01"/>
+          </div>
+        </div>
 
-      <label>
-        Custom shortcuts
-        <input id="Date2" class="input-medium" value="2012-08-01"/>
-      </label>
+        <div class="control-group">
+          <label class="control-label">Custom shortcuts</label>
+          <div class="controls">
+            <input type="text" id="Date2" class="input-small" value="2012-08-01"/>
+          </div>
+        </div>
 
-      <label>
-        Default shortcuts
-        <input id="Date3" class="input-medium" value="2012-08-01"/>
-    </label>
+        <div class="control-group">
+          <label class="control-label">Default shortcuts</label>
+          <div class="controls">
+            <input type="text" id="Date3" class="input-small" value="2012-08-01"/>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Icon trigger</label>
+          <div class="controls">
+            <div class="input-append">
+              <input type="text" id="Date4" class="input-small" value="2012-08-01"/>
+              <span class="add-on"><i class="icon-calendar"></i></span>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/1.7.0/moment.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
@@ -55,6 +73,8 @@
         });
 
         $('#Date3').datepicker({shortcuts: true});
+
+        $('#Date4').datepicker();
       });
     </script>
   </body>

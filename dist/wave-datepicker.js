@@ -170,6 +170,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
       this.setDate = __bind(this.setDate, this);
 
+      this.toggle = __bind(this.toggle, this);
+
       this.hide = __bind(this.hide, this);
 
       this.show = __bind(this.show, this);
@@ -250,7 +252,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       }
     };
 
-    WaveDatepicker.prototype.hide = function(e) {
+    WaveDatepicker.prototype.hide = function() {
       if (this._isShown) {
         this._isShown = false;
         this.$calendarYear.hide();
@@ -258,6 +260,14 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         this.$datepicker.removeClass('show');
         this.$window.off('resize', this._place);
         return this.$document.off('click', this.hide);
+      }
+    };
+
+    WaveDatepicker.prototype.toggle = function() {
+      if (this._isShown) {
+        return this.hide();
+      } else {
+        return this.show();
       }
     };
 
@@ -358,13 +368,24 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype._initEvents = function() {
-      this.$el.on('focus', this.show);
+      var showAndFocus,
+        _this = this;
+      if ((this.$icon = this.$el.siblings('.add-on')).length) {
+        showAndFocus = function(e) {
+          _this._cancelEvent(e);
+          if (_this._isShown) {
+            _this.$el.focus();
+          }
+          return _this.toggle();
+        };
+        this.$icon.on('click', showAndFocus);
+      } else {
+        this.$el.on('focus click mousedown', this.show);
+      }
       this.$el.on('blur', this.hide);
-      this.$el.on('mousedown', this.show);
       this.$el.on('change', this._updateFromInput);
       this.$el.on('change', this.render);
       this.$el.on('keydown', this._onInputKeydown);
-      this.$el.on('click', this.show);
       this.$el.on('click', this._cancelEvent);
       this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
       this.$datepicker.on('click', '.js-wdp-prev', this.prev);
