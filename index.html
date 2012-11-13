@@ -2,48 +2,65 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Demo</title>
+    <title>Datepicker Demo</title>
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <link href="dist/wave-datepicker.css" rel="stylesheet">
     <style>
       body { padding-top: 30px }
+      pre { margin-top: 10px; }
     </style>
   </head>
 
   <body>
     <div class="container">
-      <form class="form-horizontal">
-        <div class="control-group">
-          <label class="control-label">Default picker with no shortcuts</label>
-          <div class="controls">
-            <input type="text" id="Date1" class="input-small" value="2012-08-01"/>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <label class="control-label">Custom shortcuts</label>
-          <div class="controls">
-            <input type="text" id="Date2" class="input-small" value="2012-08-01"/>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <label class="control-label">Default shortcuts</label>
-          <div class="controls">
-            <input type="text" id="Date3" class="input-small" value="2012-08-01"/>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <label class="control-label">Icon trigger</label>
-          <div class="controls">
-            <div class="input-append">
-              <input type="text" id="Date4" class="input-small" value="2012-08-01"/>
-              <span class="add-on"><i class="icon-calendar"></i></span>
+      <header>
+        <h1>Datepicker Demo</h1>
+      </header>
+      <section>
+        <form class="form-horizontal">
+          <div class="control-group">
+            <label class="control-label">Default picker with no shortcuts</label>
+            <div class="controls">
+              <input type="text" id="Date1" class="input-small" value="2012-08-01"/>
+              <pre>$('#Date1').datepicker();</pre>
             </div>
           </div>
-        </div>
-      </form>
+
+
+          <div class="control-group">
+            <label class="control-label">Custom shortcuts</label>
+            <div class="controls">
+              <input type="text" id="Date2" class="input-small" value="2012-08-01"/>
+              <pre>$('#Date2').datepicker({
+  shortcuts: {
+    'Today': {days: 0},
+    'In 15 days': {days: 15}
+  }
+});</pre>
+            </div>
+          </div>
+
+
+          <div class="control-group">
+            <label class="control-label">Default shortcuts</label>
+            <div class="controls">
+              <input type="text" id="Date3" class="input-small" value="2012-08-01"/>
+              <pre>$('#Date3').datepicker({shortcuts: true});</pre>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">Icon trigger</label>
+            <div class="controls">
+              <div class="input-append">
+                <input type="text" id="Date4" class="input-small" value="2012-08-01"/>
+                <span class="add-on"><i class="icon-calendar"></i></span>
+              </div>
+              <pre>$('#Date4').datepicker();</pre>
+            </div>
+          </div>
+        </form>
+      </section>
     </div>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/1.7.0/moment.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
@@ -59,15 +76,6 @@
             },
             'In 15 days': {
               days: 15
-            },
-            'In 30 days': {
-              days: 30
-            },
-            'In 60 days': {
-              days: 60
-            },
-            'In 90 days': {
-              days: 90
             }
           }
         });
