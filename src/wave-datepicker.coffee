@@ -149,7 +149,9 @@
       @resetClass()
       $target.addClass 'wdp-shortcut-active'
 
-      $target.trigger 'dateselect', wrapper.toDate()
+      # Only set if string was valid
+      if wrapper.isValid()
+        $target.trigger 'dateselect', wrapper.toDate()
 
     # Calls select for any clicks on shortcut `<a>` elements.
     _onShortcutClick: (e) => @select WDP.$(e.target)
@@ -407,7 +409,13 @@
 
     _formatDate: (date) -> WDP.DateUtils.format(date, @dateFormat)
 
-    _parseDate: (str) -> WDP.DateUtils.parse(str, @dateFormat).toDate()
+    _parseDate: (str) ->
+      # If the string is formatted properly, return its date value.
+      if (wrapped = WDP.DateUtils.parse(str, @dateFormat)).isValid()
+        return wrapped.toDate()
+
+      # Otherwise return current date
+      return @date
 
     # Places the datepicker below the input box
     _place: =>

@@ -125,6 +125,17 @@ describe 'Wave Datepicker', ->
         expect(widget.date.getMonth()).toEqual(date.getMonth())
         expect(widget.date.getDate()).toEqual(date.getDate())
 
+      describe 'when input value is bad', ->
+        it 'should not change the date', ->
+          @$input.val('2012-08-01').datepicker()
+          widget = @$input.data('datepicker')
+          originalDate = widget.date
+
+          # This should not change widget's date.
+          @$input.val('some bad value').trigger('change')
+
+          expect(widget.date).toBe(originalDate)
+
 
     describe 'Rendered calendar', ->
       it 'should draw the calendar with current month and fill start/end with prev/next month', ->

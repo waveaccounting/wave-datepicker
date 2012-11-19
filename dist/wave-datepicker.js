@@ -117,7 +117,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       wrapper.add(offset);
       this.resetClass();
       $target.addClass('wdp-shortcut-active');
-      return $target.trigger('dateselect', wrapper.toDate());
+      if (wrapper.isValid()) {
+        return $target.trigger('dateselect', wrapper.toDate());
+      }
     };
 
     Shortcuts.prototype._onShortcutClick = function(e) {
@@ -419,7 +421,11 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype._parseDate = function(str) {
-      return WDP.DateUtils.parse(str, this.dateFormat).toDate();
+      var wrapped;
+      if ((wrapped = WDP.DateUtils.parse(str, this.dateFormat)).isValid()) {
+        return wrapped.toDate();
+      }
+      return this.date;
     };
 
     WaveDatepicker.prototype._place = function() {
