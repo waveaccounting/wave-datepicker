@@ -297,3 +297,23 @@ describe 'Wave Datepicker', ->
           expect(date.getFullYear()).toEqual(2012)
           expect(date.getMonth()).toEqual(7)
           expect(date.getDate()).toEqual(31)
+
+      describe 'when date data-date-format is set on the <input>', ->
+        it 'should use that format string to parse and format dates', ->
+          @$input.val('2012/08/31').attr('data-date-format', 'YYYY/MM/DD')
+          @$input.datepicker()
+          date = @$input.data('datepicker').date
+          expect(date).toBeDefined()
+          expect(date.getFullYear()).toEqual(2012)
+          expect(date.getMonth()).toEqual(7)
+          expect(date.getDate()).toEqual(31)
+
+      describe 'when the date format does not include year', ->
+        it 'should use the current year', ->
+          @$input.val('12-31').attr('data-date-format', 'MM-DD')
+          @$input.datepicker()
+          date = @$input.data('datepicker').date
+          expect(date).toBeDefined()
+          expect(date.getFullYear()).toEqual(2012)
+          expect(date.getMonth()).toEqual(11)
+          expect(date.getDate()).toEqual(31)

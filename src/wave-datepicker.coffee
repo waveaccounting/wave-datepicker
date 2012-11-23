@@ -420,7 +420,7 @@
         # not include the year. e.g. "MM-DD"
         if d.getFullYear() is 0
           # Set to current year
-          d.setFullYear(new Date().getFullYear)
+          d.setFullYear(new Date().getFullYear())
 
         return d
 

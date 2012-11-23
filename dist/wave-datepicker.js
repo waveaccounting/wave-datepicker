@@ -426,7 +426,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       if ((wrapped = WDP.DateUtils.parse(str, this.dateFormat)).isValid()) {
         d = wrapped.toDate();
         if (d.getFullYear() === 0) {
-          d.setFullYear(new Date().getFullYear);
+          d.setFullYear(new Date().getFullYear());
         }
         return d;
       }
