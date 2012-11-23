@@ -59,6 +59,15 @@
               <pre>$('#Date4').datepicker();</pre>
             </div>
           </div>
+
+          <div class="control-group">
+            <label class="control-label">data-date-format attribute</label>
+            <div class="controls">
+              <input type="text" id="Date5" class="input-small" value="12-31" data-date-format="MM-DD"/>
+              <pre>&lt;input data-date-format="MM-DD" id="Date5"/&gt;</pre>
+              <pre>$('#Date5').datepicker();</pre>
+            </div>
+          </div>
         </form>
       </section>
     </div>
@@ -83,6 +92,8 @@
         $('#Date3').datepicker({shortcuts: true});
 
         $('#Date4').datepicker();
+
+        $('#Date5').datepicker();
       });
     </script>
   </body>
