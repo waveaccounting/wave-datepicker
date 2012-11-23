@@ -287,3 +287,13 @@ describe 'Wave Datepicker', ->
         picker = @$box.find('input').data('datepicker')
         expect(picker._isShown).toBeTruthy()
 
+    describe 'Date format', ->
+      describe 'when the format option is passed', ->
+        it 'should use that format string to parse and format dates', ->
+          @$input.val('2012/08/31')
+          @$input.datepicker(format: 'YYYY/MM/DD')
+          date = @$input.data('datepicker').date
+          expect(date).toBeDefined()
+          expect(date.getFullYear()).toEqual(2012)
+          expect(date.getMonth()).toEqual(7)
+          expect(date.getDate()).toEqual(31)

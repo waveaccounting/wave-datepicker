@@ -183,7 +183,9 @@
       @el = @options.el
       @$el = WDP.$ @el
 
-      @dateFormat = @options.format or @_defaultFormat
+      # Options take precedence over the `data-date-format` attribute.
+      format = @options.format or @$el.data('dateFormat')
+      @dateFormat = format or @_defaultFormat  # If no format provided, set the default.
 
       @_state = {}
 
@@ -412,7 +414,15 @@
     _parseDate: (str) ->
       # If the string is formatted properly, return its date value.
       if (wrapped = WDP.DateUtils.parse(str, @dateFormat)).isValid()
-        return wrapped.toDate()
+        d = wrapped.toDate()
+
+        # If the year is zero then it is invalid. This can happen if the dateFormat does 
+        # not include the year. e.g. "MM-DD"
+        if d.getFullYear() is 0
+          # Set to current year
+          d.setFullYear(new Date().getFullYear)
+
+        return d
 
       # Otherwise return current date
       return @date
@@ -587,7 +597,7 @@
       # Update selection
       dateStr = @_formatDate @date
       @$calendarTbody.find('.wdp-selected').removeClass('wdp-selected')
-      @$calendarTbody.find("td[data-date=#{dateStr}]").addClass('wdp-selected')
+      @$calendarTbody.find("td[data-date='#{dateStr}']").addClass('wdp-selected')
 
     _selectDate: (e) =>
       @$calendarMonth.hide()

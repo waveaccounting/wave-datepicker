@@ -145,7 +145,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype._state = null;
 
     function WaveDatepicker(options) {
-      var shortcutOptions, _ref, _ref1,
+      var format, shortcutOptions, _ref, _ref1,
         _this = this;
       this.options = options;
       this._selectDate = __bind(this._selectDate, this);
@@ -182,7 +182,8 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
       this.el = this.options.el;
       this.$el = WDP.$(this.el);
-      this.dateFormat = this.options.format || this._defaultFormat;
+      format = this.options.format || this.$el.data('dateFormat');
+      this.dateFormat = format || this._defaultFormat;
       this._state = {};
       this._updateFromInput();
       this._initPicker();
@@ -421,9 +422,13 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype._parseDate = function(str) {
-      var wrapped;
+      var d, wrapped;
       if ((wrapped = WDP.DateUtils.parse(str, this.dateFormat)).isValid()) {
-        return wrapped.toDate();
+        d = wrapped.toDate();
+        if (d.getFullYear() === 0) {
+          d.setFullYear(new Date().getFullYear);
+        }
+        return d;
       }
       return this.date;
     };
@@ -601,7 +606,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       var dateStr;
       dateStr = this._formatDate(this.date);
       this.$calendarTbody.find('.wdp-selected').removeClass('wdp-selected');
-      return this.$calendarTbody.find("td[data-date=" + dateStr + "]").addClass('wdp-selected');
+      return this.$calendarTbody.find("td[data-date='" + dateStr + "']").addClass('wdp-selected');
     };
 
     WaveDatepicker.prototype._selectDate = function(e) {
