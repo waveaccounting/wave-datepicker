@@ -80,7 +80,32 @@ describe 'Wave Datepicker unit tests', ->
       expect(context.date).toEqual(date)
       expect(context._state.month).toEqual(7)
       expect(context._state.year).toEqual(2012)
-      expect(context.$el.trigger).toHaveBeenCalledWith('change', date)
+      expect(context.$el.trigger).toHaveBeenCalledWith('change', [date, {silent: true}])
+
+    describe 'when hideOnSelect is true', ->
+      beforeEach ->
+        @context =
+          _formatDate: sinon.stub()
+          $el:
+            val: sinon.spy()
+            trigger: sinon.spy()
+          _state: {}
+          options:
+            hideOnSelect: true
+          hide: sinon.spy()
+
+        @context._formatDate.returns 'FORMATTED'
+
+        @date = new Date(2012, 7, 1, 0, 0, 0, 0)
+
+      it 'should call hide', ->
+        WDP.WaveDatepicker.prototype.setDate.call @context, @date
+        expect(@context.hide).toHaveBeenCalledOnce()
+
+      describe 'when {hide: false} is passed', ->
+        it 'should not call hide', ->
+          WDP.WaveDatepicker.prototype.setDate.call @context, @date, {hide: false}
+          expect(@context.hide).not.toHaveBeenCalled()
 
   describe 'next', ->
     it 'should increment month then call render method', ->

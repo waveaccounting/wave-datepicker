@@ -100,7 +100,7 @@ describe 'Wave Datepicker', ->
             })
           today = new Date()
           # Date and month can overflow, which JavaScript will handle for us.
-          expected = new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate() + 5)
+          expected = new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate() + 6)  # 5 days excluding today.
           widget = @$input.data('datepicker')
 
           widget.$datepicker.find('.wdp-shortcut').click()
@@ -224,6 +224,7 @@ describe 'Wave Datepicker', ->
           expect(@widget._state.month).toEqual(11)
           expect(@widget._state.year).toEqual(2011)
 
+
     describe 'Multiple pickers on page', ->
       beforeEach ->
         @$input.datepicker()
@@ -258,6 +259,7 @@ describe 'Wave Datepicker', ->
           expect(@picker2._isShown).not.toBeTruthy()
           expect(@picker3._isShown).toBeTruthy()
 
+
     describe 'Base date', ->
       it 'should be used to calcualte shortcuts', ->
         expected = new Date(2012, 7, 1) 
@@ -276,6 +278,7 @@ describe 'Wave Datepicker', ->
         expect(widget.date.getMonth()).toEqual(expected.getMonth())
         expect(widget.date.getDate()).toEqual(expected.getDate() + 1)
 
+
     describe 'Add-on icon trigger', ->
       beforeEach ->
         # The input box to test on.
@@ -286,6 +289,7 @@ describe 'Wave Datepicker', ->
         @$box.find('.add-on').click()
         picker = @$box.find('input').data('datepicker')
         expect(picker._isShown).toBeTruthy()
+        
 
     describe 'Date format', ->
       describe 'when the format option is passed', ->

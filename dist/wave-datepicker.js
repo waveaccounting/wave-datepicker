@@ -286,9 +286,13 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this._state.year = this.date.getFullYear();
       this.$el.val(this._formatDate(date));
       if ((options != null ? options.silent : void 0) !== true) {
-        this.$el.trigger('change', this.date);
+        this.$el.trigger('change', [
+          this.date, $.extend({
+            silent: true
+          }, options)
+        ]);
       }
-      if (this.options.hideOnSelect) {
+      if (this.options.hideOnSelect && ((options != null ? options.hide : void 0) || (options != null ? options.hide : void 0) === void 0)) {
         return this.hide();
       }
     };
@@ -399,15 +403,16 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       return this.$datepicker.on('mousedown', this._cancelEvent);
     };
 
-    WaveDatepicker.prototype._updateFromInput = function() {
+    WaveDatepicker.prototype._updateFromInput = function(e, date, options) {
       var dateStr;
       if ((dateStr = this.$el.val())) {
         this.date = this._parseDate(dateStr);
       }
       this.date || (this.date = new Date());
-      return this.setDate(this.date, {
+      options = $.extend({
         silent: true
-      });
+      }, options);
+      return this.setDate(this.date, options);
     };
 
     WaveDatepicker.prototype._updateMonthAndYear = function() {
@@ -598,7 +603,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         if ((_ref2 = this.shortcuts) != null) {
           _ref2.resetClass();
         }
-        return this.setDate(date);
+        return this.setDate(date, {
+          hide: false
+        });
       }
     };
 

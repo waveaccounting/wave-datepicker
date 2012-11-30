@@ -6,7 +6,7 @@
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <link href="dist/wave-datepicker.css" rel="stylesheet">
     <style>
-      body { padding-top: 30px }
+      body { padding-top: 30px; padding-bottom: 250px; }
       pre { margin-top: 10px; }
     </style>
   </head>
@@ -68,6 +68,14 @@
               <pre>$('#Date5').datepicker();</pre>
             </div>
           </div>
+
+          <div class="control-group">
+            <label class="control-label">data-date-format attribute</label>
+            <div class="controls">
+              <input type="text" id="Date6" class="input-small"/>
+              <pre>$('#Date6').datepicker({hideOnSelect: true});</pre>
+            </div>
+          </div>
         </form>
       </section>
     </div>
@@ -94,6 +102,8 @@
         $('#Date4').datepicker();
 
         $('#Date5').datepicker();
+
+        $('#Date6').datepicker({hideOnSelect: true});
       });
     </script>
   </body>

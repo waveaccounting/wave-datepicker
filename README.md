@@ -136,6 +136,10 @@ Run the `test` task:
 
 ##Changelog
 
+**0.2.1:**
+
+- Fixed issues with keyboard navigation when using `{hideOnSelect: true}`
+
 **0.2.0:**
 
 - Added support for `.add-on` icon to show/hide the datepicker

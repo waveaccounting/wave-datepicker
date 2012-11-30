@@ -287,9 +287,9 @@
       @$el.val @_formatDate(date)
 
       unless options?.silent is true
-        @$el.trigger 'change', @date
+        @$el.trigger 'change', [@date, $.extend({silent: true}, options)]
 
-      if @options.hideOnSelect
+      if @options.hideOnSelect and (options?.hide or options?.hide is undefined)
         @hide()
 
     getDate: -> @date
@@ -393,7 +393,7 @@
       @$datepicker.on 'click', '.js-wdp-year-calendar-cell', @_showMonthGrid
       @$datepicker.on 'mousedown', @_cancelEvent
 
-    _updateFromInput: =>
+    _updateFromInput: (e, date, options) =>
       # Reads the value of the `<input>` field and set it as the date.
       if (dateStr = @$el.val())
         @date = @_parseDate dateStr
@@ -401,7 +401,10 @@
       # If date could not be set from @$el.val() then set to today.
       @date or= new Date()
 
-      @setDate @date, {silent: true}
+      # In case other options were passed down.
+      options = $.extend {silent: true}, options
+
+      @setDate @date, options
 
     # Updates the picker with the current date.
     _updateMonthAndYear: =>
@@ -590,8 +593,8 @@
         fn?()
       else if offset?
         date = new Date(@date.getFullYear(), @date.getMonth(), @date.getDate() + offset)
-        @shortcuts?.resetClass()  # Clear ay selected shortcuts
-        @setDate date
+        @shortcuts?.resetClass()  # Clear any selected shortcuts
+        @setDate date, {hide: false}
 
     _updateSelection: ->
       # Update selection
