@@ -28,6 +28,15 @@ You will also need the stylesheet `dist/wave-datepicker.css`.
     // Given an existing <input id="MyInput"/> element.
     $('#MyInput').datepicker();
 
+    // May also pass in an options object.
+    $('#MyInput').datepicker(options);
+
+
+### Options:
+
+* hideOnSelect - If `true` then date selection will automatically hide the datepicker. Default is `false`
+
+
 
 ### Methods:
 
