@@ -100,7 +100,7 @@ describe 'Wave Datepicker', ->
             })
           today = new Date()
           # Date and month can overflow, which JavaScript will handle for us.
-          expected = new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate() + 6)  # 5 days excluding today.
+          expected = new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate() + 5)
           widget = @$input.data('datepicker')
 
           widget.$datepicker.find('.wdp-shortcut').click()

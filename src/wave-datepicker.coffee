@@ -72,6 +72,9 @@
     K: 75
     L: 76
 
+  WDP.defaultOptions =
+    hideOnSelect: true
+
   # Class for handling shortcuts on the datepicker.
   class WDP.Shortcuts
     # Shortcut key shows as links on left side of picker.
@@ -182,6 +185,8 @@
     constructor: (@options) ->
       @el = @options.el
       @$el = WDP.$ @el
+
+      @options = $.extend {}, WDP.defaultOptions, options
 
       # Options take precedence over the `data-date-format` attribute.
       format = @options.format or @$el.data('dateFormat')

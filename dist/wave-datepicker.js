@@ -40,6 +40,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     K: 75,
     L: 76
   };
+  WDP.defaultOptions = {
+    hideOnSelect: true
+  };
   WDP.Shortcuts = (function() {
 
     Shortcuts.prototype._defaults = {
@@ -182,6 +185,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
       this.el = this.options.el;
       this.$el = WDP.$(this.el);
+      this.options = $.extend({}, WDP.defaultOptions, options);
       format = this.options.format || this.$el.data('dateFormat');
       this.dateFormat = format || this._defaultFormat;
       this._state = {};
