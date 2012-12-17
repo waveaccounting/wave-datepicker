@@ -432,9 +432,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
     WaveDatepicker.prototype._parseDate = function(str) {
       var d, wrapped;
-      if ((wrapped = WDP.DateUtils.parse(str, this.dateFormat)).isValid()) {
+      if ((wrapped = WDP.DateUtils.parse(str)).isValid()) {
         d = wrapped.toDate();
-        if (d.getFullYear() === 0) {
+        if (d.getFullYear() === 2001) {
           d.setFullYear(new Date().getFullYear());
         }
         return d;
