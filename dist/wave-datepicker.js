@@ -148,7 +148,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype._state = null;
 
     function WaveDatepicker(options) {
-      var format, shortcutOptions, _ref, _ref1,
+      var format, parseOnInit, shortcutOptions, _ref, _ref1,
         _this = this;
       this.options = options;
       this._selectDate = __bind(this._selectDate, this);
@@ -189,7 +189,15 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       format = this.options.format || this.$el.data('dateFormat');
       this.dateFormat = format || this._defaultFormat;
       this._state = {};
-      this._updateFromInput();
+      parseOnInit = this.options.parseOnInit || this.$el.data('dateParseOnInit');
+      if (parseOnInit === 'no' || parseOnInit === 'false' || parseOnInit === false) {
+        parseOnInit = false;
+      } else {
+        parseOnInit = true;
+      }
+      this._updateFromInput(null, null, {
+        update: parseOnInit
+      });
       this._initPicker();
       this._initElements();
       this._initEvents();
@@ -288,7 +296,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       this.date = date;
       this._state.month = this.date.getMonth();
       this._state.year = this.date.getFullYear();
-      this.$el.val(this._formatDate(date));
+      if ((options != null ? options.update : void 0) !== false) {
+        this.$el.val(this._formatDate(date));
+      }
       if ((options != null ? options.silent : void 0) !== true) {
         this.$el.trigger('change', [
           this.date, $.extend({
@@ -356,7 +366,6 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       if (this.options.className) {
         this.$el.addClass(this.options.className);
       }
-      this.$el.val(this._formatDate(this.date));
       this.$shortcuts = this.$datepicker.find('.wdp-shortcuts');
       this.$main = this.$datepicker.find('.wdp-main');
       this.$calendar = this.$main.find('.wdp-calendar');

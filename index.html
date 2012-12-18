@@ -76,6 +76,15 @@
               <pre>$('#Date6').datepicker({hideOnSelect: false});</pre>
             </div>
           </div>
+
+          <div class="control-group">
+            <label class="control-label">data-date-parse-on-init attribute</label>
+            <div class="controls">
+              <input type="text" id="Date7" class="input-small" data-date-parse-on-init="no" value="bad input"/>
+              <pre>&lt;input data-date-parse-on-init="no" id="Date7"/&gt;</pre>
+              <pre>$('#Date7').datepicker();</pre>
+            </div>
+          </div>
         </form>
       </section>
     </div>
@@ -104,6 +113,8 @@
         $('#Date5').datepicker();
 
         $('#Date6').datepicker({hideOnSelect: false});
+
+        $('#Date7').datepicker();
       });
     </script>
   </body>

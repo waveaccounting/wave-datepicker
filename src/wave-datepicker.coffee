@@ -194,7 +194,15 @@
 
       @_state = {}
 
-      @_updateFromInput()
+      # If this is `false` or `no` then don't pick up date from input initially.
+      parseOnInit = @options.parseOnInit or @$el.data('dateParseOnInit')
+
+      if parseOnInit in ['no', 'false', false]
+        parseOnInit = false
+      else
+        parseOnInit = true
+
+      @_updateFromInput(null, null, {update: parseOnInit})
 
       @_initPicker()
       @_initElements()
@@ -289,7 +297,9 @@
       @date = date
       @_state.month = @date.getMonth()
       @_state.year = @date.getFullYear()
-      @$el.val @_formatDate(date)
+
+      unless options?.update is false
+        @$el.val @_formatDate(date)
 
       unless options?.silent is true
         @$el.trigger 'change', [@date, $.extend({silent: true}, options)]
@@ -334,9 +344,6 @@
     _initElements: ->
       if @options.className
         @$el.addClass(@options.className)
-
-      # Set initial date value
-      @$el.val @_formatDate(@date)
 
       # Set up elements cache
       @$shortcuts = @$datepicker.find '.wdp-shortcuts'
