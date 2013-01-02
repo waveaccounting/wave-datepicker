@@ -195,14 +195,10 @@
       @_state = {}
 
       # If this is `false` or `no` then don't pick up date from input initially.
-      parseOnInit = @options.parseOnInit or @$el.data('dateParseOnInit')
+      @allowClear = @options.allowClear or @$el.data('dateAllowClear')
+      @allowClear = @allowClear in ['yes', 'true', true]
 
-      if parseOnInit in ['no', 'false', false]
-        parseOnInit = false
-      else
-        parseOnInit = true
-
-      @_updateFromInput(null, null, {update: parseOnInit})
+      @_updateFromInput(null, null, {update: not @allowClear})
 
       @_initPicker()
       @_initElements()
@@ -236,7 +232,8 @@
     render: =>
       @_updateMonthAndYear()
       @_fill()
-      @_updateSelection()
+
+      @_updateSelection() if @date
 
       if @shortcuts?
         @$datepicker.addClass('wdp-has-shortcuts')
@@ -292,6 +289,10 @@
 
       # Cannot set non-dates
       unless date instanceof Date
+        if @allowClear
+          today = new Date()
+          @_state.month = today.getMonth()
+          @_state.year = today.getFullYear()
         return
 
       @date = date
@@ -411,7 +412,11 @@
         @date = @_parseDate dateStr
 
       # If date could not be set from @$el.val() then set to today.
-      @date or= new Date()
+      if @allowClear
+        unless dateStr
+          @date = null
+      else
+        @date or= new Date()
 
       # In case other options were passed down.
       options = $.extend {silent: true}, options

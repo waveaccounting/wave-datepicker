@@ -318,6 +318,40 @@ describe 'Wave Datepicker', ->
           @$input.datepicker()
           date = @$input.data('datepicker').date
           expect(date).toBeDefined()
-          expect(date.getFullYear()).toEqual(2012)
+          expect(date.getFullYear()).toEqual(new Date().getFullYear())
           expect(date.getMonth()).toEqual(11)
           expect(date.getDate()).toEqual(31)
+
+
+    describe 'Allow clear', ->
+      describe 'when data-date-allow-clear is "yes" on the <input>', ->
+        it 'should allow user to null out the date', ->
+          @$input.val('')
+          @$input.attr('data-date-allow-clear', 'yes')
+          @$input.datepicker()
+          expect(@$input.datepicker('getDate')).toBeNull()
+
+      describe 'when data-date-allow-clear is "true" on the <input>', ->
+        it 'should allow user to null out the date', ->
+          @$input.val('')
+          @$input.attr('data-date-allow-clear', 'true')
+          @$input.datepicker()
+          expect(@$input.datepicker('getDate')).toBeNull()
+
+      describe 'when allowClear is passed inside the options', ->
+        beforeEach ->
+          @$input.val('')
+          @$input.datepicker(allowClear: true)
+
+        it 'should allow user to null out the date', ->
+          expect(@$input.datepicker('getDate')).toBeNull()
+
+        describe 'when user clears out the <input> after setting it', ->
+          it 'should null out the date', ->
+            # First set it and check the date is set.
+            @$input.val('2013-01-01').trigger('change')
+            expect(@$input.datepicker('getDate')).not.toBeNull()
+
+            # Now unset it and check date is null.
+            @$input.val('').trigger('change')
+            expect(@$input.datepicker('getDate')).toBeNull()

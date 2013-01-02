@@ -148,7 +148,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype._state = null;
 
     function WaveDatepicker(options) {
-      var format, parseOnInit, shortcutOptions, _ref, _ref1,
+      var format, shortcutOptions, _ref, _ref1, _ref2,
         _this = this;
       this.options = options;
       this._selectDate = __bind(this._selectDate, this);
@@ -189,14 +189,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       format = this.options.format || this.$el.data('dateFormat');
       this.dateFormat = format || this._defaultFormat;
       this._state = {};
-      parseOnInit = this.options.parseOnInit || this.$el.data('dateParseOnInit');
-      if (parseOnInit === 'no' || parseOnInit === 'false' || parseOnInit === false) {
-        parseOnInit = false;
-      } else {
-        parseOnInit = true;
-      }
+      this.allowClear = this.options.allowClear || this.$el.data('dateAllowClear');
+      this.allowClear = (_ref = this.allowClear) === 'yes' || _ref === 'true' || _ref === true;
       this._updateFromInput(null, null, {
-        update: parseOnInit
+        update: !this.allowClear
       });
       this._initPicker();
       this._initElements();
@@ -210,12 +206,12 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         }
         this.shortcuts = new WDP.Shortcuts(shortcutOptions).render();
         this.$shortcuts.append(this.shortcuts.$el);
-        if ((_ref = this.shortcuts) != null) {
-          _ref.resetClass();
-        }
-        this.shortcuts.baseDate = this.baseDate;
         if ((_ref1 = this.shortcuts) != null) {
           _ref1.resetClass();
+        }
+        this.shortcuts.baseDate = this.baseDate;
+        if ((_ref2 = this.shortcuts) != null) {
+          _ref2.resetClass();
         }
         this.$shortcuts.on('dateselect', function(e, date) {
           return _this.setDate(date);
@@ -227,7 +223,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     WaveDatepicker.prototype.render = function() {
       this._updateMonthAndYear();
       this._fill();
-      this._updateSelection();
+      if (this.date) {
+        this._updateSelection();
+      }
       if (this.shortcuts != null) {
         this.$datepicker.addClass('wdp-has-shortcuts');
         this.$datepicker.find('.wdp-main').addClass('span7').removeClass('span12');
@@ -287,10 +285,16 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     WaveDatepicker.prototype.setDate = function(date, options) {
+      var today;
       if (typeof date === 'string') {
         date = WDP.DateUtils.parse(date);
       }
       if (!(date instanceof Date)) {
+        if (this.allowClear) {
+          today = new Date();
+          this._state.month = today.getMonth();
+          this._state.year = today.getFullYear();
+        }
         return;
       }
       this.date = date;
@@ -421,7 +425,13 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
       if ((dateStr = this.$el.val())) {
         this.date = this._parseDate(dateStr);
       }
-      this.date || (this.date = new Date());
+      if (this.allowClear) {
+        if (!dateStr) {
+          this.date = null;
+        }
+      } else {
+        this.date || (this.date = new Date());
+      }
       options = $.extend({
         silent: true
       }, options);
