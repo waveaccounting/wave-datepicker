@@ -145,6 +145,10 @@ Run the `test` task:
 
 ##Changelog
 
+**0.2.2:**
+
+- Added `allowClear` option to allow user to unset the date
+
 **0.2.1:**
 
 - Fixed issues with keyboard navigation when using `{hideOnSelect: true}`
