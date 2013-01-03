@@ -433,12 +433,12 @@
 
     _parseDate: (str) ->
       # If the string is formatted properly, return its date value.
-      if (wrapped = WDP.DateUtils.parse(str)).isValid()
+      if (wrapped = WDP.DateUtils.parse(str, @dateFormat)).isValid()
         d = wrapped.toDate()
 
-        # If the year is zero then it is invalid. This can happen if the dateFormat does 
+        # If the year is zero then it is invalid. This can happen if the dateFormat does
         # not include the year. e.g. "MM-DD"
-        if d.getFullYear() is 2001
+        if d.getFullYear() is 0
           # Set to current year
           d.setFullYear(new Date().getFullYear())
 
