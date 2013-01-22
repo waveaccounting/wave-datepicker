@@ -2,7 +2,7 @@ Datepicker widget for jQuery that uses Bootstrap styles.
 
 Supports shortcuts on the left-side of the picker.
 
-**Latest Version**: 0.2.0
+**Latest Version**: 0.2.2
 
 
 ## Getting Started
