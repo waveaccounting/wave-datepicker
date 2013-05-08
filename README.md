@@ -121,18 +121,29 @@ When the `Shift` key is held down, then the `Up` and `Down` keys will navigate t
 
 ## Development
 
-**Installing dependencies:**
+**Make sure you have Grunt and Bower installed globally:**
 
     sudo npm install -g grunt-cli bower
+
+
+**Installing dependencies:**
+
     npm install
+    bower install
     
 
 **Building file:**
 
-    grunt
+    grunt release
 
 This will generate the `dist/wave-datepicker.js` file that can be included on the page via `<script>` node or AMD.
 
+
+**Running live-reloading server**
+
+    grunt
+
+This will start a server at [http://localhost:9001/](http://localhost:9001/), and assets will automatically refresh when changed (JS, CSS, HTML).
 
 **Testing:**
 

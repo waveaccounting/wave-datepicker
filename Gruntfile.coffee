@@ -80,6 +80,10 @@ module.exports = (grunt) ->
       'connect:server'
       'watch'
     ]
+  grunt.registerTask 'release', [
+      'coffee'
+      'less'
+    ]
   grunt.registerTask "test", [
     'coffee'
     'mocha'
