@@ -2,8 +2,9 @@ Datepicker widget for jQuery that uses Bootstrap styles.
 
 Supports shortcuts on the left-side of the picker.
 
-**Latest Version**: 0.2.2
+**Latest Version**: 1.0.0
 
+![ScreenShot](https://raw.github.com/waveaccounting/wave-datepicker/master/img/screenshot.png)
 
 ## Getting Started
 
@@ -11,7 +12,7 @@ Supports shortcuts on the left-side of the picker.
 
 * [jQuery](http://jquery.com/) (1.7+)
 * [moment.js](http://momentjs.com/)
-* [Bootstrap CSS](http://twitter.github.com/bootstrap/)
+* [Bootstrap](http://twitter.github.com/bootstrap/) (2.0+)
 
 
 **Including on website:**
@@ -122,16 +123,13 @@ When the `Shift` key is held down, then the `Up` and `Down` keys will navigate t
 
 **Installing dependencies:**
 
+    sudo npm install -g grunt-cli bower
     npm install
     
 
 **Building file:**
 
-Run the local `grunt` binary.
-
-    ./node_modules/grunt/bin/grunt
-
-If you have grunt installed globally via the `npm install -g` switch, simply run `grunt`.
+    grunt
 
 This will generate the `dist/wave-datepicker.js` file that can be included on the page via `<script>` node or AMD.
 
@@ -140,10 +138,14 @@ This will generate the `dist/wave-datepicker.js` file that can be included on th
 
 Run the `test` task:
 
-    ./node_modules/grunt/bin/grunt test
+    grunt test
 
 
 ##Changelog
+
+**1.0.0**
+
+- Converted project to use Grunt and Bower + Mocha for tests
 
 **0.2.2:**
 
