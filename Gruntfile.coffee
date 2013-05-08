@@ -29,6 +29,12 @@ module.exports = (grunt) ->
           reporter: 'Nyan'
           run: true
 
+    exec:
+      nyan_start:
+        cmd: './bin/nyan.sh start'
+      nyan_stop:
+        cmd: './bin/nyan.sh stop'
+
     coffee:
       dist:
         files: [
@@ -86,5 +92,7 @@ module.exports = (grunt) ->
     ]
   grunt.registerTask "test", [
     'coffee'
+    'exec:nyan_start'
     'mocha'
+    'exec:nyan_stop'
   ]
