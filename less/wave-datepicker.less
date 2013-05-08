@@ -1,3 +1,11 @@
+@grayLightest: #ddd;
+
+.border-radius(@radius: 4px) {
+  -webkit-border-radius: @radius;
+     -moz-border-radius: @radius;
+          border-radius: @radius;
+}
+
 .activeGradient (@bgColor: @linkColor) {
     background-color: @bgColor;
     .buttonBackground(@bgColor, darken(@bgColor, 10%));
@@ -80,7 +88,7 @@
         text-align: right;
     }
     .wdp-calendar-othermonth {
-        color: @grayLight;
+        color: @grayLightest;
     }
     .wdp-selected {
         .activeGradient();

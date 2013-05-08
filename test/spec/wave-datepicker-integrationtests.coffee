@@ -22,14 +22,14 @@ describe 'Wave Datepicker', ->
 
   describe '$.fn.datepicker', ->
     it 'should be defined on jQuery object', ->
-      expect(@$input.datepicker).toEqual(jasmine.any(Function))
+      expect(@$input.datepicker).to.be.instanceof Function
 
     it 'should instantiate the WaveDatepicker call', ->
       @stubWaveDatepicker()
 
       @$input.datepicker()
 
-      expect(@_WaveDatepickerStub).toHaveBeenCalledOnce()
+      expect(@_WaveDatepickerStub.calledOnce).to.be.true
 
       @restoreWaveDatepicker()
 
@@ -41,46 +41,46 @@ describe 'Wave Datepicker', ->
       @$input.datepicker()
 
       # But only instantiated twice
-      expect(@_WaveDatepickerStub).toHaveBeenCalledOnce()
+      expect(@_WaveDatepickerStub.calledOnce).to.be.true
 
       @restoreWaveDatepicker()
 
     it 'should set the datepicker widget as data on the <input>', ->
       @stubWaveDatepicker()
       @$input.datepicker()
-      expect(@$input.data('datepicker')).toEqual(@_WaveDatepicker)
+      expect(@$input.data('datepicker')).to.eql @_WaveDatepicker
       @restoreWaveDatepicker()
 
     it 'should use the value attribute to set default date', ->
       @$input.val('2012-08-01').datepicker()
       date = @$input.data('datepicker').date
-      expect(date).toBeDefined()
-      expect(date.getFullYear()).toEqual(2012)
-      expect(date.getMonth()).toEqual(7)
-      expect(date.getDate()).toEqual(1)
+      expect(date).to.be.defined
+      expect(date.getFullYear()).to.eql 2012
+      expect(date.getMonth()).to.eql 7
+      expect(date.getDate()).to.eql 1
 
     it 'should set today as the default is value not set on <input>', ->
       @$input.datepicker()
       date = @$input.data('datepicker').date
       today = new Date()
-      expect(date).toBeDefined()
-      expect(date.getFullYear()).toEqual(today.getFullYear())
-      expect(date.getMonth()).toEqual(today.getMonth())
-      expect(date.getDate()).toEqual(today.getDate())
+      expect(date).to.be.defined
+      expect(date.getFullYear()).to.eql(today.getFullYear())
+      expect(date.getMonth()).to.eql(today.getMonth())
+      expect(date.getDate()).to.eql(today.getDate())
 
 
     describe 'Shortcuts', ->
       it 'should by default not have shortcuts', ->
         @$input.datepicker()
         widget = @$input.data('datepicker')
-        expect(widget.$datepicker).not.toContain('.wdp-shortcut')
+        expect(widget.$datepicker.find('.wdp-shortcut').length is 0).to.be.true
 
       it 'should provide default options if `shortcuts` is passed as true', ->
         @$input.datepicker({shortcuts: true})
         widget = @$input.data('datepicker')
-        expect(widget.$datepicker).toContain('.wdp-shortcut')
+        expect(widget.$datepicker.find('.wdp-shortcut').length is 0).to.be.false
         today = widget.$datepicker.find('.wdp-shortcut')
-        expect($.trim(today.text())).toEqual('Today')
+        expect($.trim(today.text())).to.eql('Today')
 
       it 'should attach extra element attributes if they are provided', ->
         @$input.datepicker(
@@ -90,7 +90,7 @@ describe 'Wave Datepicker', ->
 
         widget = @$input.data('datepicker')
 
-        expect(widget.shortcuts.$el.find('[data-bar=abc]')).toExist()
+        expect(widget.shortcuts.$el.find('[data-bar=abc]').length > 0).to.be.true
 
       describe 'When a shortcut is clicked', ->
         it 'should add the corresponding offset to the widget date', ->
@@ -105,9 +105,9 @@ describe 'Wave Datepicker', ->
 
           widget.$datepicker.find('.wdp-shortcut').click()
 
-          expect(widget.date.getFullYear()).toEqual(expected.getFullYear())
-          expect(widget.date.getMonth()).toEqual(expected.getMonth())
-          expect(widget.date.getDate()).toEqual(expected.getDate())
+          expect(widget.date.getFullYear()).to.eql(expected.getFullYear())
+          expect(widget.date.getMonth()).to.eql(expected.getMonth())
+          expect(widget.date.getDate()).to.eql(expected.getDate())
 
 
     describe 'On input change', ->
@@ -115,15 +115,15 @@ describe 'Wave Datepicker', ->
         @$input.val('2012-08-01').datepicker()
         date = new Date 2012, 7, 1  # 7 is Aug
         widget = @$input.data('datepicker')
-        expect(widget.date.getFullYear()).toEqual(date.getFullYear())
-        expect(widget.date.getMonth()).toEqual(date.getMonth())
-        expect(widget.date.getDate()).toEqual(date.getDate())
+        expect(widget.date.getFullYear()).to.eql(date.getFullYear())
+        expect(widget.date.getMonth()).to.eql(date.getMonth())
+        expect(widget.date.getDate()).to.eql(date.getDate())
 
         @$input.val('2011-04-13').trigger('change')
         date = new Date 2011, 3, 13  # 7 is Aug
-        expect(widget.date.getFullYear()).toEqual(date.getFullYear())
-        expect(widget.date.getMonth()).toEqual(date.getMonth())
-        expect(widget.date.getDate()).toEqual(date.getDate())
+        expect(widget.date.getFullYear()).to.eql(date.getFullYear())
+        expect(widget.date.getMonth()).to.eql(date.getMonth())
+        expect(widget.date.getDate()).to.eql(date.getDate())
 
       describe 'when input value is bad', ->
         it 'should not change the date', ->
@@ -134,7 +134,7 @@ describe 'Wave Datepicker', ->
           # This should not change widget's date.
           @$input.val('some bad value').trigger('change')
 
-          expect(widget.date).toBe(originalDate)
+          expect(widget.date).to.equal(originalDate)
 
 
     describe 'Rendered calendar', ->
@@ -146,7 +146,7 @@ describe 'Wave Datepicker', ->
           20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8]
         array = []
         $cells.each -> array.push parseInt($.trim($(this).text()), 10)
-        expect(array).toEqual(expected)
+        expect(array).to.eql(expected)
 
         # Nov 2014
         @$input.val('2014-11-13').trigger('change')
@@ -155,7 +155,7 @@ describe 'Wave Datepicker', ->
           20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6]
         array = []
         $cells.each -> array.push parseInt($.trim($(this).text()), 10)
-        expect(array).toEqual(expected)
+        expect(array).to.eql(expected)
 
         # Jan 1900
         @$input.val('1900-01-01').trigger('change')
@@ -164,7 +164,7 @@ describe 'Wave Datepicker', ->
           20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         array = []
         $cells.each -> array.push parseInt($.trim($(this).text()), 10)
-        expect(array).toEqual(expected)
+        expect(array).to.eql(expected)
 
         # Jul 2996
         @$input.val('2996-07-12').trigger('change')
@@ -173,19 +173,19 @@ describe 'Wave Datepicker', ->
           20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6]
         array = []
         $cells.each -> array.push parseInt($.trim($(this).text()), 10)
-        expect(array).toEqual(expected)
+        expect(array).to.eql(expected)
 
       it 'should have weekday names in table header', ->
         @$input.val('2012-08-01').datepicker()
         $cells = @$input.data('datepicker').$calendar.find('.wdp-weekdays > th')
         array = []
         $cells.each -> array.push $.trim($(this).text())
-        expect(array).toEqual(['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'])
+        expect(array).to.eql(['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'])
 
       it 'should have month and year in table header', ->
         @$input.val('2012-08-01').datepicker()
         monthAndYear = $.trim @$input.data('datepicker').$calendar.find('.wdp-month-and-year').text()
-        expect(monthAndYear).toEqual('August 2012')
+        expect(monthAndYear).to.eql('August 2012')
 
 
     # Tests for next and prev arrows for navigating through months.
@@ -201,13 +201,13 @@ describe 'Wave Datepicker', ->
 
         it 'should set the month and year of state', ->
           @$next.click()
-          expect(@widget._state.month).toEqual(9)
-          expect(@widget._state.year).toEqual(2012)
+          expect(@widget._state.month).to.eql(9)
+          expect(@widget._state.year).to.eql(2012)
 
           # Brings calendar to Jan 2013
           @$next.click().click().click().click()
-          expect(@widget._state.month).toEqual(1)
-          expect(@widget._state.year).toEqual(2013)
+          expect(@widget._state.month).to.eql(1)
+          expect(@widget._state.year).to.eql(2013)
 
       describe 'When prev arrow is clicked', ->
         beforeEach ->
@@ -216,13 +216,13 @@ describe 'Wave Datepicker', ->
 
         it 'should set the month and year of state', ->
           @$prev.click()
-          expect(@widget._state.month).toEqual(1)
-          expect(@widget._state.year).toEqual(2012)
+          expect(@widget._state.month).to.eql(1)
+          expect(@widget._state.year).to.eql(2012)
 
           # Brings calendar to Jan 2013
           @$prev.click().click()
-          expect(@widget._state.month).toEqual(11)
-          expect(@widget._state.year).toEqual(2011)
+          expect(@widget._state.month).to.eql(11)
+          expect(@widget._state.year).to.eql(2011)
 
 
     describe 'Multiple pickers on page', ->
@@ -245,19 +245,19 @@ describe 'Wave Datepicker', ->
       describe 'When a click is on a different picker than current active picker', ->
         it 'should set new focus and hide inactive picker', ->
           @$input.focus()
-          expect(@picker1._isShown).toBeTruthy()
-          expect(@picker2._isShown).not.toBeTruthy()
-          expect(@picker3._isShown).not.toBeTruthy()
+          expect(@picker1._isShown).to.be.true
+          expect(@picker2._isShown).to.be.false
+          expect(@picker3._isShown).to.be.false
 
           @$input2.focus()
-          expect(@picker1._isShown).not.toBeTruthy()
-          expect(@picker2._isShown).toBeTruthy()
-          expect(@picker3._isShown).not.toBeTruthy()
+          expect(@picker1._isShown).to.be.false
+          expect(@picker2._isShown).to.be.true
+          expect(@picker3._isShown).to.be.false
 
           @$input3.focus()
-          expect(@picker1._isShown).not.toBeTruthy()
-          expect(@picker2._isShown).not.toBeTruthy()
-          expect(@picker3._isShown).toBeTruthy()
+          expect(@picker1._isShown).to.be.false
+          expect(@picker2._isShown).to.be.false
+          expect(@picker3._isShown).to.be.true
 
 
     describe 'Base date', ->
@@ -274,9 +274,9 @@ describe 'Wave Datepicker', ->
 
         widget.$datepicker.find('.wdp-shortcut').click()
 
-        expect(widget.date.getFullYear()).toEqual(expected.getFullYear())
-        expect(widget.date.getMonth()).toEqual(expected.getMonth())
-        expect(widget.date.getDate()).toEqual(expected.getDate() + 1)
+        expect(widget.date.getFullYear()).to.eql(expected.getFullYear())
+        expect(widget.date.getMonth()).to.eql(expected.getMonth())
+        expect(widget.date.getDate()).to.eql(expected.getDate() + 1)
 
 
     describe 'Add-on icon trigger', ->
@@ -285,10 +285,14 @@ describe 'Wave Datepicker', ->
         @$box = $('<div class="input-append"><input id="Date2"><span class="add-on">*</span></div>').appendTo(document.body)
         @$box.find('input').datepicker()
 
+      afterEach ->
+        @$box.find('input').datepicker('destroy')
+        @$box.remove()
+
       it 'should open datepicker when the add-on icon is clicked', ->
         @$box.find('.add-on').click()
         picker = @$box.find('input').data('datepicker')
-        expect(picker._isShown).toBeTruthy()
+        expect(picker._isShown).to.be.true
         
 
     describe 'Date format', ->
@@ -297,30 +301,30 @@ describe 'Wave Datepicker', ->
           @$input.val('2012/08/31')
           @$input.datepicker(format: 'YYYY/MM/DD')
           date = @$input.data('datepicker').date
-          expect(date).toBeDefined()
-          expect(date.getFullYear()).toEqual(2012)
-          expect(date.getMonth()).toEqual(7)
-          expect(date.getDate()).toEqual(31)
+          expect(date).to.be.defined
+          expect(date.getFullYear()).to.eql(2012)
+          expect(date.getMonth()).to.eql(7)
+          expect(date.getDate()).to.eql(31)
 
       describe 'when date data-date-format is set on the <input>', ->
         it 'should use that format string to parse and format dates', ->
           @$input.val('2012/08/31').attr('data-date-format', 'YYYY/MM/DD')
           @$input.datepicker()
           date = @$input.data('datepicker').date
-          expect(date).toBeDefined()
-          expect(date.getFullYear()).toEqual(2012)
-          expect(date.getMonth()).toEqual(7)
-          expect(date.getDate()).toEqual(31)
+          expect(date).to.be.defined
+          expect(date.getFullYear()).to.eql(2012)
+          expect(date.getMonth()).to.eql(7)
+          expect(date.getDate()).to.eql(31)
 
       describe 'when the date format does not include year', ->
         it 'should use the current year', ->
           @$input.val('12-31').attr('data-date-format', 'MM-DD')
           @$input.datepicker()
           date = @$input.data('datepicker').date
-          expect(date).toBeDefined()
-          expect(date.getFullYear()).toEqual(new Date().getFullYear())
-          expect(date.getMonth()).toEqual(11)
-          expect(date.getDate()).toEqual(31)
+          expect(date).to.be.defined
+          expect(date.getFullYear()).to.eql(new Date().getFullYear())
+          expect(date.getMonth()).to.eql(11)
+          expect(date.getDate()).to.eql(31)
 
 
     describe 'Allow clear', ->
@@ -329,14 +333,14 @@ describe 'Wave Datepicker', ->
           @$input.val('')
           @$input.attr('data-date-allow-clear', 'yes')
           @$input.datepicker()
-          expect(@$input.datepicker('getDate')).toBeNull()
+          expect(@$input.datepicker('getDate')).to.be.null
 
       describe 'when data-date-allow-clear is "true" on the <input>', ->
         it 'should allow user to null out the date', ->
           @$input.val('')
           @$input.attr('data-date-allow-clear', 'true')
           @$input.datepicker()
-          expect(@$input.datepicker('getDate')).toBeNull()
+          expect(@$input.datepicker('getDate')).to.be.null
 
       describe 'when allowClear is passed inside the options', ->
         beforeEach ->
@@ -344,14 +348,14 @@ describe 'Wave Datepicker', ->
           @$input.datepicker(allowClear: true)
 
         it 'should allow user to null out the date', ->
-          expect(@$input.datepicker('getDate')).toBeNull()
+          expect(@$input.datepicker('getDate')).to.be.null
 
         describe 'when user clears out the <input> after setting it', ->
           it 'should null out the date', ->
             # First set it and check the date is set.
             @$input.val('2013-01-01').trigger('change')
-            expect(@$input.datepicker('getDate')).not.toBeNull()
+            expect(@$input.datepicker('getDate')).not.to.be.null
 
             # Now unset it and check date is null.
             @$input.val('').trigger('change')
-            expect(@$input.datepicker('getDate')).toBeNull()
+            expect(@$input.datepicker('getDate')).to.be.null

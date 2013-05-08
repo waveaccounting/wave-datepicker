@@ -246,6 +246,8 @@
 
       return this
 
+    _isShown: false
+
     hideInactive: ->
       picker.hide() for picker in WDP.datepickers when picker isnt WDP.activeDatepicker
 
@@ -364,7 +366,9 @@
       @$datepicker = $ WDP.template
       @$datepicker.appendTo document.body
 
-      weekdays = moment.weekdaysMin.join '</th><th>'
+      # Support for older moment.js versions.
+      weekdaysMin = moment.weekdaysMin or moment.langData()._weekdaysMin
+      weekdays = weekdaysMin.join '</th><th>'
 
       @$datepicker.find('thead').append "<tr class=\"wdp-weekdays\"><th>#{weekdays}</th></tr>"
 

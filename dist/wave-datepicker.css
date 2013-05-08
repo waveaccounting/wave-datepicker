@@ -1,35 +1,38 @@
-/*@zindexPopover:         1010;*/
-/*@zindexTooltip:         1020;*/
-/*@zindexModalBackdrop:   1040;*/
-/*@zindexModal:           1050;*/
-.cf {
+.clearfix {
   *zoom: 1;
 }
-.cf:before,
-.cf:after {
+.clearfix:before,
+.clearfix:after {
   display: table;
   content: "";
+  line-height: 0;
 }
-.cf:after {
+.clearfix:after {
   clear: both;
 }
-.clear {
-  clear: both;
+.hide-text {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
 }
-.wrap {
-  padding: 20px;
-}
-.wrap-wide {
-  padding: 40px;
+.input-block-level {
+  display: block;
+  width: 100%;
+  min-height: 30px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .wdp {
-  font-size: 15px;
-  min-width: 225px;
-  max-width: 375px;
+  font-size: 14px;
+  min-width: 210px;
+  max-width: 350px;
 }
 .wdp.wdp-has-shortcuts {
-  min-width: 450px;
-  max-width: 600px;
+  min-width: 420px;
+  max-width: 560px;
 }
 .wdp.dropdown-menu {
   background: #ffffff;
@@ -61,29 +64,37 @@
   list-style-type: none;
 }
 .wdp-shortcuts ul li > a.wdp-shortcut-active {
+  background-color: #0088cc;
   color: #ffffff;
-  background-color: #0071bc;
-  background-color: #0065a8;
-  background-image: -moz-linear-gradient(top, #0071bc, #005289);
-  background-image: -ms-linear-gradient(top, #0071bc, #005289);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0071bc), to(#005289));
-  background-image: -webkit-linear-gradient(top, #0071bc, #005289);
-  background-image: -o-linear-gradient(top, #0071bc, #005289);
-  background-image: linear-gradient(top, #0071bc, #005289);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #007ab8;
+  background-image: -moz-linear-gradient(top, #0088cc, #006699);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#006699));
+  background-image: -webkit-linear-gradient(top, #0088cc, #006699);
+  background-image: -o-linear-gradient(top, #0088cc, #006699);
+  background-image: linear-gradient(to bottom, #0088cc, #006699);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0071bc', endColorstr='#005289', GradientType=0);
-  border-color: #005289 #005289 #00243d;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff006699', GradientType=0);
+  border-color: #006699 #006699 #00334d;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #006699;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .wdp-shortcuts ul li > a.wdp-shortcut-active:hover,
+.wdp-shortcuts ul li > a.wdp-shortcut-active:focus,
 .wdp-shortcuts ul li > a.wdp-shortcut-active:active,
-.wdp-shortcuts ul li > a.wdp-shortcut-active.active {
-  background-color: #005289;
+.wdp-shortcuts ul li > a.wdp-shortcut-active.active,
+.wdp-shortcuts ul li > a.wdp-shortcut-active.disabled,
+.wdp-shortcuts ul li > a.wdp-shortcut-active[disabled] {
+  color: #ffffff;
+  background-color: #006699;
+  *background-color: #005580;
 }
 .wdp-shortcuts ul li > a.wdp-shortcut-active:active,
 .wdp-shortcuts ul li > a.wdp-shortcut-active.active {
-  background-color: #003456 \9;
+  background-color: #004466 \9;
 }
 .wdp-shortcuts ul li > a:hover,
 .wdp-shortcuts ul li > a:focus,
@@ -94,31 +105,45 @@
 .wdp-shortcuts ul li > a:hover.wdp-shortcut-active,
 .wdp-shortcuts ul li > a:focus.wdp-shortcut-active,
 .wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active {
+  background-color: #006699;
   color: #ffffff;
-  background-color: #005289;
-  background-color: #004675;
-  background-image: -moz-linear-gradient(top, #005289, #003456);
-  background-image: -ms-linear-gradient(top, #005289, #003456);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#005289), to(#003456));
-  background-image: -webkit-linear-gradient(top, #005289, #003456);
-  background-image: -o-linear-gradient(top, #005289, #003456);
-  background-image: linear-gradient(top, #005289, #003456);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #005885;
+  background-image: -moz-linear-gradient(top, #006699, #004466);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#006699), to(#004466));
+  background-image: -webkit-linear-gradient(top, #006699, #004466);
+  background-image: -o-linear-gradient(top, #006699, #004466);
+  background-image: linear-gradient(to bottom, #006699, #004466);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#005289', endColorstr='#003456', GradientType=0);
-  border-color: #003456 #003456 #00060a;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff006699', endColorstr='#ff004466', GradientType=0);
+  border-color: #004466 #004466 #00111a;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #004466;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 .wdp-shortcuts ul li > a:hover.wdp-shortcut-active:hover,
 .wdp-shortcuts ul li > a:focus.wdp-shortcut-active:hover,
 .wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active:hover,
+.wdp-shortcuts ul li > a:hover.wdp-shortcut-active:focus,
+.wdp-shortcuts ul li > a:focus.wdp-shortcut-active:focus,
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active:focus,
 .wdp-shortcuts ul li > a:hover.wdp-shortcut-active:active,
 .wdp-shortcuts ul li > a:focus.wdp-shortcut-active:active,
 .wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active:active,
 .wdp-shortcuts ul li > a:hover.wdp-shortcut-active.active,
 .wdp-shortcuts ul li > a:focus.wdp-shortcut-active.active,
-.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active.active {
-  background-color: #003456;
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active.active,
+.wdp-shortcuts ul li > a:hover.wdp-shortcut-active.disabled,
+.wdp-shortcuts ul li > a:focus.wdp-shortcut-active.disabled,
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active.disabled,
+.wdp-shortcuts ul li > a:hover.wdp-shortcut-active[disabled],
+.wdp-shortcuts ul li > a:focus.wdp-shortcut-active[disabled],
+.wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active[disabled] {
+  color: #ffffff;
+  background-color: #004466;
+  *background-color: #00334d;
 }
 .wdp-shortcuts ul li > a:hover.wdp-shortcut-active:active,
 .wdp-shortcuts ul li > a:focus.wdp-shortcut-active:active,
@@ -126,7 +151,7 @@
 .wdp-shortcuts ul li > a:hover.wdp-shortcut-active.active,
 .wdp-shortcuts ul li > a:focus.wdp-shortcut-active.active,
 .wdp-shortcuts ul li > a.wdp-shortcut-highlighted.wdp-shortcut-active.active {
-  background-color: #001523 \9;
+  background-color: #002233 \9;
 }
 .wdp-calendar,
 .wdp-year-calendar,
@@ -148,9 +173,9 @@
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  line-height: 30px;
-  height: 30px;
-  width: 30px;
+  line-height: 29px;
+  height: 29px;
+  width: 29px;
 }
 .wdp-calendar td:hover:not(.wdp-selected),
 .wdp-year-calendar td:hover:not(.wdp-selected),
@@ -170,36 +195,50 @@
 .wdp-calendar .wdp-calendar-othermonth,
 .wdp-year-calendar .wdp-calendar-othermonth,
 .wdp-month-calendar .wdp-calendar-othermonth {
-  color: #999999;
+  color: #dddddd;
 }
 .wdp-calendar .wdp-selected,
 .wdp-year-calendar .wdp-selected,
 .wdp-month-calendar .wdp-selected {
-  background-color: #0071bc;
-  background-color: #0065a8;
-  background-image: -moz-linear-gradient(top, #0071bc, #005289);
-  background-image: -ms-linear-gradient(top, #0071bc, #005289);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0071bc), to(#005289));
-  background-image: -webkit-linear-gradient(top, #0071bc, #005289);
-  background-image: -o-linear-gradient(top, #0071bc, #005289);
-  background-image: linear-gradient(top, #0071bc, #005289);
+  background-color: #0088cc;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #007ab8;
+  background-image: -moz-linear-gradient(top, #0088cc, #006699);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#006699));
+  background-image: -webkit-linear-gradient(top, #0088cc, #006699);
+  background-image: -o-linear-gradient(top, #0088cc, #006699);
+  background-image: linear-gradient(to bottom, #0088cc, #006699);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0071bc', endColorstr='#005289', GradientType=0);
-  border-color: #005289 #005289 #00243d;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff006699', GradientType=0);
+  border-color: #006699 #006699 #00334d;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #006699;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   color: #ffffff;
 }
 .wdp-calendar .wdp-selected:hover,
 .wdp-year-calendar .wdp-selected:hover,
 .wdp-month-calendar .wdp-selected:hover,
+.wdp-calendar .wdp-selected:focus,
+.wdp-year-calendar .wdp-selected:focus,
+.wdp-month-calendar .wdp-selected:focus,
 .wdp-calendar .wdp-selected:active,
 .wdp-year-calendar .wdp-selected:active,
 .wdp-month-calendar .wdp-selected:active,
 .wdp-calendar .wdp-selected.active,
 .wdp-year-calendar .wdp-selected.active,
-.wdp-month-calendar .wdp-selected.active {
-  background-color: #005289;
+.wdp-month-calendar .wdp-selected.active,
+.wdp-calendar .wdp-selected.disabled,
+.wdp-year-calendar .wdp-selected.disabled,
+.wdp-month-calendar .wdp-selected.disabled,
+.wdp-calendar .wdp-selected[disabled],
+.wdp-year-calendar .wdp-selected[disabled],
+.wdp-month-calendar .wdp-selected[disabled] {
+  color: #ffffff;
+  background-color: #006699;
+  *background-color: #005580;
 }
 .wdp-calendar .wdp-selected:active,
 .wdp-year-calendar .wdp-selected:active,
@@ -207,7 +246,7 @@
 .wdp-calendar .wdp-selected.active,
 .wdp-year-calendar .wdp-selected.active,
 .wdp-month-calendar .wdp-selected.active {
-  background-color: #003456 \9;
+  background-color: #004466 \9;
 }
 .wdp-month-calendar tr,
 .wdp-year-calendar tr {

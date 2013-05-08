@@ -6,8 +6,8 @@ describe 'Wave Datepicker unit tests', ->
 
     WDP.WaveDatepicker.prototype._cancelEvent.call null, e
 
-    expect(e.stopPropagation).toHaveBeenCalledOnce()
-    expect(e.preventDefault).toHaveBeenCalledOnce()
+    expect(e.stopPropagation.calledOnce).to.be.true
+    expect(e.preventDefault.calledOnce).to.be.true
 
   describe '_initEvents', ->
     beforeEach ->
@@ -37,28 +37,28 @@ describe 'Wave Datepicker unit tests', ->
 
     it 'should bind cancel events to click on datepicker', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$datepicker.on).toHaveBeenCalledWith('click', @context._cancelEvent)
+      expect(@context.$datepicker.on.calledWith('click', @context._cancelEvent)).to.be.true
 
     it 'should bind the prev/next callbacks to their corresponding elements', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-prev', @context.prev)
-      expect(@context.$datepicker.on).toHaveBeenCalledWith('click', '.js-wdp-next', @context.next)
+      expect(@context.$datepicker.on.calledWith('click', '.js-wdp-prev', @context.prev)).to.be.true
+      expect(@context.$datepicker.on.calledWith('click', '.js-wdp-next', @context.next)).to.be.true
 
     it 'should bind change event to render method', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$el.on).toHaveBeenCalledWith('change', @context.render)
+      expect(@context.$el.on.calledWith('change', @context.render)).to.be.true
 
     it 'should bind input change event to update method', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$el.on).toHaveBeenCalledWith('change', @context._updateFromInput)
+      expect(@context.$el.on.calledWith('change', @context._updateFromInput)).to.be.true
 
     it 'should bind show to focus, click, and mousedown events', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$el.on).toHaveBeenCalledWith('focus click mousedown', @context.show)
+      expect(@context.$el.on.calledWith('focus click mousedown', @context.show)).to.be.true
 
     it 'should bind keydown event of <input> to the _onInputKeydown handler', ->
       WDP.WaveDatepicker.prototype._initEvents.call @context
-      expect(@context.$el.on).toHaveBeenCalledWith('keydown', @context._onInputKeydown)
+      expect(@context.$el.on.calledWith('keydown', @context._onInputKeydown)).to.be.true
 
 
   describe 'setDate', ->
@@ -77,10 +77,10 @@ describe 'Wave Datepicker unit tests', ->
 
       WDP.WaveDatepicker.prototype.setDate.call context, date
 
-      expect(context.date).toEqual(date)
-      expect(context._state.month).toEqual(7)
-      expect(context._state.year).toEqual(2012)
-      expect(context.$el.trigger).toHaveBeenCalledWith('change', [date, {silent: true}])
+      expect(context.date).to.eql(date)
+      expect(context._state.month).to.eql(7)
+      expect(context._state.year).to.eql(2012)
+      expect(context.$el.trigger.calledWith('change', [date, {silent: true}])).to.be.true
 
     describe 'when hideOnSelect is true', ->
       beforeEach ->
@@ -100,12 +100,12 @@ describe 'Wave Datepicker unit tests', ->
 
       it 'should call hide', ->
         WDP.WaveDatepicker.prototype.setDate.call @context, @date
-        expect(@context.hide).toHaveBeenCalledOnce()
+        expect(@context.hide.calledOnce).to.be.true
 
       describe 'when {hide: false} is passed', ->
         it 'should not call hide', ->
           WDP.WaveDatepicker.prototype.setDate.call @context, @date, {hide: false}
-          expect(@context.hide).not.toHaveBeenCalled()
+          expect(@context.hide.called).to.be.false
 
   describe 'next', ->
     it 'should increment month then call render method', ->
@@ -116,8 +116,8 @@ describe 'Wave Datepicker unit tests', ->
 
       WDP.WaveDatepicker.prototype.next.call context
 
-      expect(context._state.month).toBe(8)
-      expect(context.render).toHaveBeenCalledOnce()
+      expect(context._state.month).to.equal(8)
+      expect(context.render.calledOnce).to.be.true
 
     it 'should go to next year if month is 12', ->
       context =
@@ -128,8 +128,8 @@ describe 'Wave Datepicker unit tests', ->
 
       WDP.WaveDatepicker.prototype.next.call context
 
-      expect(context._state.month).toBe(1)
-      expect(context._state.year).toBe(2013)
+      expect(context._state.month).to.equal(1)
+      expect(context._state.year).to.equal(2013)
 
   describe 'prev', ->
     it 'should decrement month then call render method', ->
@@ -140,8 +140,8 @@ describe 'Wave Datepicker unit tests', ->
 
       WDP.WaveDatepicker.prototype.prev.call context
 
-      expect(context._state.month).toBe(6)
-      expect(context.render).toHaveBeenCalledOnce()
+      expect(context._state.month).to.equal(6)
+      expect(context.render.calledOnce).to.be.true
 
     it 'should go to prev year if month is 1', ->
       context =
@@ -152,15 +152,15 @@ describe 'Wave Datepicker unit tests', ->
 
       WDP.WaveDatepicker.prototype.prev.call context
 
-      expect(context._state.month).toBe(12)
-      expect(context._state.year).toBe(2011)
+      expect(context._state.month).to.equal(12)
+      expect(context._state.year).to.equal(2011)
 
   describe 'getDate', ->
     it 'should return widget date', ->
       context =
         date: 'DATE'
       date = WDP.WaveDatepicker.prototype.getDate.call context
-      expect(date).toBe(context.date)
+      expect(date).to.equal(context.date)
 
 
   describe 'show', ->
@@ -187,19 +187,19 @@ describe 'Wave Datepicker unit tests', ->
 
     it 'should place datepicker and show it', ->
       WDP.WaveDatepicker.prototype.show.call @context
-      expect(@context.$datepicker.addClass).toHaveBeenCalledWith('show')
-      expect(@context.height).toBe('HEIGHT')
-      expect(@context._place).toHaveBeenCalledOnce()
-      expect(@context.$window.on).toHaveBeenCalledWith('resize', @context._place)
-      expect(@context._isShown).toBeTruthy()
+      expect(@context.$datepicker.addClass.calledWith('show')).to.be.true
+      expect(@context.height).to.equal('HEIGHT')
+      expect(@context._place.calledOnce).to.be.true
+      expect(@context.$window.on.calledWith('resize', @context._place)).to.be.true
+      expect(@context._isShown).to.be.true
 
     it 'should bind document click to hide method', ->
       WDP.WaveDatepicker.prototype.show.call @context
-      expect(@context.$document.on).toHaveBeenCalledWith('click', @context.hide)
+      expect(@context.$document.on.calledWith('click', @context.hide)).to.be.true
 
     it 'should hide inactive datepickers', ->
       WDP.WaveDatepicker.prototype.show.call @context
-      expect(@context.hideInactive).toHaveBeenCalledOnce()
+      expect(@context.hideInactive.calledOnce).to.be.true
 
 
   describe 'hide', ->
@@ -221,13 +221,13 @@ describe 'Wave Datepicker unit tests', ->
 
     it 'should hide datepicker and unbind place callback from window resize', ->
       WDP.WaveDatepicker.prototype.hide.call @context
-      expect(@context.$datepicker.removeClass).toHaveBeenCalledWith('show')
-      expect(@context.$window.off).toHaveBeenCalledWith('resize', @context._place)
-      expect(@context._isShown).not.toBeTruthy()
+      expect(@context.$datepicker.removeClass.calledWith('show')).to.be.true
+      expect(@context.$window.off.calledWith('resize', @context._place)).to.be.true
+      expect(@context._isShown).to.be.false
 
     it 'should unbind the hide method from document click event', ->
       WDP.WaveDatepicker.prototype.hide.call @context
-      expect(@context.$document.off).toHaveBeenCalledWith('click', @context.hide)
+      expect(@context.$document.off.calledWith('click', @context.hide)).to.be.true
 
 
   describe '_onInputKeydown', ->
@@ -252,29 +252,29 @@ describe 'Wave Datepicker unit tests', ->
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         @e.keyCode = WDP.Keys.J
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-        expect(@context._cancelEvent).toHaveBeenCalledTwice()
+        expect(@context._cancelEvent.calledTwice).to.be.true
 
       it 'should increment date by seven days', ->
         @e.keyCode = WDP.Keys.DOWN
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
-        expect(diff).toEqual(7 * 24 * 60 * 60 * 1000)
+        expect(diff).to.eql(7 * 24 * 60 * 60 * 1000)
 
         @e.keyCode = WDP.Keys.J
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
-        expect(diff).toEqual(7 * 24 * 60 * 60 * 1000)
+        expect(diff).to.eql(7 * 24 * 60 * 60 * 1000)
 
       it 'should show the datepicker if not already shown', ->
         @e.keyCode = WDP.Keys.DOWN
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-        expect(@context.show).toHaveBeenCalledOnce()
+        expect(@context.show.calledOnce).to.be.true
 
         @e.keyCode = WDP.Keys.J
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-        expect(@context.show).toHaveBeenCalledTwice()
+        expect(@context.show.calledTwice).to.be.true
 
 
       describe 'When Shift is pressed', ->
@@ -284,7 +284,7 @@ describe 'Wave Datepicker unit tests', ->
           WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
           @e.keyCode = WDP.Keys.J
           WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-          expect(@context.shortcuts.selectNext).toHaveBeenCalledTwice()
+          expect(@context.shortcuts.selectNext.calledTwice).to.be.true
 
 
     describe 'When UP or K pressed', ->
@@ -293,20 +293,20 @@ describe 'Wave Datepicker unit tests', ->
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         @e.keyCode = WDP.Keys.K
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-        expect(@context._cancelEvent).toHaveBeenCalledTwice()
+        expect(@context._cancelEvent.calledTwice).to.be.true
 
       it 'should decrement date by seven days', ->
         @e.keyCode = WDP.Keys.UP
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
-        expect(diff).toEqual(-7 * 24 * 60 * 60 * 1000)
+        expect(diff).to.eql(-7 * 24 * 60 * 60 * 1000)
 
         @e.keyCode = WDP.Keys.K
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
-        expect(diff).toEqual(-7 * 24 * 60 * 60 * 1000)
+        expect(diff).to.eql(-7 * 24 * 60 * 60 * 1000)
 
 
       describe 'When Shift is pressed', ->
@@ -316,7 +316,7 @@ describe 'Wave Datepicker unit tests', ->
           WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
           @e.keyCode = WDP.Keys.K
           WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-          expect(@context.shortcuts.selectPrev).toHaveBeenCalledTwice()
+          expect(@context.shortcuts.selectPrev.calledTwice).to.be.true
 
 
     describe 'When RIGHT or L pressed', ->
@@ -325,20 +325,20 @@ describe 'Wave Datepicker unit tests', ->
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         @e.keyCode = WDP.Keys.L
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-        expect(@context._cancelEvent).toHaveBeenCalledTwice()
+        expect(@context._cancelEvent.calledTwice).to.be.true
 
       it 'should decrement date by one day', ->
         @e.keyCode = WDP.Keys.RIGHT
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
-        expect(diff).toEqual(1 * 24 * 60 * 60 * 1000)
+        expect(diff).to.eql(1 * 24 * 60 * 60 * 1000)
 
         @e.keyCode = WDP.Keys.L
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
-        expect(diff).toEqual(1 * 24 * 60 * 60 * 1000)
+        expect(diff).to.eql(1 * 24 * 60 * 60 * 1000)
 
 
     describe 'When LEFT or H pressed', ->
@@ -347,27 +347,27 @@ describe 'Wave Datepicker unit tests', ->
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         @e.keyCode = WDP.Keys.H
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-        expect(@context._cancelEvent).toHaveBeenCalledTwice()
+        expect(@context._cancelEvent.calledTwice).to.be.true
 
       it 'should decrement date by one day', ->
         @e.keyCode = WDP.Keys.LEFT
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
-        expect(diff).toEqual(-1 * 24 * 60 * 60 * 1000)
+        expect(diff).to.eql(-1 * 24 * 60 * 60 * 1000)
 
         @e.keyCode = WDP.Keys.H
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
         date = @context.setDate.args[0][0]
         diff = date.getTime() - @context.date.getTime()
-        expect(diff).toEqual(-1 * 24 * 60 * 60 * 1000)
+        expect(diff).to.eql(-1 * 24 * 60 * 60 * 1000)
 
 
     describe 'When Esc if pressed', ->
       it 'should hide the datepicker', ->
         @e.keyCode = WDP.Keys.ESC
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-        expect(@context.hide).toHaveBeenCalledOnce()
+        expect(@context.hide.calledOnce).to.be.true
 
 
     describe 'When Return is pressed', ->
@@ -375,7 +375,7 @@ describe 'Wave Datepicker unit tests', ->
         @context._isShown = false
         @e.keyCode = WDP.Keys.RETURN
         WDP.WaveDatepicker.prototype._onInputKeydown.call @context, @e
-        expect(@context.show).toHaveBeenCalledOnce()
+        expect(@context.show.calledOnce).to.be.true
 
 
 describe 'Shortcuts', ->
@@ -390,26 +390,26 @@ describe 'Shortcuts', ->
     it 'should increment the selected index', ->
       WDP.Shortcuts.prototype.selectNext.call @context
 
-      expect(@context.currSelectedIndex).toEqual(0)
-      expect(@context._updateSelected).toHaveBeenCalledOnce()
+      expect(@context.currSelectedIndex).to.eql(0)
+      expect(@context._updateSelected.calledOnce).to.be.true
 
     it 'should wrap to first shortcut if index is out of bounds', ->
       @context.currSelectedIndex = 2
       WDP.Shortcuts.prototype.selectNext.call @context
-      expect(@context.currSelectedIndex).toEqual(0)
+      expect(@context.currSelectedIndex).to.eql(0)
 
 
   describe 'selectPrev', ->
     it 'should decrement the selected index', ->
       WDP.Shortcuts.prototype.selectPrev.call @context
 
-      expect(@context.currSelectedIndex).toEqual(2)
-      expect(@context._updateSelected).toHaveBeenCalledOnce()
+      expect(@context.currSelectedIndex).to.eql(2)
+      expect(@context._updateSelected.calledOnce).to.be.true
 
     it 'should wrap to last shortcut if index is negative', ->
       @context.currSelectedIndex = 0
       WDP.Shortcuts.prototype.selectPrev.call @context
-      expect(@context.currSelectedIndex).toEqual(2)
+      expect(@context.currSelectedIndex).to.eql(2)
 
 
   describe '_onShortcutClick', ->
@@ -419,6 +419,6 @@ describe 'Shortcuts', ->
       _$.returns 'OBJECT'
       e = {target: 'TARGET'}
       WDP.Shortcuts.prototype._onShortcutClick.call @context, e
-      expect(_$).toHaveBeenCalledWith(e.target)
-      expect(@context.select).toHaveBeenCalledWith('OBJECT')
+      expect(_$.calledWith(e.target)).to.be.true
+      expect(@context.select.calledWith('OBJECT')).to.be.true
       _$.restore()
