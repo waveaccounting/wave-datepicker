@@ -77,8 +77,6 @@ module.exports = (grunt) ->
         src: ["dist/wave-datepicker.js"]
         dest: "dist/wave-datepicker.min.js"
 
-  grunt.renameTask 'regarde', 'watch'
-
   grunt.registerTask 'default', [
       'coffee'
       'less'
