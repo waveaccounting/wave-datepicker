@@ -32,5 +32,11 @@
   <script src="spec/wave-datepicker-unittests.js"></script>
   <script src="spec/wave-datepicker-integrationtests.js"></script>
 
+  <script>
+    if (!window.PHANTOMJS) {
+      mocha.run();
+    }
+  </script>
+
 </body>
 </html>

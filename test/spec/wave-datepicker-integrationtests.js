@@ -100,24 +100,25 @@
         });
         return describe('When a shortcut is clicked', function() {
           return it('should add the corresponding offset to the widget date', function() {
-            var expected, today, widget;
+            var expected, offsets, today, widget;
 
+            offsets = {
+              days: 5,
+              months: 1,
+              years: -1
+            };
             this.$input.datepicker({
               'shortcuts': {
-                'Foo': {
-                  days: 5,
-                  months: 1,
-                  years: -1
-                }
+                'Foo': offsets
               }
             });
             today = new Date();
-            expected = new Date(today.getFullYear() - 1, today.getMonth() + 1, today.getDate() + 5);
+            expected = moment(new Date()).add(offsets).toDate();
             widget = this.$input.data('datepicker');
             widget.$datepicker.find('.wdp-shortcut').click();
-            expect(widget.date.getFullYear()).to.eql(expected.getFullYear());
-            expect(widget.date.getMonth()).to.eql(expected.getMonth());
-            return expect(widget.date.getDate()).to.eql(expected.getDate());
+            expect(widget.date.getFullYear()).to.equal(expected.getFullYear());
+            expect(widget.date.getMonth()).to.equal(expected.getMonth());
+            return expect(widget.date.getDate()).to.equal(expected.getDate());
           });
         });
       });
