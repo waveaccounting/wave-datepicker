@@ -28,6 +28,7 @@ describe 'Wave Datepicker unit tests', ->
         _onInputKeydown: 'FUNCTION'
         show: 'FUNCTION'
         hide: 'FUNCTION'
+        _dateWithinRange: -> true
       @context.$el.on.returns @context.$el
       @context.$el.is.returns true
       @$icon =
@@ -71,6 +72,7 @@ describe 'Wave Datepicker unit tests', ->
         _state: {}
         options:
           hideOnSelect: false
+        _dateWithinRange: -> true
       context._formatDate.returns 'FORMATTED'
 
       date = new Date(2012, 7, 1, 0, 0, 0, 0)
@@ -93,6 +95,7 @@ describe 'Wave Datepicker unit tests', ->
           options:
             hideOnSelect: true
           hide: sinon.spy()
+          _dateWithinRange: -> true
 
         @context._formatDate.returns 'FORMATTED'
 

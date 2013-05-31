@@ -31,7 +31,10 @@
           _updateFromInput: 'FUNCTION',
           _onInputKeydown: 'FUNCTION',
           show: 'FUNCTION',
-          hide: 'FUNCTION'
+          hide: 'FUNCTION',
+          _dateWithinRange: function() {
+            return true;
+          }
         };
         this.context.$el.on.returns(this.context.$el);
         this.context.$el.is.returns(true);
@@ -80,6 +83,9 @@
           _state: {},
           options: {
             hideOnSelect: false
+          },
+          _dateWithinRange: function() {
+            return true;
           }
         };
         context._formatDate.returns('FORMATTED');
@@ -106,7 +112,10 @@
             options: {
               hideOnSelect: true
             },
-            hide: sinon.spy()
+            hide: sinon.spy(),
+            _dateWithinRange: function() {
+              return true;
+            }
           };
           this.context._formatDate.returns('FORMATTED');
           return this.date = new Date(2012, 7, 1, 0, 0, 0, 0);

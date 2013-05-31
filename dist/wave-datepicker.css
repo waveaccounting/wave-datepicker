@@ -192,6 +192,9 @@
 .wdp-month-calendar .wdp-next {
   text-align: right;
 }
+.wdp-calendar .wdp-disabled,
+.wdp-year-calendar .wdp-disabled,
+.wdp-month-calendar .wdp-disabled,
 .wdp-calendar .wdp-calendar-othermonth,
 .wdp-year-calendar .wdp-calendar-othermonth,
 .wdp-month-calendar .wdp-calendar-othermonth {

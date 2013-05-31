@@ -147,10 +147,12 @@
       WaveDatepicker.prototype._state = null;
 
       function WaveDatepicker(options) {
-        var format, shortcutOptions, _ref, _ref1, _ref2,
+        var shortcutOptions, _ref, _ref1,
           _this = this;
 
         this.options = options;
+        this._getExtraClassNamesForDate = __bind(this._getExtraClassNamesForDate, this);
+        this._dateWithinRange = __bind(this._dateWithinRange, this);
         this._selectDate = __bind(this._selectDate, this);
         this._onInputKeydown = __bind(this._onInputKeydown, this);
         this._cancelEvent = __bind(this._cancelEvent, this);
@@ -170,13 +172,11 @@
         this.el = this.options.el;
         this.$el = WDP.$(this.el);
         this.options = $.extend({}, WDP.defaultOptions, options);
-        format = this.options.format || this.$el.data('dateFormat');
-        this.dateFormat = format || this._defaultFormat;
         this._state = {};
-        this.allowClear = this.options.allowClear || this.$el.data('dateAllowClear');
-        this.allowClear = (_ref = this.allowClear) === 'yes' || _ref === 'true' || _ref === true;
+        this.setOptionsFromDataAttr();
+        this.normalizeOptions();
         this._updateFromInput(null, null, {
-          update: !this.allowClear
+          update: !this.options.allowClear
         });
         this._initPicker();
         this._initElements();
@@ -190,12 +190,12 @@
           }
           this.shortcuts = new WDP.Shortcuts(shortcutOptions).render();
           this.$shortcuts.append(this.shortcuts.$el);
-          if ((_ref1 = this.shortcuts) != null) {
-            _ref1.resetClass();
+          if ((_ref = this.shortcuts) != null) {
+            _ref.resetClass();
           }
           this.shortcuts.baseDate = this.baseDate;
-          if ((_ref2 = this.shortcuts) != null) {
-            _ref2.resetClass();
+          if ((_ref1 = this.shortcuts) != null) {
+            _ref1.resetClass();
           }
           this.$shortcuts.on('dateselect', function(e, date) {
             return _this.setDate(date);
@@ -203,6 +203,37 @@
         }
         WDP.datepickers.push(this);
       }
+
+      WaveDatepicker.prototype.setOptionsFromDataAttr = function() {
+        var k, v, _ref, _results;
+
+        this.$el.data();
+        _ref = this.$el.data();
+        _results = [];
+        for (k in _ref) {
+          v = _ref[k];
+          if (k.substr(0, 4) === 'date') {
+            _results.push(this.options[k] = v);
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
+      WaveDatepicker.prototype.normalizeOptions = function() {
+        var _base, _base1, _ref;
+
+        (_base = this.options).dateFormat || (_base.dateFormat = this._defaultFormat);
+        (_base1 = this.options).allowClear || (_base1.allowClear = this.options.dateAllowClear);
+        this.options.allowClear = (_ref = this.options.allowClear) === 'yes' || _ref === 'true' || _ref === true;
+        if (this.options.dateMin && !(this.options.dateMin instanceof Date)) {
+          this.options.dateMin = this._parseDate(this.options.dateMin);
+        }
+        if (this.options.dateMax && !(this.options.dateMax instanceof Date)) {
+          return this.options.dateMax = this._parseDate(this.options.dateMax);
+        }
+      };
 
       WaveDatepicker.prototype.render = function() {
         this._updateMonthAndYear();
@@ -278,11 +309,14 @@
           date = WDP.DateUtils.parse(date);
         }
         if (!(date instanceof Date)) {
-          if (this.allowClear) {
+          if (this.options.allowClear) {
             today = new Date();
             this._state.month = today.getMonth();
             this._state.year = today.getFullYear();
           }
+          return;
+        }
+        if (!this._dateWithinRange(date)) {
           return;
         }
         this.date = date;
@@ -405,7 +439,7 @@
         this.$el.on('change', this.render);
         this.$el.on('keydown', this._onInputKeydown);
         this.$el.on('click', this._cancelEvent);
-        this.$datepicker.on('click', '.js-wdp-calendar-cell', this._selectDate);
+        this.$datepicker.on('click', '.js-wdp-calendar-cell:not(.wdp-disabled)', this._selectDate);
         this.$datepicker.on('click', '.js-wdp-prev', this.prev);
         this.$datepicker.on('click', '.js-wdp-next', this.next);
         this.$datepicker.on('click', this._cancelEvent);
@@ -420,7 +454,7 @@
         if ((dateStr = this.$el.val())) {
           this.date = this._parseDate(dateStr);
         }
-        if (this.allowClear) {
+        if (this.options.allowClear) {
           if (!dateStr) {
             this.date = null;
           }
@@ -442,13 +476,13 @@
       };
 
       WaveDatepicker.prototype._formatDate = function(date) {
-        return WDP.DateUtils.format(date, this.dateFormat);
+        return WDP.DateUtils.format(date, this.options.dateFormat);
       };
 
       WaveDatepicker.prototype._parseDate = function(str) {
         var d, wrapped;
 
-        if ((wrapped = WDP.DateUtils.parse(str, this.dateFormat)).isValid()) {
+        if ((wrapped = WDP.DateUtils.parse(str, this.options.dateFormat)).isValid()) {
           d = wrapped.toDate();
           if (d.getFullYear() === 0) {
             d.setFullYear(new Date().getFullYear());
@@ -518,7 +552,7 @@
       };
 
       WaveDatepicker.prototype._fill = function() {
-        var currMonth, d, date, daysInMonth, endOfMonth, firstDateDay, formatted, formattedNextMonth, formattedPrevMonth, html, i, index, lastDateDay, nextMonth, paddingStart, prevMonth, startOfMonth, wrapped, _i, _j, _ref;
+        var currDate, d, date, daysInMonth, endOfMonth, firstDateDay, formatted, formattedNextMonth, formattedPrevMonth, html, i, index, lastDateDay, nextMonth, paddingStart, prevMonth, startOfMonth, wrapped, _i, _j, _ref;
 
         date = new Date(this._state.year, this._state.month, 1);
         index = 0;
@@ -537,28 +571,30 @@
               html.push('<tr class="wdp-calendar-row">');
             }
             d = prevMonth.add('days', -1).date();
-            formattedPrevMonth = this._formatDate(new Date(this._state.year, this._state.month - 1, d));
-            html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell\" data-date=\"" + formattedPrevMonth + "\">" + d + "</td>";
+            currDate = new Date(this._state.year, this._state.month - 1, d);
+            formattedPrevMonth = this._formatDate(currDate);
+            html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell " + (this._getExtraClassNamesForDate(currDate)) + "\" data-date=\"" + formattedPrevMonth + "\">" + d + "</td>";
             paddingStart++;
           }
         }
-        currMonth = new Date(this._state.year, this._state.month, 1);
+        currDate = new Date(this._state.year, this._state.month, 1);
         for (i = _j = 1; 1 <= daysInMonth ? _j <= daysInMonth : _j >= daysInMonth; i = 1 <= daysInMonth ? ++_j : --_j) {
-          currMonth.setDate(i);
-          formatted = this._formatDate(currMonth);
+          currDate.setDate(i);
+          formatted = this._formatDate(currDate);
           if ((index++) % 7 === 0) {
             html.push('</tr><tr class="wdp-calendar-row">');
           }
-          html.push("<td class=\"js-wdp-calendar-cell\" data-date=\"" + formatted + "\">" + i + "</td>");
+          html.push("<td class=\"js-wdp-calendar-cell " + (this._getExtraClassNamesForDate(currDate)) + "\" data-date=\"" + formatted + "\">" + i + "</td>");
         }
         nextMonth = endOfMonth.clone();
         while (index < 42) {
           d = nextMonth.add('days', 1).date();
-          formattedNextMonth = this._formatDate(new Date(this._state.year, this._state.month + 1, d));
+          currDate = new Date(this._state.year, this._state.month + 1, d);
+          formattedNextMonth = this._formatDate(currDate);
           if ((index++) % 7 === 0) {
             html.push('</tr><tr class="wdp-calendar-row">');
           }
-          html.push("<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell\" data-date=\"" + formattedNextMonth + "\">" + d + "</td>");
+          html.push("<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell " + (this._getExtraClassNamesForDate(currDate)) + "\" data-date=\"" + formattedNextMonth + "\">" + d + "</td>");
         }
         html.push('</tr>');
         this.$calendarYear.hide();
@@ -653,6 +689,26 @@
         date = this._parseDate($(e.target).data('date'));
         this.$el.trigger('shortcutclear');
         return this.setDate(date);
+      };
+
+      WaveDatepicker.prototype._dateWithinRange = function(date) {
+        if (this.options.dateMin && date.valueOf() < this.options.dateMin.valueOf()) {
+          return false;
+        }
+        if (this.options.dateMax && date.valueOf() > this.options.dateMax.valueOf()) {
+          return false;
+        }
+        return true;
+      };
+
+      WaveDatepicker.prototype._getExtraClassNamesForDate = function(date) {
+        var classNames;
+
+        classNames = [];
+        if (!this._dateWithinRange(date)) {
+          classNames.push('wdp-disabled');
+        }
+        return classNames.join(' ');
       };
 
       return WaveDatepicker;

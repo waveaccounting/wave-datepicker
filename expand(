@@ -87,10 +87,10 @@
           </div>
 
           <div class="control-group">
-            <label class="control-label">min and max dates</label>
+            <label class="control-label">data-date-min attribute</label>
             <div class="controls">
-              <input type="text" id="Date8" class="input-small" data-date-min="2013-05-10" data-date-max="2013-05-20" value="2013-05-15" />
-              <pre>&lt;input data-date-min="2013-05-10" id="Date8" data-date-max="2013-05-20" value="2013-05-15" /&gt;</pre>
+              <input type="text" id="Date8" class="input-small" data-date-min="2013-05-10" value="2013-05-15" />
+              <pre>&lt;input data-date-min="2013-05-10" id="Date8" value="2013-05-15" /&gt;</pre>
               <pre>$('#Date8').datepicker();</pre>
             </div>
           </div>
@@ -130,3 +130,4 @@
     </script>
   </body>
 </html>
+

@@ -188,17 +188,13 @@
 
       @options = $.extend {}, WDP.defaultOptions, options
 
-      # Options take precedence over the `data-date-format` attribute.
-      format = @options.format or @$el.data('dateFormat')
-      @dateFormat = format or @_defaultFormat  # If no format provided, set the default.
-
       @_state = {}
 
-      # If this is `false` or `no` then don't pick up date from input initially.
-      @allowClear = @options.allowClear or @$el.data('dateAllowClear')
-      @allowClear = @allowClear in ['yes', 'true', true]
+      @setOptionsFromDataAttr()
 
-      @_updateFromInput(null, null, {update: not @allowClear})
+      @normalizeOptions()
+
+      @_updateFromInput(null, null, {update: not @options.allowClear})
 
       @_initPicker()
       @_initElements()
@@ -228,6 +224,26 @@
 
       # Keep track of this instance
       WDP.datepickers.push this
+
+    setOptionsFromDataAttr: ->
+      @$el.data()
+
+      # For each 'data-date-*' attribute, set it on our option.
+      for k, v of @$el.data()
+        if k.substr(0, 4) is 'date'
+          @options[k] = v
+
+    normalizeOptions: ->
+      @options.dateFormat or= @_defaultFormat
+
+      @options.allowClear or= @options.dateAllowClear
+      @options.allowClear = @options.allowClear in ['yes', 'true', true] 
+
+      if @options.dateMin and not(@options.dateMin instanceof Date)
+        @options.dateMin = @_parseDate @options.dateMin
+
+      if @options.dateMax and not(@options.dateMax instanceof Date)
+        @options.dateMax = @_parseDate @options.dateMax
 
     render: =>
       @_updateMonthAndYear()
@@ -291,10 +307,14 @@
 
       # Cannot set non-dates
       unless date instanceof Date
-        if @allowClear
+        if @options.allowClear
           today = new Date()
           @_state.month = today.getMonth()
           @_state.year = today.getFullYear()
+        return
+
+      # Should not set a date that falls outside of min/max range.
+      unless @_dateWithinRange(date)
         return
 
       @date = date
@@ -402,7 +422,7 @@
       # Cancel all click events so we don't hide the picker unnecessarily.
       @$el.on 'click', @_cancelEvent
 
-      @$datepicker.on 'click', '.js-wdp-calendar-cell', @_selectDate
+      @$datepicker.on 'click', '.js-wdp-calendar-cell:not(.wdp-disabled)', @_selectDate
       @$datepicker.on 'click', '.js-wdp-prev', @prev
       @$datepicker.on 'click', '.js-wdp-next', @next
       @$datepicker.on 'click', @_cancelEvent
@@ -416,7 +436,7 @@
         @date = @_parseDate dateStr
 
       # If date could not be set from @$el.val() then set to today.
-      if @allowClear
+      if @options.allowClear
         unless dateStr
           @date = null
       else
@@ -433,11 +453,11 @@
       monthAndYear = moment(date).format('MMMM YYYY')
       @$monthAndYear.text monthAndYear
 
-    _formatDate: (date) -> WDP.DateUtils.format(date, @dateFormat)
+    _formatDate: (date) -> WDP.DateUtils.format(date, @options.dateFormat)
 
     _parseDate: (str) ->
       # If the string is formatted properly, return its date value.
-      if (wrapped = WDP.DateUtils.parse(str, @dateFormat)).isValid()
+      if (wrapped = WDP.DateUtils.parse(str, @options.dateFormat)).isValid()
         d = wrapped.toDate()
 
         # If the year is zero then it is invalid. This can happen if the dateFormat does
@@ -535,30 +555,32 @@
           if (index++) is 0
             html.push '<tr class="wdp-calendar-row">'
           d = prevMonth.add('days', -1).date()
-          formattedPrevMonth = @_formatDate new Date(@_state.year, @_state.month - 1, d)
+          currDate = new Date(@_state.year, @_state.month - 1, d)
+          formattedPrevMonth = @_formatDate currDate
           # + 1 because element at index zero is the <tr>
-          html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell\" data-date=\"#{formattedPrevMonth}\">#{d}</td>"
+          html[6 - i + 1] = "<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell #{@_getExtraClassNamesForDate(currDate)}\" data-date=\"#{formattedPrevMonth}\">#{d}</td>"
           paddingStart++
 
       # For formatting purposes in the following loop.
-      currMonth = new Date(@_state.year, @_state.month, 1)
+      currDate = new Date(@_state.year, @_state.month, 1)
 
       # Fill in dates for this month.
       for i in [1..daysInMonth]
-        currMonth.setDate(i)
-        formatted = @_formatDate currMonth
+        currDate.setDate(i)
+        formatted = @_formatDate currDate
         if (index++) % 7 is 0
           html.push '</tr><tr class="wdp-calendar-row">'
-        html.push "<td class=\"js-wdp-calendar-cell\" data-date=\"#{formatted}\">#{i}</td>"
+        html.push "<td class=\"js-wdp-calendar-cell #{@_getExtraClassNamesForDate(currDate)}\" data-date=\"#{formatted}\">#{i}</td>"
 
       # Fill out the rest of the calendar (six rows).
       nextMonth = endOfMonth.clone()
       while index < 42  # 7 * 6 = 42
         d = nextMonth.add('days', 1).date()
-        formattedNextMonth = @_formatDate new Date(@_state.year, @_state.month + 1, d)
+        currDate = new Date(@_state.year, @_state.month + 1, d)
+        formattedNextMonth = @_formatDate currDate
         if (index++) % 7 is 0
           html.push '</tr><tr class="wdp-calendar-row">'
-        html.push "<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell\" data-date=\"#{formattedNextMonth}\">#{d}</td>"
+        html.push "<td class=\"wdp-calendar-othermonth js-wdp-calendar-cell #{@_getExtraClassNamesForDate(currDate)}\" data-date=\"#{formattedNextMonth}\">#{d}</td>"
 
       html.push '</tr>'
 
@@ -631,6 +653,21 @@
       @$el.trigger 'shortcutclear'
       @setDate date
 
+    _dateWithinRange: (date) =>
+      if @options.dateMin and date.valueOf() < @options.dateMin.valueOf()
+        return false
+
+      if @options.dateMax and date.valueOf() > @options.dateMax.valueOf()
+        return false
+
+      return true
+
+    _getExtraClassNamesForDate: (date) =>
+      classNames = []
+
+      classNames.push('wdp-disabled') unless @_dateWithinRange(date)
+
+      return classNames.join(' ')
 
   # Hold reference to old function in case it exists
   _oldDatepicker = $.fn.datepicker

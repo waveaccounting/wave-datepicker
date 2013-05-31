@@ -352,7 +352,7 @@
           });
         });
       });
-      return describe('Allow clear', function() {
+      describe('Allow clear', function() {
         describe('when data-date-allow-clear is "yes" on the <input>', function() {
           return it('should allow user to null out the date', function() {
             this.$input.val('');
@@ -385,6 +385,98 @@
               expect(this.$input.datepicker('getDate')).not.to.be["null"];
               this.$input.val('').trigger('change');
               return expect(this.$input.datepicker('getDate')).to.be["null"];
+            });
+          });
+        });
+      });
+      describe('Min date', function() {
+        return describe('when dateMin is set in the options', function() {
+          it('should disable all dates before the min', function() {
+            var $cells, baseDate;
+
+            baseDate = new Date(2013, 4, 10, 0, 0, 0, 0);
+            this.$input.val('2013-05-15').datepicker({
+              dateMin: new Date(2013, 4, 10)
+            });
+            $cells = this.$input.data('datepicker').$calendar.find('td');
+            return $cells.each(function(i, cell) {
+              var $cell, date;
+
+              $cell = $(cell);
+              date = moment($cell.data('date'), 'YYYY-MM-DD').toDate();
+              if (date.valueOf() < baseDate.valueOf()) {
+                return expect($cell.hasClass('wdp-disabled')).to.be["true"];
+              }
+            });
+          });
+          describe('when a cell is clicked outside of max date', function() {
+            return it('should not select it', function() {
+              var origVal;
+
+              this.$input.val('2013-05-15').datepicker({
+                dateMin: new Date(2013, 4, 20)
+              });
+              origVal = this.$input.val();
+              this.$input.find('.wdp-disabled').eq(0).click();
+              return expect(this.$input.val()).to.equal(origVal);
+            });
+          });
+          return describe('when setDate is called with a date that is < min', function() {
+            return it('should not set it', function() {
+              var origVal;
+
+              this.$input.val('2013-05-15').datepicker({
+                dateMin: new Date(2013, 4, 20)
+              });
+              origVal = this.$input.val();
+              this.$input.datepicker('setDate', new Date(2012, 0, 1));
+              return expect(this.$input.val()).to.equal(origVal);
+            });
+          });
+        });
+      });
+      return describe('Max date', function() {
+        return describe('when dateMax is set in the options', function() {
+          it('should disable all dates before the max', function() {
+            var $cells, baseDate;
+
+            baseDate = new Date(2013, 4, 20, 0, 0, 0, 0);
+            this.$input.val('2013-05-15').datepicker({
+              dateMax: new Date(2013, 4, 20)
+            });
+            $cells = this.$input.data('datepicker').$calendar.find('td');
+            return $cells.each(function(i, cell) {
+              var $cell, date;
+
+              $cell = $(cell);
+              date = moment($cell.data('date'), 'YYYY-MM-DD').toDate();
+              if (date.valueOf() > baseDate.valueOf()) {
+                return expect($cell.hasClass('wdp-disabled')).to.be["true"];
+              }
+            });
+          });
+          describe('when a cell is clicked outside of max date', function() {
+            return it('should not select it', function() {
+              var origVal;
+
+              this.$input.val('2013-05-15').datepicker({
+                dateMax: new Date(2013, 4, 20)
+              });
+              origVal = this.$input.val();
+              this.$input.find('.wdp-disabled').eq(0).click();
+              return expect(this.$input.val()).to.equal(origVal);
+            });
+          });
+          return describe('when setDate is called with a date that is > hax', function() {
+            return it('should not set it', function() {
+              var origVal;
+
+              this.$input.val('2013-05-15').datepicker({
+                dateMax: new Date(2013, 4, 20)
+              });
+              origVal = this.$input.val();
+              this.$input.datepicker('setDate', new Date(3000, 0, 1));
+              return expect(this.$input.val()).to.equal(origVal);
             });
           });
         });

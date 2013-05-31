@@ -360,3 +360,65 @@ describe 'Wave Datepicker', ->
             # Now unset it and check date is null.
             @$input.val('').trigger('change')
             expect(@$input.datepicker('getDate')).to.be.null
+
+
+    describe 'Min date', ->
+      describe 'when dateMin is set in the options', ->
+        it 'should disable all dates before the min', ->
+          baseDate = new Date(2013, 4, 10, 0, 0, 0, 0)
+          # Set today to be the min date.
+          @$input.val('2013-05-15').datepicker({dateMin: new Date(2013, 4, 10)})
+
+          $cells = @$input.data('datepicker').$calendar.find('td')
+          $cells.each (i, cell) ->
+            $cell = $(cell)
+            date = moment($cell.data('date'), 'YYYY-MM-DD').toDate()
+            if date.valueOf() < baseDate.valueOf()
+              expect($cell.hasClass('wdp-disabled')).to.be.true
+
+        describe 'when a cell is clicked outside of max date', ->
+          it 'should not select it', ->
+            # Set today to be the min date.
+            @$input.val('2013-05-15').datepicker({dateMin: new Date(2013, 4, 20)})
+            origVal = @$input.val()
+            @$input.find('.wdp-disabled').eq(0).click()
+            expect(@$input.val()).to.equal origVal
+
+        describe 'when setDate is called with a date that is < min', ->
+          it 'should not set it', ->
+            # Set today to be the min date.
+            @$input.val('2013-05-15').datepicker({dateMin: new Date(2013, 4, 20)})
+            origVal = @$input.val()
+            @$input.datepicker('setDate', new Date(2012, 0, 1))
+            expect(@$input.val()).to.equal origVal
+
+
+    describe 'Max date', ->
+      describe 'when dateMax is set in the options', ->
+        it 'should disable all dates before the max', ->
+          baseDate = new Date(2013, 4, 20, 0, 0, 0, 0)
+          # Set today to be the max date.
+          @$input.val('2013-05-15').datepicker({dateMax: new Date(2013, 4, 20)})
+
+          $cells = @$input.data('datepicker').$calendar.find('td')
+          $cells.each (i, cell) ->
+            $cell = $(cell)
+            date = moment($cell.data('date'), 'YYYY-MM-DD').toDate()
+            if date.valueOf() > baseDate.valueOf()
+              expect($cell.hasClass('wdp-disabled')).to.be.true
+
+        describe 'when a cell is clicked outside of max date', ->
+          it 'should not select it', ->
+            # Set today to be the max date.
+            @$input.val('2013-05-15').datepicker({dateMax: new Date(2013, 4, 20)})
+            origVal = @$input.val()
+            @$input.find('.wdp-disabled').eq(0).click()
+            expect(@$input.val()).to.equal origVal
+
+        describe 'when setDate is called with a date that is > hax', ->
+          it 'should not set it', ->
+            # Set today to be the min date.
+            @$input.val('2013-05-15').datepicker({dateMax: new Date(2013, 4, 20)})
+            origVal = @$input.val()
+            @$input.datepicker('setDate', new Date(3000, 0, 1))
+            expect(@$input.val()).to.equal origVal
