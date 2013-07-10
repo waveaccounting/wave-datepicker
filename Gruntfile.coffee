@@ -1,6 +1,10 @@
 livereloadSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet
 folderMount = (connect, point) -> connect.static(require('path').resolve(point))
 
+project =
+  host: 'localhost'
+  port: 9001
+
 module.exports = (grunt) ->
   # Load all grunt tasks
   require('matchdep').filterAll('grunt-*').forEach(grunt.loadNpmTasks)
@@ -11,7 +15,7 @@ module.exports = (grunt) ->
     connect:
       server:
         options:
-          port: 9001
+          port: project.port
           middleware: (connect, options) -> [livereloadSnippet, folderMount(connect, '.')]
 
     less:
@@ -24,15 +28,10 @@ module.exports = (grunt) ->
           
     mocha:
       test:
-        src: ['test/index.html']
         options:
+          urls: ["http://localhost:#{project.port}/test/"]
+          reporter: 'Spec'
           run: true
-
-    exec:
-      nyan_start:
-        cmd: './bin/nyan.sh start'
-      nyan_stop:
-        cmd: './bin/nyan.sh stop'
 
     coffee:
       dist:
@@ -89,5 +88,6 @@ module.exports = (grunt) ->
     ]
   grunt.registerTask "test", [
     'coffee'
+    'connect:server'
     'mocha'
   ]
