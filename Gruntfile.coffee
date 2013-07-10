@@ -90,7 +90,5 @@ module.exports = (grunt) ->
     ]
   grunt.registerTask "test", [
     'coffee'
-    'exec:nyan_start'
     'mocha'
-    'exec:nyan_stop'
   ]
