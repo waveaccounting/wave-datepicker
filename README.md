@@ -6,7 +6,7 @@ Supports shortcuts on the left-side of the picker.
 
 **Latest Version**: 1.0.0
 
-![ScreenShot](https://raw.github.com/waveaccounting/wave-datepicker/master/img/screenshot.png)
+[![Build Status](https://travis-ci.org/waveaccounting/wave-datepicker.png?branch=master)](https://travis-ci.org/waveaccounting/wave-datepicker)
 
 ## Getting Started
 
