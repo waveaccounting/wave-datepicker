@@ -1,7 +1,6 @@
 *.sw[a-z0-9]
 node_modules/
 components/
-vendor/
 src/*.js
 spec/*.js
 test/*.js
