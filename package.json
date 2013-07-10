@@ -22,7 +22,7 @@
   ],
   "main": "./dist/wave-datepicker.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test --verbose"
   },
   "dependencies": {
     "grunt": "~0.4.1",

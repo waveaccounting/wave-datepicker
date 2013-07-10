@@ -26,7 +26,6 @@ module.exports = (grunt) ->
       test:
         src: ['test/index.html']
         options:
-          reporter: 'Nyan'
           run: true
 
     exec:
