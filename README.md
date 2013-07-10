@@ -1,3 +1,5 @@
+![BuildStatus](https://api.travis-ci.org/waveaccounting/wave-datepicker.png)
+
 Datepicker widget for jQuery that uses Bootstrap styles.
 
 Supports shortcuts on the left-side of the picker.
