@@ -28,11 +28,11 @@ module.exports = (grunt) ->
           
     mocha:
       test:
+        src: ['test/index.html']
         options:
-          urls: ["http://localhost:#{project.port}/test/"]
           reporter: 'Spec'
           run: true
-          timeout: 30000
+          timeout: 15000
 
     coffee:
       dist:
@@ -89,6 +89,5 @@ module.exports = (grunt) ->
     ]
   grunt.registerTask "test", [
     'coffee'
-    'connect:server'
     'mocha'
   ]
