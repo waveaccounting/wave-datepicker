@@ -2,7 +2,6 @@
   describe('Wave Datepicker unit tests', function() {
     it('_cancelEvent', function() {
       var e;
-
       e = {
         stopPropagation: sinon.spy(),
         preventDefault: sinon.spy()
@@ -73,7 +72,6 @@
     describe('setDate', function() {
       it('should update the date, state, and <input> of the widget', function() {
         var context, date;
-
         context = {
           _formatDate: sinon.stub(),
           $el: {
@@ -137,7 +135,6 @@
     describe('next', function() {
       it('should increment month then call render method', function() {
         var context;
-
         context = {
           _state: {
             month: 7
@@ -150,7 +147,6 @@
       });
       return it('should go to next year if month is 12', function() {
         var context;
-
         context = {
           _state: {
             month: 12,
@@ -166,7 +162,6 @@
     describe('prev', function() {
       it('should decrement month then call render method', function() {
         var context;
-
         context = {
           _state: {
             month: 7
@@ -179,7 +174,6 @@
       });
       return it('should go to prev year if month is 1', function() {
         var context;
-
         context = {
           _state: {
             month: 1,
@@ -195,7 +189,6 @@
     describe('getDate', function() {
       return it('should return widget date', function() {
         var context, date;
-
         context = {
           date: 'DATE'
         };
@@ -308,7 +301,6 @@
         });
         it('should increment date by seven days', function() {
           var date, diff;
-
           this.e.keyCode = WDP.Keys.DOWN;
           WDP.WaveDatepicker.prototype._onInputKeydown.call(this.context, this.e);
           date = this.context.setDate.args[0][0];
@@ -349,7 +341,6 @@
         });
         it('should decrement date by seven days', function() {
           var date, diff;
-
           this.e.keyCode = WDP.Keys.UP;
           WDP.WaveDatepicker.prototype._onInputKeydown.call(this.context, this.e);
           date = this.context.setDate.args[0][0];
@@ -382,7 +373,6 @@
         });
         return it('should decrement date by one day', function() {
           var date, diff;
-
           this.e.keyCode = WDP.Keys.RIGHT;
           WDP.WaveDatepicker.prototype._onInputKeydown.call(this.context, this.e);
           date = this.context.setDate.args[0][0];
@@ -405,7 +395,6 @@
         });
         return it('should decrement date by one day', function() {
           var date, diff;
-
           this.e.keyCode = WDP.Keys.LEFT;
           WDP.WaveDatepicker.prototype._onInputKeydown.call(this.context, this.e);
           date = this.context.setDate.args[0][0];
@@ -471,7 +460,6 @@
     return describe('_onShortcutClick', function() {
       return it('should call select method on the target element', function() {
         var e, _$;
-
         this.context.select = sinon.spy();
         _$ = sinon.stub(WDP, '$');
         _$.returns('OBJECT');

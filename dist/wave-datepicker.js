@@ -12,7 +12,6 @@
     }
   })(this, function($) {
     var WDP, _oldDatepicker;
-
     WDP = {};
     WDP.$ = $;
     WDP.template = "<div class=\"wdp dropdown-menu\">  <div class=\"row-fluid\">    <div class=\"wdp-shortcuts span5\"></div>    <div class=\"wdp-main\">      <table class=\"table-condensed wdp-calendar\">        <thead>          <tr>              <th class=\"wdp-prev\">                <a href=\"javascript:void(0)\" class=\"js-wdp-prev\">◀</a>              </th>              <th colspan=\"5\" class=\"wdp-month-and-year js-wdp-set-month-year\"></th>              <th class=\"wdp-next\">                <a href=\"javascript:void(0)\" class=\"js-wdp-next\">▶</a>              </th>          </tr>        </thead>        <tbody></tbody>      </table>      <table class=\"table-condensed wdp-year-calendar\">      <tbody></tbody>      </table>      <table class=\"table-condensed wdp-month-calendar\">      <tbody></tbody>      </table>    </div>  </div></div>";
@@ -68,7 +67,6 @@
 
       Shortcuts.prototype.render = function() {
         var extraAttributes, k, name, options, shortcuts, v, _ref, _ref1;
-
         shortcuts = [];
         this.numShortcuts = 0;
         _ref = this.options;
@@ -108,7 +106,6 @@
 
       Shortcuts.prototype.select = function($target) {
         var data, offset, wrapper;
-
         data = $target.data();
         wrapper = moment(this.baseDate).clone();
         offset = {
@@ -130,7 +127,6 @@
 
       Shortcuts.prototype._updateSelected = function() {
         var $target;
-
         this.resetClass();
         $target = this.$el.find(".wdp-shortcut[data-shortcut-num=" + this.currSelectedIndex + "]").addClass('wdp-shortcut-active');
         return this.select($target);
@@ -149,7 +145,6 @@
       function WaveDatepicker(options) {
         var shortcutOptions, _ref, _ref1,
           _this = this;
-
         this.options = options;
         this._getExtraClassNamesForDate = __bind(this._getExtraClassNamesForDate, this);
         this._dateWithinRange = __bind(this._dateWithinRange, this);
@@ -206,7 +201,6 @@
 
       WaveDatepicker.prototype.setOptionsFromDataAttr = function() {
         var k, v, _ref, _results;
-
         this.$el.data();
         _ref = this.$el.data();
         _results = [];
@@ -223,7 +217,6 @@
 
       WaveDatepicker.prototype.normalizeOptions = function() {
         var _base, _base1, _ref;
-
         (_base = this.options).dateFormat || (_base.dateFormat = this._defaultFormat);
         (_base1 = this.options).allowClear || (_base1.allowClear = this.options.dateAllowClear);
         this.options.allowClear = (_ref = this.options.allowClear) === 'yes' || _ref === 'true' || _ref === true;
@@ -257,7 +250,6 @@
 
       WaveDatepicker.prototype.hideInactive = function() {
         var picker, _i, _len, _ref, _results;
-
         _ref = WDP.datepickers;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -304,7 +296,6 @@
 
       WaveDatepicker.prototype.setDate = function(date, options) {
         var today;
-
         if (typeof date === 'string') {
           date = WDP.DateUtils.parse(date);
         }
@@ -363,12 +354,10 @@
 
       WaveDatepicker.prototype.destroy = function() {
         var picker;
-
         this.$datepicker.remove();
         this.$el.removeData('datepicker');
         return WDP.datepickers = (function() {
           var _i, _len, _ref, _results;
-
           _ref = WDP.datepickers;
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -383,7 +372,6 @@
 
       WaveDatepicker.prototype.setBaseDate = function(date) {
         var _ref;
-
         return this.baseDate = (_ref = this.shortcuts) != null ? _ref.baseDate = date : void 0;
       };
 
@@ -410,7 +398,6 @@
 
       WaveDatepicker.prototype._initPicker = function() {
         var weekdays, weekdaysMin;
-
         this.$datepicker = $(WDP.template);
         this.$datepicker.appendTo(document.body);
         weekdaysMin = moment.weekdaysMin || moment.langData()._weekdaysMin;
@@ -421,7 +408,6 @@
       WaveDatepicker.prototype._initEvents = function() {
         var showAndFocus,
           _this = this;
-
         if ((this.$icon = this.$el.siblings('.add-on')).length) {
           showAndFocus = function(e) {
             _this._cancelEvent(e);
@@ -450,7 +436,6 @@
 
       WaveDatepicker.prototype._updateFromInput = function(e, date, options) {
         var dateStr;
-
         if ((dateStr = this.$el.val())) {
           this.date = this._parseDate(dateStr);
         }
@@ -469,7 +454,6 @@
 
       WaveDatepicker.prototype._updateMonthAndYear = function() {
         var date, monthAndYear;
-
         date = new Date(this._state.year, this._state.month, 1);
         monthAndYear = moment(date).format('MMMM YYYY');
         return this.$monthAndYear.text(monthAndYear);
@@ -481,7 +465,6 @@
 
       WaveDatepicker.prototype._parseDate = function(str) {
         var d, wrapped;
-
         if ((wrapped = WDP.DateUtils.parse(str, this.options.dateFormat)).isValid()) {
           d = wrapped.toDate();
           if (d.getFullYear() === 0) {
@@ -494,7 +477,6 @@
 
       WaveDatepicker.prototype._place = function() {
         var offset, zIndex;
-
         zIndex = parseInt(this.$el.parents().filter(function() {
           return $(this).css('z-index') !== 'auto';
         }).first().css('z-index'), 10) + 10;
@@ -508,7 +490,6 @@
 
       WaveDatepicker.prototype._showYearGrid = function() {
         var currentClass, html, i, m, _i;
-
         html = [];
         m = moment(new Date(this._state.year - 9, 0, 1));
         html.push('<tr class="wdp-calendar-row">');
@@ -530,7 +511,6 @@
 
       WaveDatepicker.prototype._showMonthGrid = function(e) {
         var currentClass, date, html, i, m, _i;
-
         html = [];
         date = moment(this._parseDate($(e.target).data('date')));
         m = moment(new Date(date.year(), 0, 1));
@@ -553,7 +533,6 @@
 
       WaveDatepicker.prototype._fill = function() {
         var currDate, d, date, daysInMonth, endOfMonth, firstDateDay, formatted, formattedNextMonth, formattedPrevMonth, html, i, index, lastDateDay, nextMonth, paddingStart, prevMonth, startOfMonth, wrapped, _i, _j, _ref;
-
         date = new Date(this._state.year, this._state.month, 1);
         index = 0;
         html = [];
@@ -610,7 +589,6 @@
 
       WaveDatepicker.prototype._onInputKeydown = function(e) {
         var date, fn, offset, _ref, _ref1, _ref2;
-
         if (e.metaKey) {
           return;
         }
@@ -672,7 +650,6 @@
 
       WaveDatepicker.prototype._updateSelection = function() {
         var dateStr;
-
         dateStr = this._formatDate(this.date);
         this.$calendarTbody.find('.wdp-selected').removeClass('wdp-selected');
         return this.$calendarTbody.find("td[data-date='" + dateStr + "']").addClass('wdp-selected');
@@ -680,7 +657,6 @@
 
       WaveDatepicker.prototype._selectDate = function(e) {
         var date, _ref;
-
         this.$calendarMonth.hide();
         this.$calendar.show();
         if ((_ref = this.shortcuts) != null) {
@@ -703,7 +679,6 @@
 
       WaveDatepicker.prototype._getExtraClassNamesForDate = function(date) {
         var classNames;
-
         classNames = [];
         if (!this._dateWithinRange(date)) {
           classNames.push('wdp-disabled');
@@ -717,7 +692,6 @@
     _oldDatepicker = $.fn.datepicker;
     WDP.init = function() {
       var args, options, widget;
-
       options = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       if (options == null) {
         options = {};
@@ -728,7 +702,6 @@
       }
       return this.each(function() {
         var $this;
-
         $this = $(this);
         widget = $this.data('datepicker');
         $.extend(options, {

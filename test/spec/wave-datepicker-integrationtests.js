@@ -44,7 +44,6 @@
       });
       it('should use the value attribute to set default date', function() {
         var date;
-
         this.$input.val('2012-08-01').datepicker();
         date = this.$input.data('datepicker').date;
         expect(date).to.be.defined;
@@ -54,7 +53,6 @@
       });
       it('should set today as the default is value not set on <input>', function() {
         var date, today;
-
         this.$input.datepicker();
         date = this.$input.data('datepicker').date;
         today = new Date();
@@ -66,14 +64,12 @@
       describe('Shortcuts', function() {
         it('should by default not have shortcuts', function() {
           var widget;
-
           this.$input.datepicker();
           widget = this.$input.data('datepicker');
           return expect(widget.$datepicker.find('.wdp-shortcut').length === 0).to.be["true"];
         });
         it('should provide default options if `shortcuts` is passed as true', function() {
           var today, widget;
-
           this.$input.datepicker({
             shortcuts: true
           });
@@ -84,7 +80,6 @@
         });
         it('should attach extra element attributes if they are provided', function() {
           var widget;
-
           this.$input.datepicker({
             shortcuts: {
               'Foo': {
@@ -101,7 +96,6 @@
         return describe('When a shortcut is clicked', function() {
           return it('should add the corresponding offset to the widget date', function() {
             var expected, offsets, today, widget;
-
             offsets = {
               days: 5,
               months: 1,
@@ -125,7 +119,6 @@
       describe('On input change', function() {
         it('should update the date of the the widget', function() {
           var date, widget;
-
           this.$input.val('2012-08-01').datepicker();
           date = new Date(2012, 7, 1);
           widget = this.$input.data('datepicker');
@@ -141,7 +134,6 @@
         return describe('when input value is bad', function() {
           return it('should not change the date', function() {
             var originalDate, widget;
-
             this.$input.val('2012-08-01').datepicker();
             widget = this.$input.data('datepicker');
             originalDate = widget.date;
@@ -153,7 +145,6 @@
       describe('Rendered calendar', function() {
         it('should draw the calendar with current month and fill start/end with prev/next month', function() {
           var $cells, array, expected;
-
           this.$input.val('2012-08-01').datepicker();
           $cells = this.$input.data('datepicker').$calendar.find('td');
           expected = [29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8];
@@ -189,7 +180,6 @@
         });
         it('should have weekday names in table header', function() {
           var $cells, array;
-
           this.$input.val('2012-08-01').datepicker();
           $cells = this.$input.data('datepicker').$calendar.find('.wdp-weekdays > th');
           array = [];
@@ -200,7 +190,6 @@
         });
         return it('should have month and year in table header', function() {
           var monthAndYear;
-
           this.$input.val('2012-08-01').datepicker();
           monthAndYear = $.trim(this.$input.data('datepicker').$calendar.find('.wdp-month-and-year').text());
           return expect(monthAndYear).to.eql('August 2012');
@@ -275,7 +264,6 @@
       describe('Base date', function() {
         return it('should be used to calcualte shortcuts', function() {
           var expected, widget;
-
           expected = new Date(2012, 7, 1);
           this.$input.datepicker({
             baseDate: expected,
@@ -303,7 +291,6 @@
         });
         return it('should open datepicker when the add-on icon is clicked', function() {
           var picker;
-
           this.$box.find('.add-on').click();
           picker = this.$box.find('input').data('datepicker');
           return expect(picker._isShown).to.be["true"];
@@ -313,7 +300,6 @@
         describe('when the format option is passed', function() {
           return it('should use that format string to parse and format dates', function() {
             var date;
-
             this.$input.val('2012/08/31');
             this.$input.datepicker({
               format: 'YYYY/MM/DD'
@@ -328,7 +314,6 @@
         describe('when date data-date-format is set on the <input>', function() {
           return it('should use that format string to parse and format dates', function() {
             var date;
-
             this.$input.val('2012/08/31').attr('data-date-format', 'YYYY/MM/DD');
             this.$input.datepicker();
             date = this.$input.data('datepicker').date;
@@ -341,7 +326,6 @@
         return describe('when the date format does not include year', function() {
           return it('should use the current year', function() {
             var date;
-
             this.$input.val('12-31').attr('data-date-format', 'MM-DD');
             this.$input.datepicker();
             date = this.$input.data('datepicker').date;
@@ -393,7 +377,6 @@
         return describe('when dateMin is set in the options', function() {
           it('should disable all dates before the min', function() {
             var $cells, baseDate;
-
             baseDate = new Date(2013, 4, 10, 0, 0, 0, 0);
             this.$input.val('2013-05-15').datepicker({
               dateMin: new Date(2013, 4, 10)
@@ -401,7 +384,6 @@
             $cells = this.$input.data('datepicker').$calendar.find('td');
             return $cells.each(function(i, cell) {
               var $cell, date;
-
               $cell = $(cell);
               date = moment($cell.data('date'), 'YYYY-MM-DD').toDate();
               if (date.valueOf() < baseDate.valueOf()) {
@@ -412,7 +394,6 @@
           describe('when a cell is clicked outside of max date', function() {
             return it('should not select it', function() {
               var origVal;
-
               this.$input.val('2013-05-15').datepicker({
                 dateMin: new Date(2013, 4, 20)
               });
@@ -424,7 +405,6 @@
           return describe('when setDate is called with a date that is < min', function() {
             return it('should not set it', function() {
               var origVal;
-
               this.$input.val('2013-05-15').datepicker({
                 dateMin: new Date(2013, 4, 20)
               });
@@ -439,7 +419,6 @@
         return describe('when dateMax is set in the options', function() {
           it('should disable all dates before the max', function() {
             var $cells, baseDate;
-
             baseDate = new Date(2013, 4, 20, 0, 0, 0, 0);
             this.$input.val('2013-05-15').datepicker({
               dateMax: new Date(2013, 4, 20)
@@ -447,7 +426,6 @@
             $cells = this.$input.data('datepicker').$calendar.find('td');
             return $cells.each(function(i, cell) {
               var $cell, date;
-
               $cell = $(cell);
               date = moment($cell.data('date'), 'YYYY-MM-DD').toDate();
               if (date.valueOf() > baseDate.valueOf()) {
@@ -458,7 +436,6 @@
           describe('when a cell is clicked outside of max date', function() {
             return it('should not select it', function() {
               var origVal;
-
               this.$input.val('2013-05-15').datepicker({
                 dateMax: new Date(2013, 4, 20)
               });
@@ -470,7 +447,6 @@
           return describe('when setDate is called with a date that is > hax', function() {
             return it('should not set it', function() {
               var origVal;
-
               this.$input.val('2013-05-15').datepicker({
                 dateMax: new Date(2013, 4, 20)
               });

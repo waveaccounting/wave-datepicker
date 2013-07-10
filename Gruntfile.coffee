@@ -32,6 +32,7 @@ module.exports = (grunt) ->
           urls: ["http://localhost:#{project.port}/test/"]
           reporter: 'Spec'
           run: true
+          timeout: 30000
 
     coffee:
       dist:
