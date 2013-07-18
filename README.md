@@ -1,10 +1,8 @@
-[![Build Status](https://travis-ci.org/waveaccounting/wave-datepicker.png?branch=master)](https://travis-ci.org/waveaccounting/wave-datepicker)
+# Wave-datepicker [![Build Status](https://travis-ci.org/waveaccounting/wave-datepicker.png?branch=master)](https://travis-ci.org/waveaccounting/wave-datepicker)
 
 Datepicker widget for jQuery that uses Bootstrap styles.
 
 Supports shortcuts on the left-side of the picker.
-
-**Latest Version**: 1.0.0
 
 ## Getting Started
 
@@ -153,6 +151,10 @@ Run the `test` task:
 
 
 ##Changelog
+
+**1.1.0**
+
+- Adding Travis CI yaml file, upgraded to bower-canary instead of bower
 
 **1.0.0**
 

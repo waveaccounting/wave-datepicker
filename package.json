@@ -1,9 +1,9 @@
 {
   "name": "wave-datepicker",
-  "description": "Datepicker",
-  "version": "1.0.0",
+  "description": "jQuery datepicker plugin that works with Bootstrap CSS.",
+  "version": "1.1.0",
   "author": {
-    "name": "Wave HQ",
+    "name": "Wave Accounting Inc.",
     "url": "http://waveapps.com/"
   },
   "homepage": "http://github.com/waveaccounting/wave-datepicker",
@@ -20,9 +20,8 @@
       "url": "http://github.com/waveaccounting/wave-datepicker/blob/master/LICENSE"
     }
   ],
-  "main": "./dist/wave-datepicker.js",
   "scripts": {
-    "install": "./node_modules/bower/bin/bower install",
+    "install": "./node_modules/bower-canary/bin/bower install",
     "test": "grunt test --verbose"
   },
   "dependencies": {
@@ -38,7 +37,7 @@
     "grunt-contrib-less": "~0.5",
     "grunt-contrib-livereload": "~0.1",
     "grunt-contrib-watch": "~0.4",
-    "bower": "~0.10.0"
+    "bower-canary": "~1.0.0-rc.1"
   },
   "devDependencies": {}
 }

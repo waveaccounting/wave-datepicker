@@ -1,9 +1,9 @@
 {
   "name": "wave-datepicker",
-  "description": "Datepicker",
+  "description": "jQuery datepicker plugin that works with Bootstrap CSS.",
   "version": "1.1.0",
   "author": {
-    "name": "Wave HQ",
+    "name": "Wave Accounting Inc.",
     "url": "http://waveapps.com/"
   },
   "homepage": "http://github.com/waveaccounting/wave-datepicker",
@@ -17,7 +17,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://github.com/waveaccounting/wave-datepicker/blob/master/LICENSE.md"
+      "url": "http://github.com/waveaccounting/wave-datepicker/blob/master/LICENSE"
     }
   ],
   "main": "./dist/wave-datepicker.js",
