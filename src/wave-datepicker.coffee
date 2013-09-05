@@ -245,6 +245,8 @@
       if @options.dateMax and not(@options.dateMax instanceof Date)
         @options.dateMax = @_parseDate @options.dateMax
 
+      @options.position = (@$el.attr('position') == 'left' and 'left') or 'right'
+
     render: =>
       @_updateMonthAndYear()
       @_fill()
@@ -479,11 +481,23 @@
 
       offset = @$el.offset()
 
-      @$datepicker.css(
-        top: offset.top + @height
-        left: offset.left
-        zIndex: zIndex
-      )
+     if @options.position == 'right'
+        @$datepicker.css(
+          top: offset.top + @height
+          left: offset.left
+          zIndex: zIndex
+        )
+        @$datepicker.removeClass('wpd-right')
+        @$datepicker.addClass('wpd-left')
+
+      if @options.position == 'left'
+        @$datepicker.css(
+          top: offset.top + @height
+          left: offset.left - (this.$datepicker.outerWidth() - this.$el.outerWidth())
+          zIndex: zIndex
+        )
+        @$datepicker.removeClass('wpd-left')
+        @$datepicker.addClass('wpd-right')
 
     _showYearGrid: =>
       html = []
