@@ -480,34 +480,34 @@
       offset = @$el.offset()
 
       switch @$el.data('position')
-        when "leftTop"
-          top = offset.top
-          left = offset.left - @$datepicker.outerWidth()
-          arrowClass = 'wpd-left-top'
-        when "leftBottom"
-          top = offset.top - @$datepicker.outerHeight() + @$el.outerHeight()
-          left = offset.left - @$datepicker.outerWidth()
-          arrowClass = 'wpd-left-bottom'
         when "rightTop"
           top = offset.top
-          left = offset.left + @$el.outerWidth()
+          left = offset.left - @$datepicker.outerWidth()
           arrowClass = 'wpd-right-top'
         when "rightBottom"
           top = offset.top - @$datepicker.outerHeight() + @$el.outerHeight()
-          left=  offset.left + @$el.outerWidth()
+          left = offset.left - @$datepicker.outerWidth()
           arrowClass = 'wpd-right-bottom'
-        when 'bottomRight'
+        when "leftTop"
+          top = offset.top
+          left = offset.left + @$el.outerWidth()
+          arrowClass = 'wpd-left-top'
+        when "leftBottom"
+          top = offset.top - @$datepicker.outerHeight() + @$el.outerHeight()
+          left=  offset.left + @$el.outerWidth()
+          arrowClass = 'wpd-left-bottom'
+        when 'topRight'
           top = offset.top + @height
           left = offset.left - (@$datepicker.outerWidth() - @$el.outerWidth())
-          arrowClass = 'wpd-bottom-right'
-        when 'topLeft'
+          arrowClass = 'wpd-top-right'
+        when 'bottomLeft'
           top = offset.top - @$datepicker.outerHeight()
           left = offset.left
-          arrowClass = 'wpd-top-left'
-        when 'topRight'
+          arrowClass = 'wpd-bottom-left'
+        when 'bottomRight'
           top = offset.top - @$datepicker.outerHeight()
           left = offset.left - (@$datepicker.outerWidth() - @$el.outerWidth())
-          arrowClass = 'wpd-top-right'
+          arrowClass = 'wpd-bottom-right'
         else #bottomLeft
           top = offset.top + @height
           left = offset.left
