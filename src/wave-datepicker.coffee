@@ -243,9 +243,7 @@
         @options.dateMin = @_parseDate @options.dateMin
 
       if @options.dateMax and not(@options.dateMax instanceof Date)
-        @options.dateMax = @_parseDate @options.dateMax
-
-      @options.position = (@$el.attr('position') == 'left' and 'left') or 'right'
+        @options.dateMax = @_parseDate @options.dateMax      
 
     render: =>
       @_updateMonthAndYear()
@@ -481,23 +479,46 @@
 
       offset = @$el.offset()
 
-     if @options.position == 'right'
-        @$datepicker.css(
-          top: offset.top + @height
-          left: offset.left
-          zIndex: zIndex
-        )
-        @$datepicker.removeClass('wpd-right')
-        @$datepicker.addClass('wpd-left')
+      switch @$el.data('position')
+        when "leftTop"
+          top = offset.top
+          left = offset.left - @$datepicker.outerWidth()
+          arrowClass = 'wpd-left-top'
+        when "leftBottom"
+          top = offset.top - @$datepicker.outerHeight() + @$el.outerHeight()
+          left = offset.left - @$datepicker.outerWidth()
+          arrowClass = 'wpd-left-bottom'
+        when "rightTop"
+          top = offset.top
+          left = offset.left + @$el.outerWidth()
+          arrowClass = 'wpd-right-top'
+        when "rightBottom"
+          top = offset.top - @$datepicker.outerHeight() + @$el.outerHeight()
+          left=  offset.left + @$el.outerWidth()
+          arrowClass = 'wpd-right-bottom'
+        when 'bottomRight'
+          top = offset.top + @height
+          left = offset.left - (@$datepicker.outerWidth() - @$el.outerWidth())
+          arrowClass = 'wpd-bottom-right'
+        when 'topLeft'
+          top = offset.top - @$datepicker.outerHeight()
+          left = offset.left
+          arrowClass = 'wpd-top-left'
+        when 'topRight'
+          top = offset.top - @$datepicker.outerHeight()
+          left = offset.left - (@$datepicker.outerWidth() - @$el.outerWidth())
+          arrowClass = 'wpd-top-right'
+        else #bottomLeft
+          top = offset.top + @height
+          left = offset.left
+          # default arrow used
 
-      if @options.position == 'left'
-        @$datepicker.css(
-          top: offset.top + @height
-          left: offset.left - (this.$datepicker.outerWidth() - this.$el.outerWidth())
-          zIndex: zIndex
-        )
-        @$datepicker.removeClass('wpd-left')
-        @$datepicker.addClass('wpd-right')
+      @$datepicker.css(
+        top: top
+        left: left
+        zIndex: zIndex
+      )
+      @$datepicker.addClass(arrowClass)
 
     _showYearGrid: =>
       html = []
