@@ -243,7 +243,7 @@
         @options.dateMin = @_parseDate @options.dateMin
 
       if @options.dateMax and not(@options.dateMax instanceof Date)
-        @options.dateMax = @_parseDate @options.dateMax      
+        @options.dateMax = @_parseDate @options.dateMax
 
     render: =>
       @_updateMonthAndYear()
