@@ -476,16 +476,57 @@
       };
 
       WaveDatepicker.prototype._place = function() {
-        var offset, zIndex;
+        var arrowClass, left, offset, top, zIndex;
         zIndex = parseInt(this.$el.parents().filter(function() {
           return $(this).css('z-index') !== 'auto';
         }).first().css('z-index'), 10) + 10;
         offset = this.$el.offset();
-        return this.$datepicker.css({
-          top: offset.top + this.height,
-          left: offset.left,
+        switch (this.$el.data('position')) {
+          case "rightTop":
+            top = offset.top;
+            left = offset.left - this.$datepicker.outerWidth();
+            arrowClass = 'wpd-right-top';
+            break;
+          case "rightBottom":
+            top = offset.top - this.$datepicker.outerHeight() + this.$el.outerHeight();
+            left = offset.left - this.$datepicker.outerWidth();
+            arrowClass = 'wpd-right-bottom';
+            break;
+          case "leftTop":
+            top = offset.top;
+            left = offset.left + this.$el.outerWidth();
+            arrowClass = 'wpd-left-top';
+            break;
+          case "leftBottom":
+            top = offset.top - this.$datepicker.outerHeight() + this.$el.outerHeight();
+            left = offset.left + this.$el.outerWidth();
+            arrowClass = 'wpd-left-bottom';
+            break;
+          case 'topRight':
+            top = offset.top + this.height;
+            left = offset.left - (this.$datepicker.outerWidth() - this.$el.outerWidth());
+            arrowClass = 'wpd-top-right';
+            break;
+          case 'bottomLeft':
+            top = offset.top - this.$datepicker.outerHeight();
+            left = offset.left;
+            arrowClass = 'wpd-bottom-left';
+            break;
+          case 'bottomRight':
+            top = offset.top - this.$datepicker.outerHeight();
+            left = offset.left - (this.$datepicker.outerWidth() - this.$el.outerWidth());
+            arrowClass = 'wpd-bottom-right';
+            break;
+          default:
+            top = offset.top + this.height;
+            left = offset.left;
+        }
+        this.$datepicker.css({
+          top: top,
+          left: left,
           zIndex: zIndex
         });
+        return this.$datepicker.addClass(arrowClass);
       };
 
       WaveDatepicker.prototype._showYearGrid = function() {
