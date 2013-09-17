@@ -35,9 +35,11 @@ You will also need the stylesheet `dist/wave-datepicker.css`.
 
 * hideOnSelect - If `true` then date selection will automatically hide the datepicker. Default is `false`
 
+
+### Data Attributes:
+
 * position - Opens with the position given with respect to the parent element, if provided. Default is `bottomLeft`.
   - possible positions: `bottomLeft`, `bottomRight`, `topLeft`, `topRight`, `leftTop`, `leftBottom`, `rightTop`, `rightBottom`
-
 
 
 ### Methods:
@@ -157,7 +159,7 @@ Run the `test` task:
 
 **1.2.0**
 
-- Added `position` option to specify the position of the date picker with respect to the parent element.
+- Added `position` data attribute to specify the position of the date picker with respect to the parent element.
 
 **1.1.0**
 
