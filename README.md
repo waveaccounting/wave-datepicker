@@ -38,7 +38,7 @@ You will also need the stylesheet `dist/wave-datepicker.css`.
 
 ### Data Attributes:
 
-* position - Opens with the datepicker pointing from the position, if provided. Default is `bottomLeft`.
+* position - Opens with the datepicker pointing from the position, if provided. Default is `topLeft`.
   - possible positions: `bottomLeft`, `bottomRight`, `topLeft`, `topRight`, `leftTop`, `leftBottom`, `rightTop`, `rightBottom`
   - E.g. On the input element, `<input id="MyInput" data-position='topRight'>`.
 
