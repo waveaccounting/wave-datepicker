@@ -1,7 +1,7 @@
 {
   "name": "wave-datepicker",
   "description": "jQuery datepicker plugin that works with Bootstrap CSS.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "Wave Accounting Inc.",
     "url": "http://waveapps.com/"
@@ -24,7 +24,7 @@
   "dependencies": {
     "jquery": ">= 1.7.0",
     "bootstrap": "~2.3.1",
-    "moment": "~2.0.0"
+    "moment": "~2.3.0"
   },
   "devDependencies": {
     "mocha": "~1.9.0",
