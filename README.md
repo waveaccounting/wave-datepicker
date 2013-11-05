@@ -157,6 +157,9 @@ Run the `test` task:
 
 
 ##Changelog
+**1.2.1**
+
+- Pinned version of momentjs because of breaking change in moment 2.4.0. 
 
 **1.2.0**
 
