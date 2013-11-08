@@ -385,9 +385,8 @@
     _initPicker: ->
       @$datepicker = $ WDP.template
       @$datepicker.appendTo document.body
-
-      # Support for older moment.js versions.
-      weekdaysMin = moment.weekdaysMin or moment.langData()._weekdaysMin
+      moment('en')
+      weekdaysMin = moment.weekdaysMin()
       weekdays = weekdaysMin.join '</th><th>'
 
       @$datepicker.find('thead').append "<tr class=\"wdp-weekdays\"><th>#{weekdays}</th></tr>"
