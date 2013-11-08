@@ -158,6 +158,10 @@ Run the `test` task:
 
 ##Changelog
 
+**1.2.1**
+
+- Updated to use moment 2.4.0.
+
 **1.2.0**
 
 - Added `position` data attribute to specify the direction the datepicker is pointing from.

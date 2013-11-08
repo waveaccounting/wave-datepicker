@@ -400,7 +400,8 @@
         var weekdays, weekdaysMin;
         this.$datepicker = $(WDP.template);
         this.$datepicker.appendTo(document.body);
-        weekdaysMin = moment.weekdaysMin || moment.langData()._weekdaysMin;
+        moment('en');
+        weekdaysMin = moment.weekdaysMin();
         weekdays = weekdaysMin.join('</th><th>');
         return this.$datepicker.find('thead').append("<tr class=\"wdp-weekdays\"><th>" + weekdays + "</th></tr>");
       };
