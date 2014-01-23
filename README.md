@@ -158,6 +158,10 @@ Run the `test` task:
 
 ##Changelog
 
+**1.3.0**
+
+- Added `data-date-include-icon` attribute to include a calendar icon in the input field.
+
 **1.2.0**
 
 - Added `position` data attribute to specify the direction the datepicker is pointing from.

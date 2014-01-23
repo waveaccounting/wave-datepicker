@@ -194,6 +194,9 @@
 
       @normalizeOptions()
 
+      if @options.dateIncludeIcon?
+        @$el.addClass 'wdp-input-icon'
+
       @_updateFromInput(null, null, {update: not @options.allowClear})
 
       @_initPicker()
