@@ -170,6 +170,9 @@
         this._state = {};
         this.setOptionsFromDataAttr();
         this.normalizeOptions();
+        if (this.options.dateIncludeIcon != null) {
+          this.$el.addClass('wdp-input-icon');
+        }
         this._updateFromInput(null, null, {
           update: !this.options.allowClear
         });
