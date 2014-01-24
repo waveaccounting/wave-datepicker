@@ -186,6 +186,9 @@
       @el = @options.el
       @$el = WDP.$ @el
 
+      @$el.wrap '<span class="wdp-input-wrap"></span>'
+      @$wrapper = @$el.parent()
+
       @options = $.extend {}, WDP.defaultOptions, options
 
       @_state = {}
@@ -194,8 +197,14 @@
 
       @normalizeOptions()
 
-      if @options.dateIncludeIcon?
+      if @options.dateIncludeCalendarIcon?
         @$el.addClass 'wdp-input-icon'
+
+      if @options.dateIncludeClearIcon?
+        if @$wrapper.find('.wdp-clear-icon').length is 0
+          @$wrapper.append '<a href="javascript:void(0)" class="wdp-clear-icon">&times;</a>'
+          @$clearEl = @$wrapper.find('.wdp-clear-icon')
+          @$clearEl.hide()
 
       @_updateFromInput(null, null, {update: not @options.allowClear})
 
@@ -324,6 +333,10 @@
       @_state.month = @date.getMonth()
       @_state.year = @date.getFullYear()
 
+      if @$clearEl
+        if @options.allowClear
+          @$clearEl.show()
+
       unless options?.update is false
         @$el.val @_formatDate(date)
 
@@ -432,6 +445,15 @@
       @$datepicker.on 'click', '.js-wdp-set-month-year', @_showYearGrid
       @$datepicker.on 'click', '.js-wdp-year-calendar-cell', @_showMonthGrid
       @$datepicker.on 'mousedown', @_cancelEvent
+
+      if @$clearEl
+        @$clearEl.on 'click', @_clearInput
+
+    _clearInput: =>
+      @$el.val('')
+      @setDate null
+      if @$clearEl
+        @$clearEl.hide()
 
     _updateFromInput: (e, date, options) =>
       # Reads the value of the `<input>` field and set it as the date.

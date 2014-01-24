@@ -96,13 +96,24 @@
           </div>
 
           <div class="control-group">
-            <label class="control-label">data-date-include-icon attribute</label>
+            <label class="control-label">data-date-include-calendar-icon attribute</label>
             <div class="controls">
-              <input type="text" id="Date9" class="input-small" data-date-include-icon />
+              <input type="text" id="Date9" class="input-small" data-date-include-calendar-icon />
               <pre>&lt;input data-date-include-icon id="Date9"/&gt;</pre>
               <pre>$('#Date9').datepicker();</pre>
             </div>
           </div>
+
+          <div class="control-group">
+            <label class="control-label">data-date-include-clear-icon attribute</label>
+            <div class="controls">
+              <input type="text" id="Date10" class="input-small" data-date-allow-clear="yes" data-date-include-clear-icon data-date-include-calendar-icon />
+              <pre>&lt;input data-date-allow-clear="yes" data-date-include-clear-icon id="Date10"/&gt;</pre>
+              <pre>$('#Date10').datepicker();</pre>
+            </div>
+          </div>
+
+
 
         </form>
       </section>
@@ -138,6 +149,7 @@
         $('#Date8').datepicker();
 
         $('#Date9').datepicker();
+        $('#Date10').datepicker();
       });
     </script>
   </body>

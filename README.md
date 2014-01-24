@@ -158,6 +158,11 @@ Run the `test` task:
 
 ##Changelog
 
+**1.4.0**
+
+- Added `data-date-include-clear-icon` to clear the input inline
+- Renamed `data-date-include-icon` to `data-date-include-calendar-icon`
+
 **1.3.0**
 
 - Added `data-date-include-icon` attribute to include a calendar icon in the input field.

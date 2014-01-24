@@ -156,6 +156,7 @@
         this._place = __bind(this._place, this);
         this._updateMonthAndYear = __bind(this._updateMonthAndYear, this);
         this._updateFromInput = __bind(this._updateFromInput, this);
+        this._clearInput = __bind(this._clearInput, this);
         this.destroy = __bind(this.destroy, this);
         this.next = __bind(this.next, this);
         this.prev = __bind(this.prev, this);
@@ -166,12 +167,21 @@
         this.render = __bind(this.render, this);
         this.el = this.options.el;
         this.$el = WDP.$(this.el);
+        this.$el.wrap('<span class="wdp-input-wrap"></span>');
+        this.$wrapper = this.$el.parent();
         this.options = $.extend({}, WDP.defaultOptions, options);
         this._state = {};
         this.setOptionsFromDataAttr();
         this.normalizeOptions();
-        if (this.options.dateIncludeIcon != null) {
+        if (this.options.dateIncludeCalendarIcon != null) {
           this.$el.addClass('wdp-input-icon');
+        }
+        if (this.options.dateIncludeClearIcon != null) {
+          if (this.$wrapper.find('.wdp-clear-icon').length === 0) {
+            this.$wrapper.append('<a href="javascript:void(0)" class="wdp-clear-icon">&times;</a>');
+            this.$clearEl = this.$wrapper.find('.wdp-clear-icon');
+            this.$clearEl.hide();
+          }
         }
         this._updateFromInput(null, null, {
           update: !this.options.allowClear
@@ -316,6 +326,11 @@
         this.date = date;
         this._state.month = this.date.getMonth();
         this._state.year = this.date.getFullYear();
+        if (this.$clearEl) {
+          if (this.options.allowClear) {
+            this.$clearEl.show();
+          }
+        }
         if ((options != null ? options.update : void 0) !== false) {
           this.$el.val(this._formatDate(date));
         }
@@ -434,7 +449,18 @@
         this.$datepicker.on('click', this._cancelEvent);
         this.$datepicker.on('click', '.js-wdp-set-month-year', this._showYearGrid);
         this.$datepicker.on('click', '.js-wdp-year-calendar-cell', this._showMonthGrid);
-        return this.$datepicker.on('mousedown', this._cancelEvent);
+        this.$datepicker.on('mousedown', this._cancelEvent);
+        if (this.$clearEl) {
+          return this.$clearEl.on('click', this._clearInput);
+        }
+      };
+
+      WaveDatepicker.prototype._clearInput = function() {
+        this.$el.val('');
+        this.setDate(null);
+        if (this.$clearEl) {
+          return this.$clearEl.hide();
+        }
       };
 
       WaveDatepicker.prototype._updateFromInput = function(e, date, options) {
