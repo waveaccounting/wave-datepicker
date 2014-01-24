@@ -379,11 +379,14 @@
   height: 60px;
 }
 .wdp-month-and-year {
-  background: #EEE;
+  background: #eee;
   cursor: pointer;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+}
+.wdp-month-and-year:hover {
+  background: #dddddd;
 }
 .wdp-input-wrap {
   position: relative;
