@@ -464,7 +464,7 @@
 
       WaveDatepicker.prototype._clearInput = function() {
         var _ref;
-        this.$el.val('');
+        this.$el.val('').trigger('change');
         this.setDate(null);
         return (_ref = this.$clearEl) != null ? _ref.hide() : void 0;
       };
