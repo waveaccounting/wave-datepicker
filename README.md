@@ -158,6 +158,10 @@ Run the `test` task:
 
 ##Changelog
 
+**1.4.1**
+
+- Trigger change event on the input when clearing the date.
+
 **1.4.0**
 
 - Added `data-date-include-clear-icon` to clear the input inline

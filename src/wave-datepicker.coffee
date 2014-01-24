@@ -453,7 +453,7 @@
       @$clearEl?.on 'click', @_clearInput
 
     _clearInput: =>
-      @$el.val('')
+      @$el.val('').trigger('change')
       @setDate null
       @$clearEl?.hide()
 
