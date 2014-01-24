@@ -186,6 +186,9 @@
       @el = @options.el
       @$el = WDP.$ @el
 
+      @$el.wrap '<span class="wdp-input-wrap"></span>'
+      @$wrapper = @$el.parent()
+
       @options = $.extend {}, WDP.defaultOptions, options
 
       @_state = {}
@@ -194,8 +197,13 @@
 
       @normalizeOptions()
 
-      if @options.dateIncludeIcon?
+      if @options.dateIncludeCalendarIcon?
         @$el.addClass 'wdp-input-icon'
+
+      if @options.dateIncludeClearIcon?
+        if @$wrapper.find('.wdp-clear-icon').length is 0
+          @$wrapper.append '<a href="javascript:void(0)" class="wdp-clear-icon" style="display:none">&times;</a>'
+          @$clearEl = @$wrapper.find('.wdp-clear-icon')
 
       @_updateFromInput(null, null, {update: not @options.allowClear})
 
@@ -314,15 +322,19 @@
           today = new Date()
           @_state.month = today.getMonth()
           @_state.year = today.getFullYear()
+          @$clearEl?.hide()
         return
 
       # Should not set a date that falls outside of min/max range.
       unless @_dateWithinRange(date)
+        @$clearEl?.hide()
         return
 
       @date = date
       @_state.month = @date.getMonth()
       @_state.year = @date.getFullYear()
+
+      @$clearEl?.show() if @options.allowClear
 
       unless options?.update is false
         @$el.val @_formatDate(date)
@@ -401,7 +413,12 @@
       #
       # If this input has an add-on icon attached to it, then we want to trigger show only when
       # the icon is clicked on. The `<input>` box is also focused when icon is clicked.
-      if (@$icon = @$el.siblings('.add-on')).length
+
+      @$icon = @$el.siblings('.add-on') 
+      unless @$icon.length > 0
+        @$icon = @$wrapper?.siblings('.add-on')
+
+      if @$icon?.length
         showAndFocus = (e) =>
           @_cancelEvent e
           if @_isShown
@@ -432,6 +449,13 @@
       @$datepicker.on 'click', '.js-wdp-set-month-year', @_showYearGrid
       @$datepicker.on 'click', '.js-wdp-year-calendar-cell', @_showMonthGrid
       @$datepicker.on 'mousedown', @_cancelEvent
+
+      @$clearEl?.on 'click', @_clearInput
+
+    _clearInput: =>
+      @$el.val('')
+      @setDate null
+      @$clearEl?.hide()
 
     _updateFromInput: (e, date, options) =>
       # Reads the value of the `<input>` field and set it as the date.

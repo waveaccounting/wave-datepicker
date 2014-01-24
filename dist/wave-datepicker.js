@@ -156,6 +156,7 @@
         this._place = __bind(this._place, this);
         this._updateMonthAndYear = __bind(this._updateMonthAndYear, this);
         this._updateFromInput = __bind(this._updateFromInput, this);
+        this._clearInput = __bind(this._clearInput, this);
         this.destroy = __bind(this.destroy, this);
         this.next = __bind(this.next, this);
         this.prev = __bind(this.prev, this);
@@ -166,12 +167,20 @@
         this.render = __bind(this.render, this);
         this.el = this.options.el;
         this.$el = WDP.$(this.el);
+        this.$el.wrap('<span class="wdp-input-wrap"></span>');
+        this.$wrapper = this.$el.parent();
         this.options = $.extend({}, WDP.defaultOptions, options);
         this._state = {};
         this.setOptionsFromDataAttr();
         this.normalizeOptions();
-        if (this.options.dateIncludeIcon != null) {
+        if (this.options.dateIncludeCalendarIcon != null) {
           this.$el.addClass('wdp-input-icon');
+        }
+        if (this.options.dateIncludeClearIcon != null) {
+          if (this.$wrapper.find('.wdp-clear-icon').length === 0) {
+            this.$wrapper.append('<a href="javascript:void(0)" class="wdp-clear-icon" style="display:none">&times;</a>');
+            this.$clearEl = this.$wrapper.find('.wdp-clear-icon');
+          }
         }
         this._updateFromInput(null, null, {
           update: !this.options.allowClear
@@ -298,7 +307,7 @@
       };
 
       WaveDatepicker.prototype.setDate = function(date, options) {
-        var today;
+        var today, _ref, _ref1, _ref2;
         if (typeof date === 'string') {
           date = WDP.DateUtils.parse(date);
         }
@@ -307,15 +316,26 @@
             today = new Date();
             this._state.month = today.getMonth();
             this._state.year = today.getFullYear();
+            if ((_ref = this.$clearEl) != null) {
+              _ref.hide();
+            }
           }
           return;
         }
         if (!this._dateWithinRange(date)) {
+          if ((_ref1 = this.$clearEl) != null) {
+            _ref1.hide();
+          }
           return;
         }
         this.date = date;
         this._state.month = this.date.getMonth();
         this._state.year = this.date.getFullYear();
+        if (this.options.allowClear) {
+          if ((_ref2 = this.$clearEl) != null) {
+            _ref2.show();
+          }
+        }
         if ((options != null ? options.update : void 0) !== false) {
           this.$el.val(this._formatDate(date));
         }
@@ -409,9 +429,13 @@
       };
 
       WaveDatepicker.prototype._initEvents = function() {
-        var showAndFocus,
+        var showAndFocus, _ref, _ref1, _ref2,
           _this = this;
-        if ((this.$icon = this.$el.siblings('.add-on')).length) {
+        this.$icon = this.$el.siblings('.add-on');
+        if (!(this.$icon.length > 0)) {
+          this.$icon = (_ref = this.$wrapper) != null ? _ref.siblings('.add-on') : void 0;
+        }
+        if ((_ref1 = this.$icon) != null ? _ref1.length : void 0) {
           showAndFocus = function(e) {
             _this._cancelEvent(e);
             if (_this._isShown) {
@@ -434,7 +458,15 @@
         this.$datepicker.on('click', this._cancelEvent);
         this.$datepicker.on('click', '.js-wdp-set-month-year', this._showYearGrid);
         this.$datepicker.on('click', '.js-wdp-year-calendar-cell', this._showMonthGrid);
-        return this.$datepicker.on('mousedown', this._cancelEvent);
+        this.$datepicker.on('mousedown', this._cancelEvent);
+        return (_ref2 = this.$clearEl) != null ? _ref2.on('click', this._clearInput) : void 0;
+      };
+
+      WaveDatepicker.prototype._clearInput = function() {
+        var _ref;
+        this.$el.val('');
+        this.setDate(null);
+        return (_ref = this.$clearEl) != null ? _ref.hide() : void 0;
       };
 
       WaveDatepicker.prototype._updateFromInput = function(e, date, options) {
