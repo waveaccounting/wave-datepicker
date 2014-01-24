@@ -178,9 +178,8 @@
         }
         if (this.options.dateIncludeClearIcon != null) {
           if (this.$wrapper.find('.wdp-clear-icon').length === 0) {
-            this.$wrapper.append('<a href="javascript:void(0)" class="wdp-clear-icon">&times;</a>');
+            this.$wrapper.append('<a href="javascript:void(0)" class="wdp-clear-icon" style="display:none">&times;</a>');
             this.$clearEl = this.$wrapper.find('.wdp-clear-icon');
-            this.$clearEl.hide();
           }
         }
         this._updateFromInput(null, null, {
@@ -308,7 +307,7 @@
       };
 
       WaveDatepicker.prototype.setDate = function(date, options) {
-        var today;
+        var today, _ref, _ref1, _ref2;
         if (typeof date === 'string') {
           date = WDP.DateUtils.parse(date);
         }
@@ -317,18 +316,24 @@
             today = new Date();
             this._state.month = today.getMonth();
             this._state.year = today.getFullYear();
+            if ((_ref = this.$clearEl) != null) {
+              _ref.hide();
+            }
           }
           return;
         }
         if (!this._dateWithinRange(date)) {
+          if ((_ref1 = this.$clearEl) != null) {
+            _ref1.hide();
+          }
           return;
         }
         this.date = date;
         this._state.month = this.date.getMonth();
         this._state.year = this.date.getFullYear();
-        if (this.$clearEl) {
-          if (this.options.allowClear) {
-            this.$clearEl.show();
+        if (this.options.allowClear) {
+          if ((_ref2 = this.$clearEl) != null) {
+            _ref2.show();
           }
         }
         if ((options != null ? options.update : void 0) !== false) {
@@ -424,9 +429,13 @@
       };
 
       WaveDatepicker.prototype._initEvents = function() {
-        var showAndFocus,
+        var showAndFocus, _ref, _ref1, _ref2,
           _this = this;
-        if ((this.$icon = this.$el.siblings('.add-on')).length) {
+        this.$icon = this.$el.siblings('.add-on');
+        if (!(this.$icon.length > 0)) {
+          this.$icon = (_ref = this.$wrapper) != null ? _ref.siblings('.add-on') : void 0;
+        }
+        if ((_ref1 = this.$icon) != null ? _ref1.length : void 0) {
           showAndFocus = function(e) {
             _this._cancelEvent(e);
             if (_this._isShown) {
@@ -450,17 +459,14 @@
         this.$datepicker.on('click', '.js-wdp-set-month-year', this._showYearGrid);
         this.$datepicker.on('click', '.js-wdp-year-calendar-cell', this._showMonthGrid);
         this.$datepicker.on('mousedown', this._cancelEvent);
-        if (this.$clearEl) {
-          return this.$clearEl.on('click', this._clearInput);
-        }
+        return (_ref2 = this.$clearEl) != null ? _ref2.on('click', this._clearInput) : void 0;
       };
 
       WaveDatepicker.prototype._clearInput = function() {
+        var _ref;
         this.$el.val('');
         this.setDate(null);
-        if (this.$clearEl) {
-          return this.$clearEl.hide();
-        }
+        return (_ref = this.$clearEl) != null ? _ref.hide() : void 0;
       };
 
       WaveDatepicker.prototype._updateFromInput = function(e, date, options) {

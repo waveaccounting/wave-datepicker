@@ -396,9 +396,9 @@ input.wdp-input-icon {
 .wdp-clear-icon {
   background-color: #FFF;
   text-align: center;
+  height: 23px;
+  width: 20px;
   position: absolute;
-  height: 22px;
-  width: 22px;
   right: 2px;
   top: -2px;
   font-weight: bold;
