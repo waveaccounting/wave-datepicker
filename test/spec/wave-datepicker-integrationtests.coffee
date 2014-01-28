@@ -363,6 +363,37 @@ describe 'Wave Datepicker', ->
 
 
     describe 'Min date', ->
+      describe 'when setMinDate is called on an instance', ->
+        it 'should disable all dates before the min', ->
+          baseDate = new Date(2013, 4, 10, 0, 0, 0, 0)
+          # Set today to be the min date.
+          @$input.val('2013-05-15').datepicker()
+          @$input.data('datepicker').setMinDate(new Date(2013, 4, 10))
+
+          $cells = @$input.data('datepicker').$calendar.find('td')
+          $cells.each (i, cell) ->
+            $cell = $(cell)
+            date = moment($cell.data('date'), 'YYYY-MM-DD').toDate()
+            if date.valueOf() < baseDate.valueOf()
+              expect($cell.hasClass('wdp-disabled')).to.be.true
+
+      describe 'when clearMinDate is called on an instance', ->
+        it 'should remove the min date and enable all dates before min', ->
+          baseDate = new Date(2013, 4, 10, 0, 0, 0, 0)
+          # Set today to be the min date.
+          @$input.val('2013-05-15').datepicker({dateMin: new Date(2013, 4, 10)})
+          dp = @$input.data('datepicker')
+          dp.clearMinDate()
+
+          expect(dp.dateMin).to.be.null
+
+          $cells = dp.$calendar.find('td')
+          $cells.each (i, cell) ->
+            $cell = $(cell)
+            date = moment($cell.data('date'), 'YYYY-MM-DD').toDate()
+            if date.valueOf() < baseDate.valueOf()
+              expect($cell.hasClass('wdp-disabled')).to.be.false
+
       describe 'when dateMin is set in the options', ->
         it 'should disable all dates before the min', ->
           baseDate = new Date(2013, 4, 10, 0, 0, 0, 0)
@@ -394,8 +425,39 @@ describe 'Wave Datepicker', ->
 
 
     describe 'Max date', ->
+      describe 'when setMaxDate is called on an instance', ->
+        it 'should disable all dates after max', ->
+          baseDate = new Date(2013, 4, 20, 0, 0, 0, 0)
+          # Set today to be the max date.
+          @$input.val('2013-05-15').datepicker()
+          @$input.data('datepicker').setMaxDate(new Date(2013, 4, 20))
+
+          $cells = @$input.data('datepicker').$calendar.find('td')
+          $cells.each (i, cell) ->
+            $cell = $(cell)
+            date = moment($cell.data('date'), 'YYYY-MM-DD').toDate()
+            if date.valueOf() > baseDate.valueOf()
+              expect($cell.hasClass('wdp-disabled')).to.be.true
+
+      describe 'when clearMaxDate is called on an instance', ->
+        it 'should remove the max date and enable all dates after max', ->
+          baseDate = new Date(2013, 4, 20, 0, 0, 0, 0)
+          # Set today to be the max date.
+          @$input.val('2013-05-15').datepicker({dateMax: new Date(2013, 4, 20)})
+          dp = @$input.data('datepicker')
+          dp.clearMaxDate()
+
+          expect(dp.dateMax).to.be.null
+
+          $cells = dp.$calendar.find('td')
+          $cells.each (i, cell) ->
+            $cell = $(cell)
+            date = moment($cell.data('date'), 'YYYY-MM-DD').toDate()
+            if date.valueOf() > baseDate.valueOf()
+              expect($cell.hasClass('wdp-disabled')).to.be.false
+
       describe 'when dateMax is set in the options', ->
-        it 'should disable all dates before the max', ->
+        it 'should disable all dates after the max', ->
           baseDate = new Date(2013, 4, 20, 0, 0, 0, 0)
           # Set today to be the max date.
           @$input.val('2013-05-15').datepicker({dateMax: new Date(2013, 4, 20)})

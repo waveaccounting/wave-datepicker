@@ -374,6 +374,44 @@
         });
       });
       describe('Min date', function() {
+        describe('when setMinDate is called on an instance', function() {
+          return it('should disable all dates before the min', function() {
+            var $cells, baseDate;
+            baseDate = new Date(2013, 4, 10, 0, 0, 0, 0);
+            this.$input.val('2013-05-15').datepicker();
+            this.$input.data('datepicker').setMinDate(new Date(2013, 4, 10));
+            $cells = this.$input.data('datepicker').$calendar.find('td');
+            return $cells.each(function(i, cell) {
+              var $cell, date;
+              $cell = $(cell);
+              date = moment($cell.data('date'), 'YYYY-MM-DD').toDate();
+              if (date.valueOf() < baseDate.valueOf()) {
+                return expect($cell.hasClass('wdp-disabled')).to.be["true"];
+              }
+            });
+          });
+        });
+        describe('when clearMinDate is called on an instance', function() {
+          return it('should remove the min date and enable all dates before min', function() {
+            var $cells, baseDate, dp;
+            baseDate = new Date(2013, 4, 10, 0, 0, 0, 0);
+            this.$input.val('2013-05-15').datepicker({
+              dateMin: new Date(2013, 4, 10)
+            });
+            dp = this.$input.data('datepicker');
+            dp.clearMinDate();
+            expect(dp.dateMin).to.be["null"];
+            $cells = dp.$calendar.find('td');
+            return $cells.each(function(i, cell) {
+              var $cell, date;
+              $cell = $(cell);
+              date = moment($cell.data('date'), 'YYYY-MM-DD').toDate();
+              if (date.valueOf() < baseDate.valueOf()) {
+                return expect($cell.hasClass('wdp-disabled')).to.be["false"];
+              }
+            });
+          });
+        });
         return describe('when dateMin is set in the options', function() {
           it('should disable all dates before the min', function() {
             var $cells, baseDate;
@@ -416,8 +454,46 @@
         });
       });
       return describe('Max date', function() {
+        describe('when setMaxDate is called on an instance', function() {
+          return it('should disable all dates after max', function() {
+            var $cells, baseDate;
+            baseDate = new Date(2013, 4, 20, 0, 0, 0, 0);
+            this.$input.val('2013-05-15').datepicker();
+            this.$input.data('datepicker').setMaxDate(new Date(2013, 4, 20));
+            $cells = this.$input.data('datepicker').$calendar.find('td');
+            return $cells.each(function(i, cell) {
+              var $cell, date;
+              $cell = $(cell);
+              date = moment($cell.data('date'), 'YYYY-MM-DD').toDate();
+              if (date.valueOf() > baseDate.valueOf()) {
+                return expect($cell.hasClass('wdp-disabled')).to.be["true"];
+              }
+            });
+          });
+        });
+        describe('when clearMaxDate is called on an instance', function() {
+          return it('should remove the max date and enable all dates after max', function() {
+            var $cells, baseDate, dp;
+            baseDate = new Date(2013, 4, 20, 0, 0, 0, 0);
+            this.$input.val('2013-05-15').datepicker({
+              dateMax: new Date(2013, 4, 20)
+            });
+            dp = this.$input.data('datepicker');
+            dp.clearMaxDate();
+            expect(dp.dateMax).to.be["null"];
+            $cells = dp.$calendar.find('td');
+            return $cells.each(function(i, cell) {
+              var $cell, date;
+              $cell = $(cell);
+              date = moment($cell.data('date'), 'YYYY-MM-DD').toDate();
+              if (date.valueOf() > baseDate.valueOf()) {
+                return expect($cell.hasClass('wdp-disabled')).to.be["false"];
+              }
+            });
+          });
+        });
         return describe('when dateMax is set in the options', function() {
-          it('should disable all dates before the max', function() {
+          it('should disable all dates after the max', function() {
             var $cells, baseDate;
             baseDate = new Date(2013, 4, 20, 0, 0, 0, 0);
             this.$input.val('2013-05-15').datepicker({

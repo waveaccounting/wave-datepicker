@@ -158,6 +158,10 @@ Run the `test` task:
 
 ##Changelog
 
+**1.5.0**
+
+- Added the ability to set/clear the min/max date on an already constructed instance
+
 **1.4.1**
 
 - Trigger change event on the input when clearing the date.

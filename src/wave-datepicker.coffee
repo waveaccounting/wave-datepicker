@@ -250,11 +250,39 @@
       @options.allowClear or= @options.dateAllowClear
       @options.allowClear = @options.allowClear in ['yes', 'true', true] 
 
-      if @options.dateMin and not(@options.dateMin instanceof Date)
-        @options.dateMin = @_parseDate @options.dateMin
+      dateMin = @options.dateMin
+      if dateMin? and not(dateMin instanceof Date)
+        @options.dateMin = @_parseDate dateMin
+        @dateMin = @_parseDate dateMin
+      else
+        @dateMin = dateMin
 
-      if @options.dateMax and not(@options.dateMax instanceof Date)
-        @options.dateMax = @_parseDate @options.dateMax
+      dateMax = @options.dateMax
+      if dateMax? and not(dateMax instanceof Date)
+        @options.dateMax = @_parseDate dateMax
+        @dateMax = @_parseDate dateMax
+      else
+        @dateMax = dateMax
+
+    setMinDate: (date) =>
+      if not(date instanceof Date)
+        date = @_parseDate date
+      @dateMin = date
+      @render()
+
+    clearMinDate: =>
+      @dateMin = null
+      @render()
+
+    setMaxDate: (date) =>
+      if not(date instanceof Date)
+        date = @_parseDate date
+      @dateMax = date
+      @render()
+
+    clearMaxDate: =>
+      @dateMax = null
+      @render()
 
     render: =>
       @_updateMonthAndYear()
@@ -454,7 +482,6 @@
 
     _clearInput: =>
       @$el.val('').trigger('change')
-      @setDate null
       @$clearEl?.hide()
 
     _updateFromInput: (e, date, options) =>
@@ -716,10 +743,10 @@
       @setDate date
 
     _dateWithinRange: (date) =>
-      if @options.dateMin and date.valueOf() < @options.dateMin.valueOf()
+      if @dateMin and date.valueOf() < @dateMin.valueOf()
         return false
 
-      if @options.dateMax and date.valueOf() > @options.dateMax.valueOf()
+      if @dateMax and date.valueOf() > @dateMax.valueOf()
         return false
 
       return true

@@ -165,6 +165,10 @@
         this.hide = __bind(this.hide, this);
         this.show = __bind(this.show, this);
         this.render = __bind(this.render, this);
+        this.clearMaxDate = __bind(this.clearMaxDate, this);
+        this.setMaxDate = __bind(this.setMaxDate, this);
+        this.clearMinDate = __bind(this.clearMinDate, this);
+        this.setMinDate = __bind(this.setMinDate, this);
         this.el = this.options.el;
         this.$el = WDP.$(this.el);
         this.$el.wrap('<span class="wdp-input-wrap"></span>');
@@ -228,16 +232,50 @@
       };
 
       WaveDatepicker.prototype.normalizeOptions = function() {
-        var _base, _base1, _ref;
+        var dateMax, dateMin, _base, _base1, _ref;
         (_base = this.options).dateFormat || (_base.dateFormat = this._defaultFormat);
         (_base1 = this.options).allowClear || (_base1.allowClear = this.options.dateAllowClear);
         this.options.allowClear = (_ref = this.options.allowClear) === 'yes' || _ref === 'true' || _ref === true;
-        if (this.options.dateMin && !(this.options.dateMin instanceof Date)) {
-          this.options.dateMin = this._parseDate(this.options.dateMin);
+        dateMin = this.options.dateMin;
+        if ((dateMin != null) && !(dateMin instanceof Date)) {
+          this.options.dateMin = this._parseDate(dateMin);
+          this.dateMin = this._parseDate(dateMin);
+        } else {
+          this.dateMin = dateMin;
         }
-        if (this.options.dateMax && !(this.options.dateMax instanceof Date)) {
-          return this.options.dateMax = this._parseDate(this.options.dateMax);
+        dateMax = this.options.dateMax;
+        if ((dateMax != null) && !(dateMax instanceof Date)) {
+          this.options.dateMax = this._parseDate(dateMax);
+          return this.dateMax = this._parseDate(dateMax);
+        } else {
+          return this.dateMax = dateMax;
         }
+      };
+
+      WaveDatepicker.prototype.setMinDate = function(date) {
+        if (!(date instanceof Date)) {
+          date = this._parseDate(date);
+        }
+        this.dateMin = date;
+        return this.render();
+      };
+
+      WaveDatepicker.prototype.clearMinDate = function() {
+        this.dateMin = null;
+        return this.render();
+      };
+
+      WaveDatepicker.prototype.setMaxDate = function(date) {
+        if (!(date instanceof Date)) {
+          date = this._parseDate(date);
+        }
+        this.dateMax = date;
+        return this.render();
+      };
+
+      WaveDatepicker.prototype.clearMaxDate = function() {
+        this.dateMax = null;
+        return this.render();
       };
 
       WaveDatepicker.prototype.render = function() {
@@ -465,7 +503,6 @@
       WaveDatepicker.prototype._clearInput = function() {
         var _ref;
         this.$el.val('').trigger('change');
-        this.setDate(null);
         return (_ref = this.$clearEl) != null ? _ref.hide() : void 0;
       };
 
@@ -744,10 +781,10 @@
       };
 
       WaveDatepicker.prototype._dateWithinRange = function(date) {
-        if (this.options.dateMin && date.valueOf() < this.options.dateMin.valueOf()) {
+        if (this.dateMin && date.valueOf() < this.dateMin.valueOf()) {
           return false;
         }
-        if (this.options.dateMax && date.valueOf() > this.options.dateMax.valueOf()) {
+        if (this.dateMax && date.valueOf() > this.dateMax.valueOf()) {
           return false;
         }
         return true;
