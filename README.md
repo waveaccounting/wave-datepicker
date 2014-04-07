@@ -158,6 +158,10 @@ Run the `test` task:
 
 ##Changelog
 
+**1.5.1**
+
+* Added check for `window.useAmd` as an override for not using the AMD loader even with `define` and `define.amd`
+
 **1.5.0**
 
 - Added the ability to set/clear the min/max date on an already constructed instance
