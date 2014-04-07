@@ -71,10 +71,12 @@ module.exports = (grunt) ->
         ]
         tasks: ['livereload']
 
-    min:
-      dist:
-        src: ["dist/wave-datepicker.js"]
-        dest: "dist/wave-datepicker.min.js"
+    uglify:
+      my_target:
+        files:
+          'dist/wave-datepicker.min.js': 'dist/wave-datepicker.js'
+
+  grunt.loadNpmTasks('grunt-contrib-uglify')
 
   grunt.registerTask 'default', [
       'coffee'
@@ -86,6 +88,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'release', [
       'coffee'
       'less'
+      'uglify:my_target'
     ]
   grunt.registerTask "test", [
     'coffee'
