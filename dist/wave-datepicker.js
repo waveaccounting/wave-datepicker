@@ -3,7 +3,9 @@
     __slice = [].slice;
 
   (function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
+    var dontUseAmd;
+    dontUseAmd = window.useAmd === false;
+    if (typeof define === 'function' && define.amd && !dontUseAmd) {
       return define(['jquery'], function($) {
         return root.WDP = factory($);
       });
