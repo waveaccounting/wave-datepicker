@@ -1,6 +1,8 @@
 ((root, factory) ->
   # Define AMD module if AMD support exists.
-  if typeof define is 'function' and define.amd
+  # However, don't use AMD if window.useAmd is defined and true
+  dontUseAmd = window.useAmd is false
+  if typeof define is 'function' and define.amd and not dontUseAmd
     define ['jquery'], ($) -> root.WDP = factory($)
   else  # Otherwise attach module to root.
     root.WDP = factory(root.$)
