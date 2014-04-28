@@ -344,7 +344,7 @@
     setDate: (date, options) =>
       # If we're setting a string, then parse it first.
       if typeof date is 'string'
-        date = WDP.DateUtils.parse date
+        date = WDP.DateUtils.parse(date, @options.dateFormat).clone().toDate()
 
       # Cannot set non-dates
       unless date instanceof Date

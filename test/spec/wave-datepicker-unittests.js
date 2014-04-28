@@ -70,7 +70,7 @@
       });
     });
     describe('setDate', function() {
-      it('should update the date, state, and <input> of the widget', function() {
+      it('should update the date, state, and <input> of the widget when given a date instance', function() {
         var context, date;
         context = {
           _formatDate: sinon.stub(),
@@ -94,6 +94,35 @@
         expect(context._state.year).to.eql(2012);
         return expect(context.$el.trigger.calledWith('change', [
           date, {
+            silent: true
+          }
+        ])).to.be["true"];
+      });
+      it('should update the date, state, and <input> of the widget when given a date string', function() {
+        var context, date, dateInstance;
+        context = {
+          _formatDate: sinon.stub(),
+          $el: {
+            val: sinon.spy(),
+            trigger: sinon.spy()
+          },
+          _state: {},
+          options: {
+            hideOnSelect: false
+          },
+          _dateWithinRange: function() {
+            return true;
+          }
+        };
+        context._formatDate.returns('FORMATTED');
+        date = '2012-07-01';
+        dateInstance = new Date(2012, 6, 1, 0, 0, 0, 0);
+        WDP.WaveDatepicker.prototype.setDate.call(context, date);
+        expect(context.date).to.eql(dateInstance);
+        expect(context._state.month).to.eql(6);
+        expect(context._state.year).to.eql(2012);
+        return expect(context.$el.trigger.calledWith('change', [
+          dateInstance, {
             silent: true
           }
         ])).to.be["true"];

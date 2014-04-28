@@ -158,6 +158,10 @@ Run the `test` task:
 
 ##Changelog
 
+**1.5.2**
+
+* Fixed bug around trying to call `setDate` with a string and not a `Date` instance.
+
 **1.5.1**
 
 * Added check for `window.useAmd` as an override for not using the AMD loader even with `define` and `define.amd`

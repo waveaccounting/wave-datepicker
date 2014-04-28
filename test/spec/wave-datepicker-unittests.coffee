@@ -63,7 +63,7 @@ describe 'Wave Datepicker unit tests', ->
 
 
   describe 'setDate', ->
-    it 'should update the date, state, and <input> of the widget', ->
+    it 'should update the date, state, and <input> of the widget when given a date instance', ->
       context =
         _formatDate: sinon.stub()
         $el:
@@ -83,6 +83,28 @@ describe 'Wave Datepicker unit tests', ->
       expect(context._state.month).to.eql(7)
       expect(context._state.year).to.eql(2012)
       expect(context.$el.trigger.calledWith('change', [date, {silent: true}])).to.be.true
+
+    it 'should update the date, state, and <input> of the widget when given a date string', ->
+      context =
+        _formatDate: sinon.stub()
+        $el:
+          val: sinon.spy()
+          trigger: sinon.spy()
+        _state: {}
+        options:
+          hideOnSelect: false
+        _dateWithinRange: -> true
+      context._formatDate.returns 'FORMATTED'
+
+      date = '2012-07-01'
+      dateInstance = new Date(2012, 6, 1, 0, 0, 0, 0)
+
+      WDP.WaveDatepicker.prototype.setDate.call context, date
+
+      expect(context.date).to.eql(dateInstance)
+      expect(context._state.month).to.eql(6)
+      expect(context._state.year).to.eql(2012)
+      expect(context.$el.trigger.calledWith('change', [dateInstance, {silent: true}])).to.be.true
 
     describe 'when hideOnSelect is true', ->
       beforeEach ->

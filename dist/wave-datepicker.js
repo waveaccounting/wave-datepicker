@@ -349,7 +349,7 @@
       WaveDatepicker.prototype.setDate = function(date, options) {
         var today, _ref, _ref1, _ref2;
         if (typeof date === 'string') {
-          date = WDP.DateUtils.parse(date);
+          date = WDP.DateUtils.parse(date, this.options.dateFormat).clone().toDate();
         }
         if (!(date instanceof Date)) {
           if (this.options.allowClear) {

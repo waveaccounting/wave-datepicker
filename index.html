@@ -113,7 +113,20 @@
             </div>
           </div>
 
-
+          <div class="control-group">
+            <label class="control-label">setDate method</label>
+            <div class="controls">
+              <input type="text" id="Date11" class="input-small" /> <button id="ChangeDate11" type="button">Change</button>
+              <pre>
+&lt;input id="Date11"/&gt;
+$('#Date11').datepicker();
+$('#ChangeDate11').on('click', function(e) {
+  e.preventDefault();
+  $(e.target).datepicker('setDate', '2042-07-19');
+});
+</pre>
+            </div>
+          </div>
 
         </form>
       </section>
@@ -135,21 +148,18 @@
             }
           }
         });
-
-        $('#Date3').datepicker({shortcuts: true});
-
         $('#Date4').datepicker();
-
         $('#Date5').datepicker();
-
         $('#Date6').datepicker({hideOnSelect: false});
-
         $('#Date7').datepicker();
-
         $('#Date8').datepicker();
-
         $('#Date9').datepicker();
         $('#Date10').datepicker();
+        $('#Date11').datepicker();
+        $('#ChangeDate11').on('click', function(e) {
+          e.preventDefault();
+          $('#Date11').datepicker('setDate', '2042-07-19');
+        });
       });
     </script>
   </body>
